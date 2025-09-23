@@ -8,7 +8,13 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:extension": "vite build && copy public\\manifest.json dist\\"
+    "build:chrome": "node build-scripts/build-chrome.js",
+    "build:firefox": "node build-scripts/build-firefox.js",
+    "build:all": "node build-scripts/build-all.js",
+    "dev:chrome": "npm run build:chrome && echo Load dist/chrome/ in Chrome",
+    "dev:firefox": "npm run build:firefox && echo Load dist/firefox/ in Firefox",
+    "package:chrome": "cd dist/chrome && powershell Compress-Archive -Path * -DestinationPath ../../dfcraft-chrome.zip",
+    "package:firefox": "cd dist/firefox && powershell Compress-Archive -Path * -DestinationPath ../../dfcraft-firefox.zip"
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -24,6 +30,7 @@
     "eslint": "^9.35.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "fs-extra": "^11.3.2",
     "globals": "^16.4.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
