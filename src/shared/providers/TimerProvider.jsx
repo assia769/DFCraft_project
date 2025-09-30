@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import { TimerContext } from "../context/TimerContext";
 
 export function TimerProvider({ children }) {
 
