@@ -1,23 +1,13 @@
-import { useEffect , useState } from "react";
+import { useTimer } from "../../shared/hooks/useTimer";
 
 export default function Timer() {
-    const [time, setTime] = useState(60);
-    const [isRuning, setIsRuning] = useState(true);
+    const {time} = useTimer();
 
     const percentage = (time / 60) * 100; // Change this to control completion (0-100)
     const radius = 90;
     const circumference = 2 * Math.PI * radius;
     const strokeDasharray = `${(percentage / 100) * circumference} ${circumference}`;
 
-    useEffect(()=>{
-        let interval = null;
-        if(isRuning && time>0){
-            interval = setInterval(()=>{
-                setTime(time => time - 1);
-            },1000)
-        }
-        return  () => clearInterval(interval);
-    },[isRuning, time])
 
     return (
         <div className="flex justify-center bg-blue-200 p-5">
