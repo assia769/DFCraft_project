@@ -28,6 +28,7 @@ export default function Header({ setChoosenPage }) {
             <p onClick={() => setChoosenPage("todo")}>Todo list</p>
             <p onClick={() => setChoosenPage("sounds")}>Sounds</p>
             <p onClick={() => setChoosenPage("tracking")}>Tracking</p>
+            <p onClick={() => setChoosenPage("distractionBlocking ")}>Distraction blocking</p>
             <p onClick={() => setChoosenPage("settings")}>Settings</p>
           </div>
         </>
