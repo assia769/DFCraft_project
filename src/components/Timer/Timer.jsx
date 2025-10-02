@@ -3,7 +3,16 @@ import { Play, Square, Pause } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function Timer() {
-  const { time, setTime, isRunning, setIsRunning, reset, setReset, originalTime, setOriginalTime } = useTimer();
+  const {
+    time,
+    setTime,
+    isRunning,
+    setIsRunning,
+    reset,
+    setReset,
+    originalTime,
+    setOriginalTime,
+  } = useTimer();
   const [min, setMin] = useState(Math.floor(time / 60));
   const [sec, setSec] = useState(time % 60);
 
@@ -28,18 +37,23 @@ export default function Timer() {
   } ${circumference}`;
 
   const selectWorkTime = () => {
-    const validMin = Math.max(0, Math.floor(min));
-    const validSec = Math.max(0, Math.min(59, Math.floor(sec)));
-    const validTime = validMin * 60 + validSec;
+    // Only read inputs if we're at the original start position
+    if (time === originalTime) {
+      // User is editing the timer, use input values
+      const validMin = Math.max(0, Math.floor(min));
+      const validSec = Math.max(0, Math.min(59, Math.floor(sec)));
+      const validTime = validMin * 60 + validSec;
 
-    if (validTime > 0) {
-      setTime(validTime);
-      setIsRunning(true);
-      setOriginalTime(validTime);
+      if (validTime > 0) {
+        setTime(validTime);
+        setOriginalTime(validTime);
+      }
     }
-  };
+    // else: we're resuming from a pause, don't touch time or originalTime
 
-  
+    // Always start regardless
+    setIsRunning(true);
+  };
 
   const timerControllers = () => {
     return isRunning ? (
@@ -49,7 +63,9 @@ export default function Timer() {
     ) : (
       <>
         <Play color="blue" onClick={() => selectWorkTime()} />
-        {time < originalTime && <Square color="blue" onClick={() => setReset(true)} />}
+        {time < originalTime && (
+          <Square color="blue" onClick={() => setReset(true)} />
+        )}
       </>
     );
   };
