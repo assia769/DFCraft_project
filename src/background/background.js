@@ -20,9 +20,10 @@ const browserAPI = (() => {
 })();
 
 let timerData = {
-  time: 60,
+  time: 1500,
   isRunning: false,
-  lastUpdate: Date.now()
+  lastUpdate: Date.now(),
+  originalTime: 1500
 };
 
 // Load saved state

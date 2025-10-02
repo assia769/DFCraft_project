@@ -3,7 +3,8 @@ import { TimerContext } from "../context/TimerContext";
 import { browserAPI } from "../utils/browserAPI"
 
 export function TimerProvider({ children }) {
-    const [time, setTime] = useState(60);
+    const [time, setTime] = useState(1500);
+    const [originalTime, setOriginalTime] = useState(1500); // Add this
     const [isRunning, setIsRunning] = useState(false);
     const [reset, setReset] = useState(false);
     
@@ -22,6 +23,7 @@ export function TimerProvider({ children }) {
                 
                 if (res && isMounted.current) {
                     setTime(res.time);
+                    setOriginalTime(res.originalTime)
                     setIsRunning(res.isRunning);
                     isInitialized.current = true; // ✅ Now safe to sync
                     console.log('✅ State initialized:', res);
@@ -63,7 +65,7 @@ export function TimerProvider({ children }) {
                 console.log('🔄 SYNCING to background:', { time, isRunning });
                 await browserAPI.runtime.sendMessage({
                     type: 'UPDATE_TIMER',
-                    data: { time, isRunning }
+                    data: { time, originalTime, isRunning }
                 });
                 console.log('✅ Sync complete');
             } catch (error) {
@@ -72,20 +74,20 @@ export function TimerProvider({ children }) {
         };
 
         syncTimer();
-    }, [time, isRunning]);
+    }, [time, originalTime,isRunning]);
 
     // Handle reset
     useEffect(() => {
         if (reset) {
             console.log('🔄 RESET triggered');
-            setTime(60);
+            setTime(originalTime);
             setIsRunning(false);
             setReset(false);
         }
-    }, [reset]);
+    }, [reset, originalTime]);
 
     return (
-        <TimerContext.Provider value={{ time, setTime, isRunning, setIsRunning, reset, setReset }}>
+        <TimerContext.Provider value={{ time, setTime, isRunning, setIsRunning, reset, setReset, originalTime, setOriginalTime }}>
             {children}
         </TimerContext.Provider>
     );
