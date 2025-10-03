@@ -108,12 +108,24 @@ setInterval(() => {
       timerData.originalTime = timerData.breakTime;
       timerData.lastUpdate = Date.now();
       console.log('Switching to break phase:', timerData.breakTime);
+
+      browserAPI.runtime.sendMessage({ 
+        type: 'PLAY_SOUND', 
+        sound: 'switchComplete' 
+      }).catch(() => {});
+
     } else if (timerData.phaseType === "break" && timerData.workTime > 0) {
       timerData.phaseType = "work";
       timerData.time = timerData.workTime;
       timerData.originalTime = timerData.workTime;
       timerData.lastUpdate = Date.now();
       console.log('Switching to work phase:', timerData.workTime);
+
+      browserAPI.runtime.sendMessage({ 
+        type: 'PLAY_SOUND', 
+        sound: 'switchComplete' 
+      }).catch(() => {});
+      
     } else {
       // No break/work time set, just stop
       timerData.isRunning = false;
