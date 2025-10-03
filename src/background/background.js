@@ -23,7 +23,10 @@ let timerData = {
   time: 1500,
   isRunning: false,
   lastUpdate: Date.now(),
-  originalTime: 1500
+  originalTime: 1500,
+  workTime: 1500,
+  breakTime: 300,
+  phaseType: 'work'
 };
 
 // Load saved state
@@ -79,6 +82,7 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 // Timer loop
+// In background.js, inside the timer loop:
 setInterval(() => {
   if (timerData.isRunning && timerData.time > 0) {
     timerData.time--;
@@ -94,6 +98,34 @@ setInterval(() => {
     browserAPI.runtime.sendMessage({ 
       type: 'TIMER_TICK', 
       data: timerData 
-    }).catch(() => {}); // Ignore if no listeners
+    }).catch(() => {});
+    
+  } else if (timerData.time === 0 && timerData.isRunning) {
+    // Timer hit 0, switch phases
+    if (timerData.phaseType === "work" && timerData.breakTime > 0) {
+      timerData.phaseType = "break";
+      timerData.time = timerData.breakTime;
+      timerData.originalTime = timerData.breakTime;
+      timerData.lastUpdate = Date.now();
+      console.log('Switching to break phase:', timerData.breakTime);
+    } else if (timerData.phaseType === "break" && timerData.workTime > 0) {
+      timerData.phaseType = "work";
+      timerData.time = timerData.workTime;
+      timerData.originalTime = timerData.workTime;
+      timerData.lastUpdate = Date.now();
+      console.log('Switching to work phase:', timerData.workTime);
+    } else {
+      // No break/work time set, just stop
+      timerData.isRunning = false;
+      console.log('Timer finished, no next phase');
+    }
+    
+    saveTimerData();
+    
+    // Notify popup of phase change
+    browserAPI.runtime.sendMessage({ 
+      type: 'PHASE_CHANGE', 
+      data: timerData 
+    }).catch(() => {});
   }
 }, 1000);
