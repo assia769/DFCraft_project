@@ -1,34 +1,30 @@
-import { useEffect , useState } from "react"
-import InputAdd from "./InputAdd"
+import { useEffect, useState } from "react";
+import InputAdd from "./InputAdd";
 
-
-
-
-const InputAddUrl = ({elements , setElement})=>{
-
-    const [value , setValue] = useState("")
+const InputAddUrl = ({ elements, setElement }) => {
+    const [value, setValue] = useState("");
    
-    function addElement(value){
+    function addElement(value) {
         const existe = elements.some((el) => el.url === value);
-        if(existe === false){
-            
-            setElement((prv)=>[...prv , {
-                url : value , 
-                sowndBlocked :  false , 
-                urlBlocked  : false
-            }])
-            setValue("")
-
-            
+        if (!existe) {
+            setElement((prv) => [
+                ...prv,
+                {
+                    url: value,
+                    sowndBlocked: false,
+                    urlBlocked: false
+                }
+            ]);
+            setValue("");
         }
-        console.log("Ce url deja exsite ")
+        console.log("Ce url deja exsite ");
     }
 
+    return (
+        <div className="my-4">
+            <InputAdd value={value} setValue={setValue} addElement={addElement} />
+        </div>
+    );
+};
 
-
-    return(
-        <InputAdd value ={value}  setValue={setValue} addElement = {addElement}  ></InputAdd>
-    )
-}
-
-export default  InputAddUrl
+export default InputAddUrl;

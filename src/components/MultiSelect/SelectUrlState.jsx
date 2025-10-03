@@ -24,17 +24,17 @@ function SelectUrlState({ setElements }) {
   }, [selected, setElements]);
 
   return (
-    <div>
-      <select value={selected} onChange={handleChange}>
+    <div className="flex flex-col items-center space-y-2">
+      <select value={selected} onChange={handleChange} className="border border-gray-300 p-2 rounded focus:outline-none">
         <option value="">--Select--</option>
         <option value="sownd">Sownd</option>
         <option value="acces">Acces</option>
         <option value="both">Both</option>
       </select>
-
-      <p>Selected: {selected}</p>
+      <p className="text-sm text-gray-600">Selected: {selected}</p>
     </div>
   );
 }
 
 export default SelectUrlState;
+
