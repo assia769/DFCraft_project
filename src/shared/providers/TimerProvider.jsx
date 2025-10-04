@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { TimerContext } from "../context/TimerContext";
 import { browserAPI } from "../utils/browserAPI";
-import { soundManager } from "../utils/sound.js"
 
 export function TimerProvider({ children }) {
   const [time, setTime] = useState(1500);
@@ -53,8 +52,6 @@ export function TimerProvider({ children }) {
         setOriginalTime(message.data.originalTime);
         setPhaseType(message.data.phaseType);
         setIsRunning(message.data.isRunning);
-      } else if (message.type === "PLAY_SOUND") {
-        soundManager.play(message.sound);
       }
     };
 

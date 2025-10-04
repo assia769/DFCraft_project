@@ -30,6 +30,8 @@ try {
     "main.js",
     "main.css",
     "popup.css",
+    "offscreen.html", // Add this
+    "offscreen.js",
     "src", // This folder contains popup.html and options.html
   ];
 

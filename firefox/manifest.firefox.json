@@ -27,11 +27,14 @@
     }
   ],
   
-  "permissions": [
-    "storage",
-    "notifications",
-    "alarms",
-    "activeTab"
+  "permissions": ["storage", "notifications", "alarms", "activeTab", "offscreen"],
+
+  "options_page": "src/options/options.html",
+  
+  "web_accessible_resources": [
+    "sounds/*.wav",
+    "offscreen.html",
+    "offscreen.js"
   ],
   
   "options_ui": {

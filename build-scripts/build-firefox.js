@@ -1,26 +1,27 @@
-import fs from 'fs-extra';
-import path from 'path';
-import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
+import fs from "fs-extra";
+import path from "path";
+import { execSync } from "child_process";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log('🦊 Building for Firefox...');
+console.log("🦊 Building for Firefox...");
 
 try {
   // Only build if dist is empty or only has chrome folder
-  const distDir = path.join(__dirname, '..', 'dist');
-  const hasOnlyChrome = fs.existsSync(distDir) && 
-    fs.readdirSync(distDir).every(item => item === 'chrome');
-  
+  const distDir = path.join(__dirname, "..", "dist");
+  const hasOnlyChrome =
+    fs.existsSync(distDir) &&
+    fs.readdirSync(distDir).every((item) => item === "chrome");
+
   if (!fs.existsSync(distDir) || hasOnlyChrome) {
-    console.log('🔨 Running Vite build...');
-    execSync('npm run build', { stdio: 'inherit' });
+    console.log("🔨 Running Vite build...");
+    execSync("npm run build", { stdio: "inherit" });
   }
 
   // Create firefox directory
-  const firefoxDir = path.join(distDir, 'firefox');
+  const firefoxDir = path.join(distDir, "firefox");
   fs.ensureDirSync(firefoxDir);
 
   // Get all files from dist root FIRST (before using it)
@@ -35,6 +36,8 @@ try {
     "main.js",
     "main.css",
     "popup.css",
+    "offscreen.html", // Add this
+    "offscreen.js",
     "src", // This folder contains popup.html and options.html
   ];
 
@@ -100,14 +103,13 @@ try {
   }
 
   console.log("✅ Firefox build complete!");
-  
+
   // List what's in the folder
   console.log("\n📂 Firefox folder contains:");
   fs.readdirSync(firefoxDir).forEach((file) => console.log(`   - ${file}`));
 
   console.log("📁 Firefox files ready in: dist/firefox/");
-
 } catch (error) {
-  console.error('❌ Firefox build failed:', error.message);
+  console.error("❌ Firefox build failed:", error.message);
   throw error;
 }
