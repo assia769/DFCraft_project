@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import InputAdd from "./InputAdd";
 
 const InputAddUrl = ({ elements, setElement }) => {
