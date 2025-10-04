@@ -1,4 +1,4 @@
-
+import { useEffect } from "react";
 
 
 const useSaveUrl =(urlElements)=>{
@@ -12,7 +12,7 @@ const useSaveUrl =(urlElements)=>{
                 }
             }
     
-            blockUrl()
+            saveUrl()
     
         },[urlElements])
 }
