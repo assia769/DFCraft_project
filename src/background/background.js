@@ -13,7 +13,7 @@ const browserAPI = (() => {
         },
       },
       action: chrome.action || chrome.browserAction,
-      offscreen: chrome.offscreen,           // Add this
+      offscreen: chrome.offscreen, // Add this
       notifications: chrome.notifications,
     };
   }
@@ -89,33 +89,32 @@ async function playSound(soundName) {
     if (browserAPI.offscreen) {
       const existingContexts = await browserAPI.runtime.getContexts({});
       const offscreenDocument = existingContexts.find(
-        context => context.contextType === 'OFFSCREEN_DOCUMENT'
+        (context) => context.contextType === "OFFSCREEN_DOCUMENT"
       );
 
       if (!offscreenDocument) {
         await browserAPI.offscreen.createDocument({
-          url: 'offscreen.html',
-          reasons: ['AUDIO_PLAYBACK'],
-          justification: 'Play timer completion sound'
+          url: "offscreen.html",
+          reasons: ["AUDIO_PLAYBACK"],
+          justification: "Play timer completion sound",
         });
       }
 
       browserAPI.runtime.sendMessage({
-        type: 'PLAY_SOUND',
-        soundUrl: browserAPI.runtime.getURL(`sounds/${soundName}.wav`)
+        type: "PLAY_SOUND",
+        soundUrl: browserAPI.runtime.getURL(`sounds/${soundName}.wav`),
       });
     } else {
       // Firefox fallback
-      browserAPI.notifications.create({
-        type: 'basic',
-        iconUrl: 'icons/icon-128.png',
-        title: 'Timer Phase Complete',
-        message: 'Phase switched',
-        silent: false
+      const audio = new Audio(
+        browserAPI.runtime.getURL(`sounds/${soundName}.wav`)
+      );
+      audio.play().catch((err) => {
+        console.error("Firefox audio playback failed:", err);
       });
     }
   } catch (error) {
-    console.error('Failed to play sound:', error);
+    console.error("Failed to play sound:", error);
   }
 }
 
@@ -148,8 +147,7 @@ setInterval(() => {
       timerData.lastUpdate = Date.now();
       console.log("Switching to break phase:", timerData.breakTime);
 
-      playSound('notification');
-
+      playSound("notification");
     } else if (timerData.phaseType === "break" && timerData.workTime > 0) {
       timerData.phaseType = "work";
       timerData.time = timerData.workTime;
@@ -157,8 +155,7 @@ setInterval(() => {
       timerData.lastUpdate = Date.now();
       console.log("Switching to work phase:", timerData.workTime);
 
-      playSound('notification');
-      
+      playSound("notification");
     } else {
       // No break/work time set, just stop
       timerData.isRunning = false;

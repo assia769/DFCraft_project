@@ -102,6 +102,7 @@ export default function Timer() {
             onClick={() => {
               setReset(true);
               setDesable(true);
+              setPause(false);
             }}
           />
         )}
