@@ -1,13 +1,4 @@
 
-
-
-
-
-
-
-
-
-
 const SuggestionButton = ({ setShowDialog }) => {
     function handleShowDial(){
         setShowDialog(true);
