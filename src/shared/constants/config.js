@@ -1,12 +1,8 @@
 
-export const config = {
-    api: {
-        url: import.meta.env.VITE_API_URL,
-    },
-    auth: {
-        clientId: import.meta.env.VITE_CLIENT_ID,
-        clientSecret: import.meta.env.VITE_CLIENT_SECRET,
-        authorizeUrl: import.meta.env.VITE_AUTHORIZE_URL,
-        accessTokenUrl: import.meta.env.VITE_ACCESS_TOKEN_URL,
-    }
-}
+const config = {
+    SoundLibraryApi: import.meta.env.VITE_SOUND_LIBRARY_API,
+    SoundBaseUrl: import.meta.env.VITE_SOUND_BASE_URL,
+    SoundRepoUrl: import.meta.env.VITE_SOUND_REPO_URL
+ };
+
+export default config;
