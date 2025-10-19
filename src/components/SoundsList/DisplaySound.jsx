@@ -1,131 +1,26 @@
-import { useEffect, useRef, useState } from "react";
+import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 
-export default function DisplaySound({ sound }) {
-  const [play, setPlay] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [isBuffering, setIsBuffering] = useState(false);
-  const [bufferProgress, setBufferProgress] = useState(0);
-  const [error, setError] = useState(null);
-  const [duration, setDuration] = useState({ min: 0, sec: 0 });
-  const audioRef = useRef(null);
+export default function DisplaySound({ sound, onClose }) {
 
-  useEffect(() => {
-    if (!sound?.file) return;
-
-    const audio = new Audio();
-    audio.src = sound.file;
-    audio.preload = "auto";
-    audio.loop = true;
-
-    audioRef.current = audio;
-
-    const handleLoadStart = () => {
-      console.log("⏳ Starting download...");
-      setLoading(true);
-      setError(null);
-    };
-
-    const handleLoadedMetadata = () => {
-      console.log(`📊 Duration: ${audio.duration}s`);
-      setDuration({
-        min: Math.floor(audio.duration / 60),
-        sec: Math.floor(audio.duration % 60),
-      });
-    };
-
-    const handleCanPlay = () => {
-      console.log("✅ Ready to play! (enough buffered)");
-      setLoading(false);
-      // Auto-play when ready
-      audio.play().catch((err) => {
-        console.error("Autoplay blocked:", err);
-        setError("Click play to start");
-      });
-    };
-
-    const handleCanPlayThrough = () => {
-      console.log("✅ Fully buffered!");
-    };
-
-    const handleWaiting = () => {
-      console.log("⏸️ Buffering...");
-      setIsBuffering(true);
-    };
-
-    const handlePlaying = () => {
-      console.log("▶️ Playing...");
-      setIsBuffering(false);
-      setPlay(true);
-    };
-
-    const handlePause = () => {
-      console.log("⏸️ Paused");
-      setPlay(false);
-    };
-
-    const handleProgress = () => {
-      if (audio.buffered.length > 0) {
-        const bufferedEnd = audio.buffered.end(audio.buffered.length - 1);
-        const duration = audio.duration;
-        if (duration > 0) {
-          const percent = (bufferedEnd / duration) * 100;
-          setBufferProgress(percent);
-          console.log(`📥 Buffered: ${percent.toFixed(1)}%`);
-        }
-      }
-    };
-
-    const handleError = (e) => {
-      console.error("❌ Audio error:", e);
-      setError("Failed to load audio");
-      setLoading(false);
-    };
-
-    // Attach all event listeners
-    audio.addEventListener("loadstart", handleLoadStart);
-    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-    audio.addEventListener("canplay", handleCanPlay); // ✅ Triggers after 3-5s
-    audio.addEventListener("canplaythrough", handleCanPlayThrough);
-    audio.addEventListener("waiting", handleWaiting);
-    audio.addEventListener("playing", handlePlaying);
-    audio.addEventListener("pause", handlePause);
-    audio.addEventListener("progress", handleProgress);
-    audio.addEventListener("error", handleError);
-
-    // ✅ Start loading
-    audio.load();
-
-    return () => {
-      audio.removeEventListener("loadstart", handleLoadStart);
-      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      audio.removeEventListener("canplay", handleCanPlay);
-      audio.removeEventListener("canplaythrough", handleCanPlayThrough);
-      audio.removeEventListener("waiting", handleWaiting);
-      audio.removeEventListener("playing", handlePlaying);
-      audio.removeEventListener("pause", handlePause);
-      audio.removeEventListener("progress", handleProgress);
-      audio.removeEventListener("error", handleError);
-
-      audio.pause();
-      audio.src = "";
-      audioRef.current = null;
-    };
-  }, [sound]);
+  const { isPlaying, currentSound, loading, buffering, bufferProgress, error, play, pause, stop } = useBackgroundAudio();
 
   const togglePlay = () => {
-    if (!audioRef.current) return;
-
-    if (play) {
-      audioRef.current.pause();
+    if (isPlaying && currentSound === sound.file) {
+      pause();
     } else {
-      audioRef.current.play().catch((err) => {
-        console.error("Play failed:", err);
-        setError("Failed to play");
-      });
+      play(sound.file);
     }
   };
 
-  if (!sound) return null;
+  const duration = {
+    min: Math.floor(sound.duration / 60) || 0,
+    sec: Math.floor(sound.duration % 60) || 0,
+  };
+
+  const isThisSoundPlaying = isPlaying && currentSound === sound.file;
+
+  if (!sound) return (<div className="bg-red-300 text-black">there is no audio</div>);
+
 
   return (
     <div className="absolute bottom-0 bg-blue-500 p-3 mb-4">
@@ -151,7 +46,7 @@ export default function DisplaySound({ sound }) {
               </div>
             )}
 
-        {isBuffering && !loading && (
+        {buffering && !loading && (
               <div className="flex items-center gap-2 text-orange-500">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-orange-500"></div>
                 <span>Buffering...</span>
@@ -165,13 +60,31 @@ export default function DisplaySound({ sound }) {
               <button
                 onClick={togglePlay}
                 className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-semibold disabled:bg-gray-400"
-                disabled={isBuffering}
+                disabled={buffering}
               >
-                {play ? "⏸️ Pause" : "▶️ Play"}
+                {isThisSoundPlaying  ? "⏸️ Pause" : "▶️ Play"}
               </button>
             )}
 
-        {play && (
+        {isThisSoundPlaying && (
+              <button
+                onClick={stop}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              >
+                ⏹️ Stop
+              </button>
+            )}
+
+        {onClose && (
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+              >
+                ✕
+              </button>
+            )}
+
+        {isThisSoundPlaying  && (
           <div className="mt-2 text-center">
             <span className="text-xs text-green-600 animate-pulse">
               🎵 Now Playing
