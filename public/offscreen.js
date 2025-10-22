@@ -29,8 +29,25 @@ browserAPI.runtime.onMessage.addListener((message) => {
 let notificationAudio = null;
 let ambientAudio = null;
 
-browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
+try {
+  chrome.runtime.sendMessage({ type: "OFFSCREEN_READY" }, (resp) => {
+    if (chrome.runtime.lastError) {
+      console.warn("[OFFSCREEN] OFFSCREEN_READY sendMessage lastError:", chrome.runtime.lastError.message);
+    } else {
+      console.log("[OFFSCREEN] OFFSCREEN_READY ack:", resp);
+    }
+  });
+} catch (e) {
+  console.error("[OFFSCREEN] sendMessage OFFSCREEN_READY error:", e);
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("🎧 Offscreen received:", message);
+
+  if (message.type === "PING_OFFSCREEN") {
+    sendResponse({ ok: true, ts: Date.now() });
+    return true;
+  }
 
   // ✅ Notification sounds (short, one-time)
   if (message.type === "PLAY_SOUND") {
@@ -68,14 +85,19 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
 function playNotificationSound(soundUrl) {
   console.log("🔔 Playing notification:", soundUrl);
   
-  if (notificationAudio) {
-    notificationAudio.pause();
+  try {
+    if (notificationAudio) {
+      notificationAudio.pause();
+      notificationAudio = null;
+    }
+    notificationAudio = new Audio(soundUrl);
+    notificationAudio.play().catch((err) => {
+      console.error("[OFFSCREEN] notification play failed:", err);
+      broadcastToBackground("error", { error: "Notification play failed" });
+    });
+  } catch (e) {
+    console.error("[OFFSCREEN] playNotificationSound exception:", e);
   }
-
-  notificationAudio = new Audio(soundUrl);
-  notificationAudio.play().catch((err) => {
-    console.error("Notification play failed:", err);
-  });
 }
 
 // Ambient sound (looping, with events)
@@ -164,11 +186,15 @@ function handleError(e) {
 }
 
 function handleProgress() {
-  if (ambientAudio.buffered.length > 0 && ambientAudio.duration) {
-    const bufferedEnd = ambientAudio.buffered.end(ambientAudio.buffered.length - 1);
-    const progress = (bufferedEnd / ambientAudio.duration) * 100;
-    console.log(`📥 Buffered: ${progress.toFixed(1)}%`);
-    broadcastToBackground("progress", { progress });
+  if (ambientAudio && ambientAudio.buffered.length > 0 && ambientAudio.duration) {
+    try {
+      const bufferedEnd = ambientAudio.buffered.end(ambientAudio.buffered.length - 1);
+      const progress = (bufferedEnd / ambientAudio.duration) * 100;
+      console.log(`[OFFSCREEN] progress: ${progress.toFixed(1)}%`);
+      broadcastToBackground("progress", { progress });
+    } catch (e) {
+      console.warn("[OFFSCREEN] progress read failed", e);
+    }
   }
 }
 
@@ -176,6 +202,7 @@ function pauseAmbientSound() {
   if (ambientAudio) {
     console.log("⏸️ Pausing ambient sound");
     ambientAudio.pause();
+    broadcastToBackground("paused");
   }
 }
 
@@ -192,15 +219,25 @@ function stopAmbientSound() {
 
 // Send status updates back to background script
 function broadcastToBackground(status, data = {}) {
-  browserAPI.runtime.sendMessage({
+ const message = {
     type: "AUDIO_STATUS_FROM_OFFSCREEN",
-    status: status,
-    isPlaying: ambientAudio && !ambientAudio.paused,
+    status,
+    isPlaying: !!ambientAudio && !ambientAudio.paused,
     currentSound: ambientAudio?.src || null,
-    ...data,
-  }).catch(() => {
-    // Ignore if background is not listening
-  });
+    ...data,  
+  };
+  console.log("[OFFSCREEN] broadcastToBackground:", message);
+  try {
+    chrome.runtime.sendMessage(message, (resp) => {
+      if (chrome.runtime.lastError) {
+        console.warn("[OFFSCREEN] sendMessage lastError:", chrome.runtime.lastError.message);
+      } else {
+        console.log("[OFFSCREEN] sendMessage response:", resp);
+      }
+    });
+  } catch (e) {
+    console.error("[OFFSCREEN] broadcast send error:", e);
+  }
 }
 
 console.log("🎧 Offscreen audio script loaded");

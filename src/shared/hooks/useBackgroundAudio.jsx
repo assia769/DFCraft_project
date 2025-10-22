@@ -7,7 +7,7 @@ export default function useBackgroundAudio() {
   const [loading, setLoading] = useState(false);
   const [buffering, setBuffering] = useState(false);
   const [bufferProgress, setBufferProgress] = useState(0);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); 
 
   useEffect(() => {
     const handleMessage = (m, sender, sendResponse) => {
@@ -18,6 +18,7 @@ export default function useBackgroundAudio() {
 
             switch(m.status){
                 case "ready":
+                    setIsPlaying(true);
                     setLoading(false);
                     setBuffering(false);
                     setError(null);
@@ -25,12 +26,14 @@ export default function useBackgroundAudio() {
                     break;
 
                 case "playing":
+                    setIsPlaying(true);
                     setLoading(false);
                     setBuffering(false);
                     setError(null);
                     break;
 
                 case "paused":
+                    setIsPlaying(false);
                     setLoading(false);
                     setBuffering(false);
                     setError(null);
@@ -64,57 +67,69 @@ export default function useBackgroundAudio() {
 
     browserAPI.runtime.onMessage.addListener(handleMessage);
 
-    browserAPI.runtime.sendMessage({type: "GET_AMBIENT_STATUS"}, (response) => {
-        if(response){
-            setIsPlaying(response.isPlaying);
-            setCurrentSound(response.currentSound);
-        }
-    });
+    const queryStatus = async () => {
+        const res = await browserAPI.runtime.sendMessage({type: "GET_AMBIENT_STATUS"});
+            if(res){
+                setIsPlaying(res.isPlaying);
+                setCurrentSound(res.currentSound);
+            }
+    };
+
+    queryStatus();
+
 
     return () => {
         browserAPI.runtime.onMessage.removeListener(handleMessage);
     }
   }, []);
 
-  const play = (soundUrl) => {
+  const play = async (soundUrl) => {
     setLoading(true);
     setError(null);
-    browserAPI.runtime.sendMessage(
-      { type: "PLAY_AMBIENT_SOUND", soundUrl },
-      (response) => {
-        if (response?.success) {
-          setIsPlaying(true);
-          setCurrentSound(soundUrl);
+    setCurrentSound(soundUrl)
+    try {
+        const response = await browserAPI.runtime.sendMessage(
+            { type: "PLAY_AMBIENT_SOUND", soundUrl }
+        );
+        if (!response?.success) {
+            setLoading(false);
+            setError(response?.error || "Failed to play");
         }
+    } catch (error) {
         setLoading(false);
-      }
-    );
+        setError("Failed to play");
+        console.error("Play error:", error);
+    }
   };
 
-  const pause = () => {
-    browserAPI.runtime.sendMessage(
-        {type: "PAUSE_AMBIENT_SOUND"},
-        (response) => {
-            if( response?.success){
-                setIsPlaying(false);
-            }
-        }
-    )
-  }
+  const pause = async () => {
+    setIsPlaying(false);
+    
+    try {
+        await browserAPI.runtime.sendMessage(
+            {type: "PAUSE_AMBIENT_SOUND"}
+        );
+        // Don't set isPlaying here - let the AUDIO_STATUS_UPDATE message handle it
+    } catch (error) {
+        console.error("Pause error:", error);
+    }
+};
 
-  const stop = () => {
-    browserAPI.runtime.sendMessage(
-        {type: "STOP_AMBIENT_SOUND"},
-        (response) => {
-            if( response?.success){
-                setIsPlaying(false);
-                setCurrentSound(null);
-                setBufferProgress(0);
-                setError(null);
-            }
+  const stop = async () => {
+    try {
+        const response = await browserAPI.runtime.sendMessage(
+            {type: "STOP_AMBIENT_SOUND"}
+        );
+        if(response?.success){
+            setIsPlaying(false);
+            setCurrentSound(null);
+            setBufferProgress(0);
+            setError(null);
         }
-    )
-  }
+    } catch (error) {
+        console.error("Stop error:", error);
+    }
+}
 
   return {
     isPlaying,
