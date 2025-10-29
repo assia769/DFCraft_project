@@ -17,7 +17,7 @@ export default function Body({ choosenPage }) {
       case "tracking":
         return <TrackingPage />;
       case "sounds":
-        return <SoundPlayerPage />;
+        return <SoundPlayerPage/>;
       case "distractionBlocking":
         return <DistractionBlockingPage />;
       case "settings":
