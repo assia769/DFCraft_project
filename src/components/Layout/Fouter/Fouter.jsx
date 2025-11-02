@@ -5,7 +5,7 @@ export default function Footer() {
   
   return (
     <footer className="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 mt-auto overflow-hidden">
-      {/* Effet de particules animées */}
+      {/* Effet de particules animées bien */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-10 left-10 w-2 h-2 bg-white rounded-full animate-pulse"></div>
         <div className="absolute top-20 right-20 w-3 h-3 bg-white rounded-full animate-pulse delay-75"></div>
