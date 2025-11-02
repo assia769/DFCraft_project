@@ -1,5 +1,7 @@
-export default function SoundPlayerPage() {
-    return (
-        <div>Sound Player</div>
-    )
+import ListByCategory from "../../components/SoundsList/ListByCategory";
+
+export default function SoundPlayerPage (){
+    return(<>
+        <ListByCategory />
+    </>)
 }
