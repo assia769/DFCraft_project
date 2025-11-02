@@ -9,8 +9,6 @@ export default function TodoPage() {
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
   const editorRef = useRef(null);
   const menuRef = useRef(null);
-  const [urlLogo, setUrlLogo] = useState("");
-
 
   const menuItems = [
     { type: 'header', label: 'TRANSFORMER EN' },
@@ -106,22 +104,6 @@ export default function TodoPage() {
       }
     }
   }, [selectedMenuIndex, showMenu]);
-
-  //curseur
-  useEffect(() => {
-    try {
-      if (browser && browser.runtime && browser.runtime.getURL) {
-        setUrlLogo(browser.runtime.getURL("icons/icon-16.png"));;
-      } else {
-        // Fallback for development or non-extension context
-        setUrlLogo("/icons/icon-16.png");
-      }
-    } catch (error) {
-      console.error("Extension API not available:", error);
-      setUrlLogo("/icons/icon-16.png");
-    }
-  }, []);
-
 
   const handleKeyDown = (e, todoId) => {
     if (e.key === '\\') {
@@ -222,11 +204,7 @@ export default function TodoPage() {
   let selectableIndex = -1;
 
   return (
-        <div
-            className="min-h-screen bg-white p-8"
-            style={{ cursor: `url(${urlLogo}), auto` }}
-            >
-
+    <div className="min-h-screen bg-white p-8" style={{ cursor: 'url(/icons/icon-48.png), auto' }}>
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-semibold mb-8 text-gray-800">Ma Todo List</h1>
         
