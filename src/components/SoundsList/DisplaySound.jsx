@@ -1,5 +1,5 @@
 import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
-
+import { CirclePlay, CirclePause, LoaderCircle, RotateCcw, RotateCw } from "lucide-react";
 export default function DisplaySound({ sound, onClose }) {
   const {
     isPlaying,
@@ -13,7 +13,6 @@ export default function DisplaySound({ sound, onClose }) {
     error,
     play,
     pause,
-    stop,
     seek,
   } = useBackgroundAudio();
 
@@ -65,85 +64,62 @@ export default function DisplaySound({ sound, onClose }) {
   console.log("  loading:", loading);
   console.log("  error:", error);
 
+  const soundplayicon = ()=>{
+    return loading || buffering ? <LoaderCircle color="#ffffff" className="animate-spin"/> :
+    (
+      isThisSoundPlaying ? <CirclePause color="#ffffff" className="w-10 h-10"/> : <CirclePlay color="#ffffff" className="w-10 h-10"/>
+    )
+  }
+
   if (!sound)
     return <div className="bg-red-300 text-black">there is no audio</div>;
 
   return (
-    <div className="absolute bottom-0 bg-blue-500 p-3 mb-4 z-100">
-      <div className="flex flex-col">
-        <div>{sound.title}</div>
+    <div className="absolute bottom-0 w-full bg-blue-500 p-5 z-100">
+      <div className="flex flex-row items-center">
+        <img src={sound.coverImage} alt={sound.title} className="w-16 h-16 rounded-lg mr-2 "></img>
         <div>
-          <input
-            type="range"
-            min="0"
-            max={duration}
-            value={currentTime}
-            onChange={(e) => seek(Number(e.target.value))}
-            disabled={!isPlaying && !seeking}
-            style={{
-              background: `linear-gradient(to right,
-                      #3b82f6 0%,
-                      #3b82f6 ${(currentTime / duration) * 100}%,
-                      #94a3b8 ${(currentTime / duration) * 100}%,
-                      #94a3b8 ${bufferProgress}%,
-                      #e2e8f0 ${bufferProgress}%,
-                      #e2e8f0 100%)`,
-            }}
-          />{" "}
-          <span className="text-sm text-white">{formatTime(currentTime)} </span>
-          <span className="text-sm text-white">{formatTime(duration)}</span>
+          <div className="text-white font-medium">{sound.title}</div>
+          <div className="text-gray-200">{sound.author}</div>
         </div>
-        {loading && (
-          <div className="flex items-center gap-2 text-gray-500">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
-            <span>Loading...</span>
-          </div>
-        )}
-
-        {buffering && !loading && (
-          <div className="flex items-center gap-2 text-orange-500">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-orange-500"></div>
-            <span>Buffering...</span>
-          </div>
-        )}
-        {error && <div className="text-red-500 text-sm">{error}</div>}
-
-        {!loading && !error && (
+      </div>
+        <input
+          type="range"
+          min="0"
+          max={duration}
+          value={currentTime}
+          onChange={(e) => seek(Number(e.target.value))}
+          disabled={!isPlaying && !seeking}
+          className="w-full mt-3"
+          style={{
+            background: `linear-gradient(to right,
+                    #3b82f6 0%,
+                    #3b82f6 ${(currentTime / duration) * 100}%,
+                    #94a3b8 ${(currentTime / duration) * 100}%,
+                    #94a3b8 ${bufferProgress}%,
+                    #e2e8f0 ${bufferProgress}%,
+                    #e2e8f0 100%)`,
+          }}
+        />
+        <div className="flex flex-row justify-between">
+          <span className="text-sm text-white ">{formatTime(currentTime)} </span>
+          <span className="text-sm text-white ">{formatTime(duration)}</span>
+        </div>
+        <div className="flex justify-center">
+          <button disabled={buffering}>
+            <RotateCcw color="#ffffff" />
+          </button>
           <button
             onClick={togglePlay}
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-semibold disabled:bg-gray-400"
+            className="mr-3 ml-3"
             disabled={buffering}
           >
-            {isThisSoundPlaying ? "⏸️ Pause" : "▶️ Play"}
+            {soundplayicon()}
           </button>
-        )}
-
-        {isThisSoundPlaying && (
-          <button
-            onClick={stop}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-          >
-            ⏹️ Stop
+          <button disabled={buffering}>
+            <RotateCw color="#ffffff" />
           </button>
-        )}
-
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-          >
-            ✕
-          </button>
-        )}
-
-        {isThisSoundPlaying && (
-          <div className="mt-2 text-center">
-            <span className="text-xs text-green-600 animate-pulse">
-              🎵 Now Playing
-            </span>
-          </div>
-        )}
+        </div>
       </div>
-    </div>
   );
 }

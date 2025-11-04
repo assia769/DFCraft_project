@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import config from "../../shared/constants/config";
 import DisplaySound from "./DisplaySound";
+import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 
 export default function SoundsList({ category }) {
   const catURL = config.SoundLibraryApi;
@@ -9,9 +10,12 @@ export default function SoundsList({ category }) {
   const [listenPage, setListenPage] = useState(false);
   const [listenSound, setListenSound] = useState(null);
 
+  const { play, isPlaying, currentSound } = useBackgroundAudio();
+  
   const handleListenSound = (s) => {
     setListenPage(true);
     setListenSound(s);
+    play(s.file);
   };
 
   useEffect(() => {
@@ -27,6 +31,34 @@ export default function SoundsList({ category }) {
 
     fetchSoundsByCat();
   }, []);
+  
+  
+  // Restore the currently playing sound when extension reopens
+  useEffect(() => {
+    if (currentSound && soundsByCat?.sounds && !listenSound) {
+      console.log("🔄 Restoring sound display for:", currentSound);
+      
+      // Normalize URL for comparison
+      const normalizeUrl = (url) => {
+        if (!url) return "";
+        return url.split("/").pop() || url;
+      };
+      
+      const currentFile = normalizeUrl(currentSound);
+      
+      // Find the sound that matches the currently playing sound
+      const playingSound = soundsByCat.sounds.find(s => {
+        const soundFile = normalizeUrl(s.file);
+        return soundFile === currentFile;
+      });
+      
+      if (playingSound) {
+        console.log("✅ Found playing sound:", playingSound.title);
+        setListenSound(playingSound);
+        setListenPage(true);
+      }
+    }
+  }, [currentSound, soundsByCat, listenSound]);
 
   if (!soundsByCat) {
     return <div className="p-4">Loading...</div>;
@@ -66,7 +98,7 @@ export default function SoundsList({ category }) {
   return (
     <>
       {soundslist}
-      <div className="flex justify-center">{listenPage && <DisplaySound sound={listenSound} />}</div>
+      <div className="flex justify-center">{(listenPage || isPlaying) && <DisplaySound sound={listenSound} />}</div>
     </>
   );
 }
