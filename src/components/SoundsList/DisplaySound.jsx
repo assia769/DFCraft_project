@@ -65,7 +65,7 @@ export default function DisplaySound({ sound, onClose }) {
   console.log("  error:", error);
 
   const soundplayicon = ()=>{
-    return loading || buffering ? <LoaderCircle color="#ffffff" className="animate-spin"/> :
+    return loading || buffering ? <LoaderCircle color="#ffffff" className="animate-spin w-10 h-10"/> :
     (
       isThisSoundPlaying ? <CirclePause color="#ffffff" className="w-10 h-10"/> : <CirclePlay color="#ffffff" className="w-10 h-10"/>
     )
@@ -75,7 +75,7 @@ export default function DisplaySound({ sound, onClose }) {
     return <div className="bg-red-300 text-black">there is no audio</div>;
 
   return (
-    <div className="absolute bottom-0 w-full bg-blue-500 p-5 z-100">
+    <div className="absolute bottom-0 w-full bg-blue-500 p-5 z-100 rounded-tl-2xl rounded-tr-2xl">
       <div className="flex flex-row items-center">
         <img src={sound.coverImage} alt={sound.title} className="w-16 h-16 rounded-lg mr-2 "></img>
         <div>

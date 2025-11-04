@@ -81,14 +81,14 @@ export default function SoundsList({ category }) {
     return (
       <>
         <div
-          className="flex item-center justify-start w-full"
+          className="flex flex-row item-center justify-start w-full p-2 hover:bg-blue-200 transition-all"
           key={s.id}
           onClick={() => handleListenSound(s)}
         >
-          <img src={s.coverImage} alt={s.title} className="w-10 h-10"></img>
-          <div>
-            <div>{s.title}</div>
-            <div>{s.duration / 60}</div>
+          <img src={s.coverImage} alt={s.title} className="w-10 h-10 rounded-md"></img>
+          <div className="ml-1">
+            <div className="text-sm font-medium">{s.title}</div>
+            <div className="text-sm text-gray-600">{s.duration / 60}</div>
           </div>
         </div>
       </>
