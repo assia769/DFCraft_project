@@ -17,6 +17,9 @@
     "package:firefox": "cd dist/firefox && powershell Compress-Archive -Path * -DestinationPath ../../dfcraft-firefox.zip"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.5",
     "axios": "^1.12.2",
     "lucide-react": "^0.544.0",
     "react": "^19.1.1",

@@ -3,6 +3,8 @@ import axios from "axios";
 import config from "../../shared/constants/config";
 import DisplaySound from "./DisplaySound";
 import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
+import { Skeleton } from "@mui/material";
+
 
 export default function SoundsList({ category }) {
   const catURL = config.SoundLibraryApi;
@@ -18,6 +20,7 @@ export default function SoundsList({ category }) {
     play(s.file);
   };
 
+  // Fetch sounds by category
   useEffect(() => {
     const fetchSoundsByCat = async () => {
       try {
@@ -61,7 +64,38 @@ export default function SoundsList({ category }) {
   }, [currentSound, soundsByCat, listenSound]);
 
   if (!soundsByCat) {
-    return <div className="p-4">Loading...</div>;
+    return (
+      <div className="ml-2">
+        <div className="flex flex-row items-center">
+          <Skeleton variant="rounded" width={40} height={40} />
+          <div className="ml-2">
+            <Skeleton width={100}/>
+            <Skeleton width={40}/>
+          </div>
+        </div>
+        <div className="flex flex-row items-center">
+          <Skeleton variant="rounded" width={40} height={40} />
+          <div className="ml-2">
+            <Skeleton width={100}/>
+            <Skeleton width={40}/>
+          </div>
+        </div>
+        <div className="flex flex-row items-center">
+          <Skeleton variant="rounded" width={40} height={40} />
+          <div className="ml-2">
+            <Skeleton width={100}/>
+            <Skeleton width={40}/>
+          </div>
+        </div>
+        <div className="flex flex-row items-center">
+          <Skeleton variant="rounded" width={40} height={40} />
+          <div className="ml-2">
+            <Skeleton width={100}/>
+            <Skeleton width={40}/>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // ✅ RETURN EARLY IF NO SOUNDS PROPERTY
@@ -71,7 +105,7 @@ export default function SoundsList({ category }) {
 
   const { sounds } = soundsByCat;
 
-  const filteredSounds = sounds.filter((s) => s.category === category);
+  const filteredSounds = category === "all" ? sounds : sounds.filter((s) => s.category === category);
 
   if (filteredSounds.length === 0) {
     return <div className="p-4">No sounds in "{category}"</div>;
@@ -96,9 +130,9 @@ export default function SoundsList({ category }) {
   });
 
   return (
-    <>
+    <div>
       {soundslist}
       <div className="flex justify-center">{(listenPage || isPlaying) && <DisplaySound sound={listenSound} />}</div>
-    </>
+    </div>
   );
 }

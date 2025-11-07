@@ -1,5 +1,7 @@
 import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 import { CirclePlay, CirclePause, LoaderCircle, RotateCcw, RotateCw } from "lucide-react";
+import "./DisplaySound.css";
+
 export default function DisplaySound({ sound, onClose }) {
   const {
     isPlaying,
@@ -75,7 +77,7 @@ export default function DisplaySound({ sound, onClose }) {
     return <div className="bg-red-300 text-black">there is no audio</div>;
 
   return (
-    <div className="absolute bottom-0 w-full bg-blue-500 p-5 z-100 rounded-tl-2xl rounded-tr-2xl">
+    <div className="fixed bottom-0 w-full bg-blue-500 p-5 z-100 rounded-tl-2xl rounded-tr-2xl BtoT">
       <div className="flex flex-row items-center">
         <img src={sound.coverImage} alt={sound.title} className="w-16 h-16 rounded-lg mr-2 "></img>
         <div>

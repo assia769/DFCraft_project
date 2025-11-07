@@ -1,0 +1,12 @@
+@keyframes BtoT{
+    0%{
+        transform: translateY(200px);
+    }
+    100%{
+        transform: translateY(0px);
+    }
+}
+
+.BtoT{
+    animation: BtoT 0.5s ease-in-out forwards;
+}
