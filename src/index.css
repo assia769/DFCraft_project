@@ -1,4 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Concert+One&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+body * {
+  font-family: 'Concert One', cursive;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    font-family: 'Concert One', cursive;
+    background-color: #F2F2F2; /* light background */
+    min-height: 100vh;
+  }
+  
+  /* Dark mode */
+  html.dark,
+  html.dark body,
+  html.dark #root {
+    background-color: #161616; /* dark background */
+  }
+}

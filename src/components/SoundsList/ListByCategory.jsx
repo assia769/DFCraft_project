@@ -1,55 +1,34 @@
 import axios from "axios";
 import SoundsList from "./SoundsList";
 import { useEffect, useState } from "react";
-import config from "../../shared/constants/config";
 import { Skeleton } from "@mui/material";
+import { ListFilter } from "lucide-react";
+import DisplayCatigories from "./DisplayCatigories";
 
 export default function ListByCategory() {
-  const catURL = config.SoundLibraryApi;
+  
   const [category, setCategory] = useState("all");
   const [categories, setCategories] = useState([]);
-
-  const selectedCat = (c) => {
-    return c === category ? "text-white bg-blue-500 mr-1 rounded-md hover:bg-blue-700" : "text-blue-500 bg-gray-100 mr-1 rounded-md hover:bg-blue-700 hover:text-white"
-  }
-  
-  useEffect(() => {
-    const featchCategories = async () => {
-      try {
-        const res = await axios.get(catURL);
-        const data = res.data.categories;
-        console.log(data)
-        setCategories([{id:"all", name:"All"}, ...data]); 
-      } catch (err) {
-        console.error(err)
-      }
-    }
-    featchCategories();
-  }, []);
-
-  const listCat = categories.length > 0 ? (
-    categories.map((c) => {
-      return (
-        <div
-          key={c.id}
-          onClick={() => setCategory(c.id)}
-          className={`p-2 whitespace-nowrap transition font-medium ${selectedCat(c.id)}`}
-        >
-          {c.name}
-        </div>
-      );
-    })
-  ):(<div className="flex flex-row items-center p2">
-      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
-      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
-      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
-    </div>
-  );
+  const [showCats, setShowCats] = useState(false);
 
   return (
-    <>
-      <div className="flex items-center overflow-x-auto whitespace-nowrap p-2">{listCat}</div>
+    <div className="bg-light dark:bg-dark">
+      <div className="flex flex-row justify-between items-center mb-2">
+        <input type="text" placeholder="Search for sound, Author..." className="p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder w-full ml-6" />
+        <button
+          onClick={() => { setShowCats(true);}}
+          className="transition-colors relative mr-6"
+          aria-label="Menu"
+        >
+          <ListFilter className="w-6 h-6 text-lightElements dark:text-darkElements"/>
+        </button>
+      </div>
       <SoundsList category={category} />
-    </>
+      {
+        showCats
+        &&
+        <DisplayCatigories category={category} categories={categories} setCategory={setCategory} setCategories={setCategories} setShowCats={setShowCats}/>
+      }
+    </div>
   );
 }

@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import { ThemeProvider } from './shared/context/ThemeContext.jsx';
 
 // Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,7 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const root = createRoot(rootElement);
     root.render(
       <StrictMode>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </StrictMode>
     );
   } else {
@@ -27,7 +30,9 @@ if (rootElement) {
   const root = createRoot(rootElement);
   root.render(
     <StrictMode>
-      <App />
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
     </StrictMode>
   );
 }

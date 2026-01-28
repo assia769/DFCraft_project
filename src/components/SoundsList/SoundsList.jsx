@@ -87,7 +87,7 @@ export default function SoundsList({ category }) {
             <Skeleton width={40}/>
           </div>
         </div>
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center ">
           <Skeleton variant="rounded" width={40} height={40} />
           <div className="ml-2">
             <Skeleton width={100}/>
@@ -98,7 +98,6 @@ export default function SoundsList({ category }) {
     );
   }
 
-  // ✅ RETURN EARLY IF NO SOUNDS PROPERTY
   if (!soundsByCat.sounds) {
     return <div className="p-4">No sounds data</div>;
   }
@@ -110,22 +109,31 @@ export default function SoundsList({ category }) {
   if (filteredSounds.length === 0) {
     return <div className="p-4">No sounds in "{category}"</div>;
   }
+  
+  const formatTime = (s) => {
+    const min = Math.floor(s / 60) || 0;
+    const sec = Math.floor(s % 60) || 0;
+    return `${min}:${sec.toString().padStart(2, "0")}`;
+  };
 
   const soundslist = filteredSounds.map((s) => {
     return (
-      <>
         <div
-          className="flex flex-row item-center justify-start w-full p-2 hover:bg-blue-200 transition-all"
+          className="group flex flex-row justify-between items-center w-ful px-4 py-1 rounded-md m-2  bg-light dark:bg-dark hover:bg-lightElements  dark:hover:bg-darkElements transition-all"
           key={s.id}
           onClick={() => handleListenSound(s)}
         >
-          <img src={s.coverImage} alt={s.title} className="w-10 h-10 rounded-md"></img>
-          <div className="ml-1">
-            <div className="text-sm font-medium">{s.title}</div>
-            <div className="text-sm text-gray-600">{s.duration / 60}</div>
+          <div className="flex flex-row">
+            <img src={s.coverImage} alt={s.title} className="w-10 h-10 rounded-md flex flex-row justify-between items-center"></img>
+            <div className="ml-1">
+              <div className="text-md font-medium text-lightList dark:text-darkElements group-hover:text-light dark:group-hover:text-dark">{s.title}</div>
+              <div className="text-xs text-lightElements dark:text-darkList group-hover:text-light dark:group-hover:text-dark">{s.author}</div>
+            </div>
+          </div>
+          <div className="ml-2">
+            <div className="text-xs font-medium text-lightElements dark:text-darkList group-hover:text-light dark:group-hover:text-dark">{formatTime(s.duration)}</div>
           </div>
         </div>
-      </>
     );
   });
 

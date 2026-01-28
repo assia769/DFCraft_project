@@ -1,4 +1,4 @@
-import { Menu, X, Home, ListTodo, Volume2, BarChart3, Shield, Settings } from "lucide-react";
+import { Menu, X, Home, AudioLines, BarChart3, Shield, Settings, ListChecks } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function Header({ setChoosenPage }) {
@@ -9,25 +9,25 @@ export default function Header({ setChoosenPage }) {
   useEffect(() => {
     try {
       if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.getURL) {
-        setUrlLogo(browser.runtime.getURL("icons/icon-16.png"));
+        setUrlLogo(browser.runtime.getURL("icons/LOGO.png"));
       } else {
-        setUrlLogo("/icons/icon-16.png");
+        setUrlLogo("icons/LOGO.png");
       }
     } catch (error) {
       console.error("Extension API not available:", error);
-      setUrlLogo("/icons/icon-16.png");
+      setUrlLogo("icons/LOGO.png");
     }
   }, []);
 
   const menuItems = [
-    { id: "home", label: "Accueil", icon: Home },
-    { id: "todo", label: "Tâches", icon: ListTodo },
-    { id: "sounds", label: "Sons", icon: Volume2 },
-    { id: "tracking", label: "Suivi", icon: BarChart3 },
-    { id: "distractionBlocking", label: "Blocage", icon: Shield },
-    { id: "settings", label: "Paramètres", icon: Settings },
+    { id: "home", label: "Home", icon: Home },
+    { id: "sounds", label: "Sounds", icon: AudioLines },
+    { id: "todo", label: "Tasks", icon: ListChecks },
+    { id: "distractionBlocking", label: "Block pages", icon: Shield },
+    { id: "tracking", label: "Progress", icon: BarChart3 },
+    { id: "settings", label: "Settings", icon: Settings },
   ];
-
+  
   const handleNavigation = (pageId) => {
     setActiveRoute(pageId);
     setChoosenPage(pageId);
@@ -36,26 +36,22 @@ export default function Header({ setChoosenPage }) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div className="px-4 py-3">
+      <header className="sticky top-0 z-50 bg-light dark:bg-dark">
+        <div className="px-3 py-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleNavigation("home")}>
-              <img src={urlLogo} alt="Logo" className="w-6 h-6" />
-              <div>
-                <h3 className="font-bold text-gray-800 text-lg leading-none">DFCraft</h3>
-                <p className="text-xs text-gray-500">Focus Timer</p>
-              </div>
+              <img src={urlLogo} alt="Logo" className="w-[40%] h-auto" />
             </div>
 
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
+              className="p-2 transition-colors relative"
               aria-label="Menu"
             >
               {showMenu ? (
-                <X className="w-6 h-6 text-gray-700" />
+                <X className="w-6 h-6  text-lightElements dark:text-darkElements" />
               ) : (
-                <Menu className="w-6 h-6 text-gray-700" />
+                <Menu className="w-6 h-6 text-lightElements dark:text-darkElements" />
               )}
             </button>
           </div>
@@ -64,11 +60,11 @@ export default function Header({ setChoosenPage }) {
         {showMenu && (
           <>
             <div 
-              className="fixed inset-0 bg-black bg-opacity-20 backdrop-blur-sm"
+              className="fixed inset-0 bg-light/20 dark:bg-dark/20 backdrop-blur-sm"
               onClick={() => setShowMenu(false)}
             />
             
-            <div className="absolute right-4 top-16 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden animate-slideIn">
+            <div className="absolute right-4 top-16 w-44 bg-lightElements dark:bg-darkElements rounded-2xl shadow-2xl overflow-hidden animate-slideIn">
               <div className="p-2">
                 {menuItems.map((item) => {
                   const Icon = item.icon;
@@ -78,10 +74,10 @@ export default function Header({ setChoosenPage }) {
                     <button
                       key={item.id}
                       onClick={() => handleNavigation(item.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all hover:bg-lightList dark:hover:bg-darkList text-light dark:text-dark ${
                         isActive
-                          ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md"
-                          : "hover:bg-gray-100 text-gray-700"
+                          ? " bg-lightList dark:bg-darkList"
+                          : "bg-lightElements dark:bg-darkElements"
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -89,12 +85,6 @@ export default function Header({ setChoosenPage }) {
                     </button>
                   );
                 })}
-              </div>
-              
-              <div className="border-t border-gray-200 px-4 py-3 bg-gray-50">
-                <p className="text-xs text-gray-500 text-center">
-                  Version 1.0.0
-                </p>
               </div>
             </div>
           </>

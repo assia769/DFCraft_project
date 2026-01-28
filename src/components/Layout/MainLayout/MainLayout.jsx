@@ -12,7 +12,6 @@ export default function MainLayout() {
       <TimerProvider>
         <Header setChoosenPage={setChoosenPage} />
         <Body choosenPage={choosenPage} />
-        <Footer />
       </TimerProvider>
     </>
   );
