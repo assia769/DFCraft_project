@@ -6,7 +6,7 @@ import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 import { Skeleton } from "@mui/material";
 
 
-export default function SoundsList({ category }) {
+export default function SoundsList({ category, searchSound }) {
   const catURL = config.SoundLibraryApi;
   const [soundsByCat, setSoundsByCat] = useState(null);
   const [listenPage, setListenPage] = useState(false);
@@ -33,7 +33,7 @@ export default function SoundsList({ category }) {
     };
 
     fetchSoundsByCat();
-  }, []);
+  }, [catURL]);
   
   
   // Restore the currently playing sound when extension reopens
@@ -104,11 +104,13 @@ export default function SoundsList({ category }) {
 
   const { sounds } = soundsByCat;
 
-  const filteredSounds = category === "all" ? sounds : sounds.filter((s) => s.category === category);
-
-  if (filteredSounds.length === 0) {
+  const filteredSoundsByCat = category === "all" ? sounds : sounds.filter((s) => ((s.category === category)));
+  
+  if (filteredSoundsByCat.length === 0) {
     return <div className="p-4">No sounds in "{category}"</div>;
   }
+
+  const filteredSounds = filteredSoundsByCat.filter((s) => (s.title.toLowerCase().includes(searchSound.toLowerCase())) || (s.author.toLowerCase().includes(searchSound.toLowerCase())));
   
   const formatTime = (s) => {
     const min = Math.floor(s / 60) || 0;
@@ -139,7 +141,13 @@ export default function SoundsList({ category }) {
 
   return (
     <div>
-      {soundslist}
+      {
+        soundslist.length > 0
+        ? soundslist
+        : <div className="text-lightElements dark:text-darkElements text-4xl m-6">
+            No such sound with {searchSound ? searchSound : "this"} or from {searchSound ? searchSound : "this"}.
+          </div>
+      }
       <div className="flex justify-center">{(listenPage || isPlaying) && <DisplaySound sound={listenSound} />}</div>
     </div>
   );

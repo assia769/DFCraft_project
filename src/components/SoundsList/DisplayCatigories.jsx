@@ -24,7 +24,7 @@ export default function DisplayCatigories({ category, categories, setCategory ,s
   
   
   const selectedCat = (c) => {
-    return c === category ? "text-lightlist dark:text-darkList bg-lightElements dark:bg-darkElements rounded-3xl p-2 min-w-fit" : "text-lightElements dark:text-darkSelectedBar bg-lightList dark:bg-darkList rounded-3xl p-2 min-w-fit  hover:shadow-lg hover: shadow-black transition-all"
+    return c === category ? "text-light dark:text-dark bg-lightElements dark:bg-darkElements rounded-3xl py-1 px-3 min-w-fit" : "text-light dark:text-dark bg-lightList dark:bg-darkList rounded-3xl py-1 px-3 min-w-fit  hover:shadow-lg hover: shadow-black transition-all"
   }
 
   const listCat = categories.length > 0 ? (
@@ -33,7 +33,7 @@ export default function DisplayCatigories({ category, categories, setCategory ,s
         <div
           key={c.id}
           onClick={() => setCategory(c.id)}
-          className={"flex flex-row justify-start items-center select-none cursor-pointer transition-all" + selectedCat(c.id)}
+          className={"flex flex-row justify-start items-center select-none cursor-pointer transition-all " + selectedCat(c.id)}
         >
           {c.name}
         </div>
@@ -52,7 +52,7 @@ export default function DisplayCatigories({ category, categories, setCategory ,s
       onClick={() => setShowCats(false)}
     />
     <div className='fixed bottom-0 rounded-t-3xl w-full bg-lightElements dark:bg-darkElements p-6 BtoT'>
-      <h1 className='text-3xl mb-4'>Categories:</h1>
+      <h1 className='text-3xl mb-4 text-light dark:text-dark'>Categories:</h1>
       <div className='flex flex-wrap gap-2'>
         {listCat}
       </div>

@@ -63,26 +63,28 @@ export default function DisplaySound({ sound, onClose }) {
   console.log("🎵 DisplaySound render:");
   console.log("  isPlaying:", isPlaying);
   console.log("  isThisSoundPlaying:", isThisSoundPlaying);
+  console.log("  current buffering progress:", bufferProgress);
   console.log("  loading:", loading);
   console.log("  error:", error);
 
   const soundplayicon = ()=>{
-    return loading || buffering ? <LoaderCircle color="#ffffff" className="animate-spin w-10 h-10"/> :
-    (
-      isThisSoundPlaying ? <CirclePause color="#ffffff" className="w-10 h-10"/> : <CirclePlay color="#ffffff" className="w-10 h-10"/>
-    )
+    return loading || buffering
+      ? <LoaderCircle className="animate-spin w-10 h-10 text-light dark:text-dark" />
+      : (
+          isThisSoundPlaying ? <CirclePause className="w-10 h-10 text-light dark:text-dark"/> : <CirclePlay className="w-10 h-10 text-light dark:text-dark"/>
+        )
   }
 
   if (!sound)
     return <div className="bg-red-300 text-black">there is no audio</div>;
 
   return (
-    <div className="fixed bottom-0 w-full bg-blue-500 p-5 z-100 rounded-tl-2xl rounded-tr-2xl BtoT">
+    <div className="fixed bottom-0 w-full bg-lightElements dark:bg-darkElements p-5 z-100 rounded-tl-2xl rounded-tr-2xl BtoT">
       <div className="flex flex-row items-center">
         <img src={sound.coverImage} alt={sound.title} className="w-16 h-16 rounded-lg mr-2 "></img>
         <div>
-          <div className="text-white font-medium">{sound.title}</div>
-          <div className="text-gray-200">{sound.author}</div>
+          <div className="text-light dark:text-dark font-medium">{sound.title}</div>
+          <div className="text-gray-300 dark:text-gray-800">{sound.author}</div>
         </div>
       </div>
         <input
@@ -95,21 +97,19 @@ export default function DisplaySound({ sound, onClose }) {
           className="w-full mt-3"
           style={{
             background: `linear-gradient(to right,
-                    #3b82f6 0%,
-                    #3b82f6 ${(currentTime / duration) * 100}%,
-                    #94a3b8 ${(currentTime / duration) * 100}%,
+                    #3b8672 0%,
+                    #3b22f6 ${(currentTime / duration) * 100}%,
                     #94a3b8 ${bufferProgress}%,
-                    #e2e8f0 ${bufferProgress}%,
                     #e2e8f0 100%)`,
           }}
         />
         <div className="flex flex-row justify-between">
-          <span className="text-sm text-white ">{formatTime(currentTime)} </span>
-          <span className="text-sm text-white ">{formatTime(duration)}</span>
+          <span className="text-sm text-light dark:text-dark ">{formatTime(currentTime)} </span>
+          <span className="text-sm text-light dark:text-dark ">{formatTime(duration)}</span>
         </div>
         <div className="flex justify-center">
           <button disabled={buffering}>
-            <RotateCcw color="#ffffff" />
+            <RotateCcw className="text-light dark:text-dark" />
           </button>
           <button
             onClick={togglePlay}
@@ -119,7 +119,7 @@ export default function DisplaySound({ sound, onClose }) {
             {soundplayicon()}
           </button>
           <button disabled={buffering}>
-            <RotateCw color="#ffffff" />
+            <RotateCw className="text-light dark:text-dark" />
           </button>
         </div>
       </div>
