@@ -1,15 +1,7 @@
-// Traductions GLOBALES pour toute l'extension DFCraft
+// Traductions uniquement pour la page Settings
 
-export const translations = {
+export const settingsTranslations = {
   fr: {
-    // Menu (Header)
-    home: 'Accueil',
-    sounds: 'Sons',
-    tasks: 'Tâches',
-    blockPages: 'Bloquer pages',
-    progress: 'Progression',
-    settings: 'Paramètres',
-    
     // Général
     save: 'Enregistrer',
     cancel: 'Annuler',
@@ -17,7 +9,7 @@ export const translations = {
     confirm: 'Confirmer',
     
     // Settings
-    settingsTitle: 'Paramètres',
+    settings: 'Paramètres',
     generalSettings: 'Paramètres Généraux',
     appearanceSettings: 'Apparence',
     advancedSettings: 'Avancé',
@@ -25,21 +17,22 @@ export const translations = {
     // Notifications
     notifications: 'Notifications',
     notificationsDesc: 'Recevoir des notifications de l\'extension',
+    enableNotifications: 'Activer les notifications',
     
-    // Langue
-    language: 'Langue',
-    languageDesc: 'Langue d\'affichage de l\'extension',
+    // Langue (pour Settings seulement)
+    settingsLanguage: 'Langue des paramètres',
+    settingsLanguageDesc: 'Langue d\'affichage de cette page uniquement',
     french: 'Français',
-    english: 'English',
+    english: 'Anglais',
     arabic: 'العربية',
     
     // Police
     font: 'Police',
     fontDesc: 'Choisir la police de caractères',
-    fontConcert: 'Concert One (Par défaut)',
-    fontArial: 'Arial (Moderne)',
-    fontTimes: 'Times New Roman (Classique)',
-    fontCourier: 'Courier New (Monospace)',
+    fontConcert: 'Concert One',
+    fontSans: 'Sans Serif',
+    fontSerif: 'Serif',
+    fontMono: 'Monospace',
     
     // Taille
     fontSize: 'Taille du texte',
@@ -62,11 +55,14 @@ export const translations = {
     darkMode: 'Mode sombre',
     darkModeDesc: 'Basculer entre le mode clair et sombre',
     
+    // Animations
+    animations: 'Animations',
+    animationsDesc: 'Activer les transitions et animations (recommandé)',
+    
     // Messages
     settingsSaved: 'Paramètres sauvegardés !',
     settingsReset: 'Paramètres réinitialisés',
     confirmReset: 'Êtes-vous sûr de vouloir réinitialiser tous les paramètres ?',
-    resetWarning: 'Cette action réinitialisera tous vos paramètres aux valeurs par défaut.',
     
     // Avancé
     exportSettings: 'Exporter les paramètres',
@@ -77,31 +73,9 @@ export const translations = {
     clearButton: 'Effacer',
     storageInfo: 'Informations de stockage',
     storageInfoDesc: 'Les paramètres sont sauvegardés localement sur votre appareil',
-    
-    // TodoList
-    myTasks: 'Mes Tâches',
-    addTask: 'Ajouter une tâche',
-    noTasks: 'Aucune tâche',
-    
-    // Preview
-    previewTitle: 'Aperçu des paramètres',
-    previewFont: 'Police',
-    previewSize: 'Taille',
-    previewTheme: 'Thème',
-    previewMode: 'Mode',
-    light: 'Clair',
-    dark: 'Sombre',
   },
   
   en: {
-    // Menu (Header)
-    home: 'Home',
-    sounds: 'Sounds',
-    tasks: 'Tasks',
-    blockPages: 'Block pages',
-    progress: 'Progress',
-    settings: 'Settings',
-    
     // General
     save: 'Save',
     cancel: 'Cancel',
@@ -109,7 +83,7 @@ export const translations = {
     confirm: 'Confirm',
     
     // Settings
-    settingsTitle: 'Settings',
+    settings: 'Settings',
     generalSettings: 'General Settings',
     appearanceSettings: 'Appearance',
     advancedSettings: 'Advanced',
@@ -117,10 +91,11 @@ export const translations = {
     // Notifications
     notifications: 'Notifications',
     notificationsDesc: 'Receive extension notifications',
+    enableNotifications: 'Enable notifications',
     
-    // Language
-    language: 'Language',
-    languageDesc: 'Extension display language',
+    // Language (for Settings only)
+    settingsLanguage: 'Settings language',
+    settingsLanguageDesc: 'Display language for this page only',
     french: 'Français',
     english: 'English',
     arabic: 'العربية',
@@ -128,10 +103,10 @@ export const translations = {
     // Font
     font: 'Font',
     fontDesc: 'Choose font family',
-    fontConcert: 'Concert One (Default)',
-    fontArial: 'Arial (Modern)',
-    fontTimes: 'Times New Roman (Classic)',
-    fontCourier: 'Courier New (Monospace)',
+    fontConcert: 'Concert One',
+    fontSans: 'Sans Serif',
+    fontSerif: 'Serif',
+    fontMono: 'Monospace',
     
     // Size
     fontSize: 'Text Size',
@@ -154,11 +129,14 @@ export const translations = {
     darkMode: 'Dark Mode',
     darkModeDesc: 'Toggle between light and dark mode',
     
+    // Animations
+    animations: 'Animations',
+    animationsDesc: 'Enable transitions and animations (recommended)',
+    
     // Messages
     settingsSaved: 'Settings saved!',
     settingsReset: 'Settings reset',
     confirmReset: 'Are you sure you want to reset all settings?',
-    resetWarning: 'This action will reset all your settings to default values.',
     
     // Advanced
     exportSettings: 'Export Settings',
@@ -169,31 +147,9 @@ export const translations = {
     clearButton: 'Clear',
     storageInfo: 'Storage Information',
     storageInfoDesc: 'Settings are saved locally on your device',
-    
-    // TodoList
-    myTasks: 'My Tasks',
-    addTask: 'Add a task',
-    noTasks: 'No tasks',
-    
-    // Preview
-    previewTitle: 'Settings Preview',
-    previewFont: 'Font',
-    previewSize: 'Size',
-    previewTheme: 'Theme',
-    previewMode: 'Mode',
-    light: 'Light',
-    dark: 'Dark',
   },
   
   ar: {
-    // القائمة (الرأس)
-    home: 'الرئيسية',
-    sounds: 'الأصوات',
-    tasks: 'المهام',
-    blockPages: 'حظر الصفحات',
-    progress: 'التقدم',
-    settings: 'الإعدادات',
-    
     // عام
     save: 'حفظ',
     cancel: 'إلغاء',
@@ -201,7 +157,7 @@ export const translations = {
     confirm: 'تأكيد',
     
     // الإعدادات
-    settingsTitle: 'الإعدادات',
+    settings: 'الإعدادات',
     generalSettings: 'الإعدادات العامة',
     appearanceSettings: 'المظهر',
     advancedSettings: 'متقدم',
@@ -209,10 +165,11 @@ export const translations = {
     // الإشعارات
     notifications: 'الإشعارات',
     notificationsDesc: 'تلقي إشعارات الامتداد',
+    enableNotifications: 'تفعيل الإشعارات',
     
-    // اللغة
-    language: 'اللغة',
-    languageDesc: 'لغة عرض الامتداد',
+    // اللغة (للإعدادات فقط)
+    settingsLanguage: 'لغة الإعدادات',
+    settingsLanguageDesc: 'لغة العرض لهذه الصفحة فقط',
     french: 'Français',
     english: 'English',
     arabic: 'العربية',
@@ -220,10 +177,10 @@ export const translations = {
     // الخط
     font: 'الخط',
     fontDesc: 'اختر نوع الخط',
-    fontConcert: 'Concert One (افتراضي)',
-    fontArial: 'Arial (حديث)',
-    fontTimes: 'Times New Roman (كلاسيكي)',
-    fontCourier: 'Courier New (أحادي المسافة)',
+    fontConcert: 'Concert One',
+    fontSans: 'Sans Serif',
+    fontSerif: 'Serif',
+    fontMono: 'Monospace',
     
     // الحجم
     fontSize: 'حجم النص',
@@ -246,11 +203,14 @@ export const translations = {
     darkMode: 'الوضع الداكن',
     darkModeDesc: 'التبديل بين الوضع الفاتح والداكن',
     
+    // الرسوم المتحركة
+    animations: 'الرسوم المتحركة',
+    animationsDesc: 'تفعيل الانتقالات والرسوم المتحركة (موصى به)',
+    
     // الرسائل
     settingsSaved: 'تم حفظ الإعدادات!',
     settingsReset: 'تمت إعادة تعيين الإعدادات',
     confirmReset: 'هل أنت متأكد من إعادة تعيين جميع الإعدادات؟',
-    resetWarning: 'ستؤدي هذه العملية إلى إعادة تعيين جميع إعداداتك إلى القيم الافتراضية.',
     
     // متقدم
     exportSettings: 'تصدير الإعدادات',
@@ -261,27 +221,13 @@ export const translations = {
     clearButton: 'مسح',
     storageInfo: 'معلومات التخزين',
     storageInfoDesc: 'يتم حفظ الإعدادات محليًا على جهازك',
-    
-    // قائمة المهام
-    myTasks: 'مهامي',
-    addTask: 'إضافة مهمة',
-    noTasks: 'لا توجد مهام',
-    
-    // معاينة
-    previewTitle: 'معاينة الإعدادات',
-    previewFont: 'الخط',
-    previewSize: 'الحجم',
-    previewTheme: 'الموضوع',
-    previewMode: 'الوضع',
-    light: 'فاتح',
-    dark: 'داكن',
   },
 };
 
-// Hook pour utiliser les traductions
-export function useTranslation(language = 'fr') {
+// Hook pour utiliser les traductions (uniquement pour Settings)
+export function useSettingsTranslation(language = 'fr') {
   const t = (key) => {
-    return translations[language]?.[key] || translations['fr'][key] || key;
+    return settingsTranslations[language]?.[key] || settingsTranslations['fr'][key] || key;
   };
   
   return { t };

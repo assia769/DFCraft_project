@@ -33,7 +33,7 @@ export default function GeneralSettings() {
         />
       </SettingItem>
 
-      {/* Language */}
+      {/* Language (GLOBAL) */}
       <SettingItem
         icon={Globe}
         title={t('language')}
@@ -43,18 +43,6 @@ export default function GeneralSettings() {
           value={settings.language}
           onChange={(value) => updateSetting('language', value)}
           options={languageOptions}
-        />
-      </SettingItem>
-
-      {/* Auto-save */}
-      <SettingItem
-        icon={Bell}
-        title={t('autoSave')}
-        description={t('autoSaveDesc')}
-      >
-        <ToggleSwitch
-          checked={settings.autoSave}
-          onChange={(checked) => updateSetting('autoSave', checked)}
         />
       </SettingItem>
     </div>

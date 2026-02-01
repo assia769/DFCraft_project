@@ -1,6 +1,6 @@
 import { Moon, Type, Palette, Maximize2, Sparkles } from 'lucide-react';
 import { useSettings } from '../../shared/context/SettingsContext';
-import { useTranslation } from '../../shared/i18n/translations';
+import { useSettingsTranslation } from '../../shared/i18n/settingsTranslations';
 import SettingItem from './SettingItem';
 import ToggleSwitch from './ToggleSwitch';
 import SelectInput from './SelectInput';
@@ -8,7 +8,7 @@ import ColorPicker from './ColorPicker';
 
 export default function AppearanceSettings() {
   const { settings, updateSetting } = useSettings();
-  const { t } = useTranslation(settings.language);
+  const { t } = useSettingsTranslation(settings.settingsLanguage);
 
   const fontOptions = [
     { value: 'concert', label: t('fontConcert') },
@@ -50,6 +50,19 @@ export default function AppearanceSettings() {
         />
       </SettingItem>
 
+      {/* Primary Color */}
+      <SettingItem
+        icon={Palette}
+        title={t('primaryColor')}
+        description={t('colorDesc')}
+      >
+        <ColorPicker
+          value={settings.primaryColor}
+          onChange={(value) => updateSetting('primaryColor', value)}
+          options={colorOptions}
+        />
+      </SettingItem>
+
       {/* Font Family */}
       <SettingItem
         icon={Type}
@@ -76,19 +89,6 @@ export default function AppearanceSettings() {
         />
       </SettingItem>
 
-      {/* Primary Color */}
-      <SettingItem
-        icon={Palette}
-        title={t('primaryColor')}
-        description={t('colorDesc')}
-      >
-        <ColorPicker
-          value={settings.primaryColor}
-          onChange={(value) => updateSetting('primaryColor', value)}
-          options={colorOptions}
-        />
-      </SettingItem>
-
       {/* Animations */}
       <SettingItem
         icon={Sparkles}
@@ -101,17 +101,18 @@ export default function AppearanceSettings() {
         />
       </SettingItem>
 
-      {/* Compact Mode */}
-      <SettingItem
-        icon={Maximize2}
-        title={t('compactMode')}
-        description={t('compactModeDesc')}
-      >
-        <ToggleSwitch
-          checked={settings.compactMode}
-          onChange={(checked) => updateSetting('compactMode', checked)}
-        />
-      </SettingItem>
+      {/* Preview Section */}
+      <div className="mt-6 p-6 bg-light dark:bg-dark rounded-xl border border-lightPlaceHolder/30 dark:border-darkPlaceHolder/30">
+        <h3 className="text-lg font-semibold text-lightElements dark:text-darkElements mb-3">
+          Aperçu des paramètres
+        </h3>
+        <div className="space-y-2 text-lightPlaceHolder dark:text-darkPlaceHolder">
+          <p>• Police: <span className="font-semibold text-lightElements dark:text-darkElements">{settings.font}</span></p>
+          <p>• Taille: <span className="font-semibold text-lightElements dark:text-darkElements">{settings.fontSize}</span></p>
+          <p>• Thème: <span className="font-semibold text-lightElements dark:text-darkElements">{settings.primaryColor}</span></p>
+          <p>• Mode: <span className="font-semibold text-lightElements dark:text-darkElements">{settings.darkMode ? 'Sombre' : 'Clair'}</span></p>
+        </div>
+      </div>
     </div>
   );
 }

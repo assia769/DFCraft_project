@@ -1,11 +1,11 @@
-import { Database, Download, Upload, Trash2 } from 'lucide-react';
+import { Download, Trash2, Database } from 'lucide-react';
 import { useSettings } from '../../shared/context/SettingsContext';
-import { useTranslation } from '../../shared/i18n/translations';
+import { useSettingsTranslation } from '../../shared/i18n/settingsTranslations';
 import { useState } from 'react';
 
 export default function AdvancedSettings() {
-  const { settings, saveSettings } = useSettings();
-  const { t } = useTranslation(settings.language);
+  const { settings } = useSettings();
+  const { t } = useSettingsTranslation(settings.settingsLanguage);
   const [notification, setNotification] = useState('');
 
   const showNotification = (message) => {
@@ -22,25 +22,7 @@ export default function AdvancedSettings() {
     link.download = `dfcraft-settings-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    showNotification('Paramètres exportés avec succès !');
-  };
-
-  const importSettings = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const imported = JSON.parse(e.target.result);
-          saveSettings(imported);
-          showNotification('Paramètres importés avec succès !');
-          setTimeout(() => window.location.reload(), 1000);
-        } catch (error) {
-          showNotification('Erreur lors de l\'import');
-        }
-      };
-      reader.readAsText(file);
-    }
+    showNotification(t('settingsSaved'));
   };
 
   const clearCache = () => {
@@ -68,41 +50,17 @@ export default function AdvancedSettings() {
           <Download className="w-5 h-5 text-lightElements dark:text-darkElements mt-1" />
           <div className="flex-1">
             <h3 className="font-semibold text-lightElements dark:text-darkElements mb-1">
-              Exporter les paramètres
+              {t('exportSettings')}
             </h3>
             <p className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder mb-3">
-              Sauvegardez vos paramètres dans un fichier JSON
+              {t('exportDesc')}
             </p>
             <button
               onClick={exportSettings}
               className="px-4 py-2 bg-lightElements dark:bg-darkElements text-white rounded-lg hover:opacity-90 transition-opacity"
             >
-              Exporter
+              {t('exportButton')}
             </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Import Settings */}
-      <div className="p-4 bg-light dark:bg-dark rounded-xl">
-        <div className="flex items-start gap-3">
-          <Upload className="w-5 h-5 text-lightElements dark:text-darkElements mt-1" />
-          <div className="flex-1">
-            <h3 className="font-semibold text-lightElements dark:text-darkElements mb-1">
-              Importer les paramètres
-            </h3>
-            <p className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder mb-3">
-              Restaurez vos paramètres depuis un fichier JSON
-            </p>
-            <label className="inline-block px-4 py-2 bg-lightElements dark:bg-darkElements text-white rounded-lg hover:opacity-90 transition-opacity cursor-pointer">
-              Importer
-              <input
-                type="file"
-                accept=".json"
-                onChange={importSettings}
-                className="hidden"
-              />
-            </label>
           </div>
         </div>
       </div>
@@ -113,16 +71,16 @@ export default function AdvancedSettings() {
           <Trash2 className="w-5 h-5 text-red-500 mt-1" />
           <div className="flex-1">
             <h3 className="font-semibold text-lightElements dark:text-darkElements mb-1">
-              Effacer le cache
+              {t('clearCache')}
             </h3>
             <p className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder mb-3">
-              Supprimez toutes les données en cache (nécessite un rechargement)
+              {t('clearCacheDesc')}
             </p>
             <button
               onClick={clearCache}
               className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
             >
-              Effacer
+              {t('clearButton')}
             </button>
           </div>
         </div>
@@ -134,10 +92,10 @@ export default function AdvancedSettings() {
           <Database className="w-5 h-5 text-lightElements dark:text-darkElements mt-1" />
           <div className="flex-1">
             <h3 className="font-semibold text-lightElements dark:text-darkElements mb-1">
-              Informations de stockage
+              {t('storageInfo')}
             </h3>
             <p className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">
-              Les paramètres sont sauvegardés localement sur votre appareil
+              {t('storageInfoDesc')}
             </p>
           </div>
         </div>
@@ -145,7 +103,7 @@ export default function AdvancedSettings() {
 
       {/* Notification */}
       {notification && (
-        <div className="fixed bottom-4 right-4 bg-lightElements dark:bg-darkElements text-white px-6 py-3 rounded-xl shadow-lg animate-slide-up">
+        <div className="fixed bottom-4 right-4 bg-lightElements dark:bg-darkElements text-white px-6 py-3 rounded-xl shadow-lg z-50">
           {notification}
         </div>
       )}

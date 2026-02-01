@@ -4,15 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body * {
-  font-family: 'Concert One', cursive;
-}
-
 @layer base {
   html,
   body,
   #root {
-    font-family: 'Concert One', cursive;
     background-color: #F2F2F2; /* light background */
     min-height: 100vh;
   }
@@ -23,4 +18,33 @@ body * {
   html.dark #root {
     background-color: #161616; /* dark background */
   }
+}
+
+/* Les couleurs dynamiques sont appliquées via JavaScript dans SettingsContext */
+/* Les polices dynamiques sont appliquées via JavaScript dans SettingsContext */
+
+/* Classes fixes pour light/dark backgrounds */
+.bg-light {
+  background-color: #F2F2F2 !important;
+}
+
+.dark .bg-dark {
+  background-color: #161616 !important;
+}
+
+/* Support RTL pour l'arabe */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+[dir="rtl"] .flex-row {
+  flex-direction: row-reverse;
 }

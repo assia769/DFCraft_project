@@ -1,10 +1,16 @@
 import { Menu, X, Home, AudioLines, BarChart3, Shield, Settings, ListChecks } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSettings } from "../../../shared/context/SettingsContext";
+import { useTranslation } from "../../../shared/i18n/translations";
 
 export default function Header({ setChoosenPage }) {
   const [showMenu, setShowMenu] = useState(false);
   const [urlLogo, setUrlLogo] = useState("");
   const [activeRoute, setActiveRoute] = useState("home");
+  
+  // Utiliser les paramètres globaux
+  const { settings } = useSettings();
+  const { t } = useTranslation(settings.language);
 
   useEffect(() => {
     try {
@@ -20,12 +26,12 @@ export default function Header({ setChoosenPage }) {
   }, []);
 
   const menuItems = [
-    { id: "home", label: "Home", icon: Home },
-    { id: "sounds", label: "Sounds", icon: AudioLines },
-    { id: "todo", label: "Tasks", icon: ListChecks },
-    { id: "distractionBlocking", label: "Block pages", icon: Shield },
-    { id: "tracking", label: "Progress", icon: BarChart3 },
-    { id: "settings", label: "Settings", icon: Settings },
+    { id: "home", labelKey: "home", icon: Home },
+    { id: "sounds", labelKey: "sounds", icon: AudioLines },
+    { id: "todo", labelKey: "tasks", icon: ListChecks },
+    { id: "distractionBlocking", labelKey: "blockPages", icon: Shield },
+    { id: "tracking", labelKey: "progress", icon: BarChart3 },
+    { id: "settings", labelKey: "settings", icon: Settings },
   ];
   
   const handleNavigation = (pageId) => {
@@ -49,7 +55,7 @@ export default function Header({ setChoosenPage }) {
               aria-label="Menu"
             >
               {showMenu ? (
-                <X className="w-6 h-6  text-lightElements dark:text-darkElements" />
+                <X className="w-6 h-6 text-lightElements dark:text-darkElements" />
               ) : (
                 <Menu className="w-6 h-6 text-lightElements dark:text-darkElements" />
               )}
@@ -76,12 +82,12 @@ export default function Header({ setChoosenPage }) {
                       onClick={() => handleNavigation(item.id)}
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-all hover:bg-lightList dark:hover:bg-darkList text-light dark:text-dark ${
                         isActive
-                          ? " bg-lightList dark:bg-darkList"
+                          ? "bg-lightList dark:bg-darkList"
                           : "bg-lightElements dark:bg-darkElements"
                       }`}
                     >
                       <Icon className="w-5 h-5" />
-                      <span className="font-medium">{item.label}</span>
+                      <span className="font-medium">{t(item.labelKey)}</span>
                     </button>
                   );
                 })}

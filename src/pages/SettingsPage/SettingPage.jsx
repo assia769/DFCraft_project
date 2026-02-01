@@ -3,9 +3,8 @@ import { useSettings } from '../../shared/context/SettingsContext';
 import { useTranslation } from '../../shared/i18n/translations';
 import GeneralSettings from '../../components/Settings/GeneralSettings';
 import AppearanceSettings from '../../components/Settings/AppearanceSettings';
-import AudioSettings from '../../components/Settings/AudioSettings';
 import AdvancedSettings from '../../components/Settings/AdvancedSettings';
-import { Settings, Palette, Volume2, Sliders } from 'lucide-react';
+import { Settings, Palette, Sliders } from 'lucide-react';
 
 export default function SettingsPage() {
   const { settings, resetSettings } = useSettings();
@@ -16,7 +15,6 @@ export default function SettingsPage() {
   const tabs = [
     { id: 'general', label: t('generalSettings'), icon: Settings },
     { id: 'appearance', label: t('appearanceSettings'), icon: Palette },
-    { id: 'audio', label: t('audioSettings'), icon: Volume2 },
     { id: 'advanced', label: t('advancedSettings'), icon: Sliders },
   ];
 
@@ -31,7 +29,7 @@ export default function SettingsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-lightElements dark:text-darkElements mb-2">
-            {t('settings')}
+            {t('settingsTitle')}
           </h1>
           <p className="text-lightPlaceHolder dark:text-darkPlaceHolder">
             Personnalisez votre expérience DFCraft
@@ -75,7 +73,6 @@ export default function SettingsPage() {
             <div className="bg-lightList dark:bg-darkList rounded-2xl p-6 shadow-lg">
               {activeTab === 'general' && <GeneralSettings />}
               {activeTab === 'appearance' && <AppearanceSettings />}
-              {activeTab === 'audio' && <AudioSettings />}
               {activeTab === 'advanced' && <AdvancedSettings />}
             </div>
           </div>
@@ -89,7 +86,7 @@ export default function SettingsPage() {
                 {t('confirmReset')}
               </h2>
               <p className="text-lightPlaceHolder dark:text-darkPlaceHolder mb-6">
-                Cette action réinitialisera tous vos paramètres aux valeurs par défaut.
+                {t('resetWarning')}
               </p>
               <div className="flex gap-3">
                 <button
