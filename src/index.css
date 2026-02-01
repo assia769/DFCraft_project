@@ -4,10 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
+body * {
+  font-family: 'Concert One', cursive;
+}
+
 @layer base {
   html,
   body,
   #root {
+    font-family: 'Concert One', cursive;
     background-color: #F2F2F2; /* light background */
     min-height: 100vh;
   }
@@ -19,20 +24,131 @@
     background-color: #161616; /* dark background */
   }
 }
+/* Ajoutez ceci à votre index.css APRÈS les imports Tailwind */
 
-/* Les couleurs dynamiques sont appliquées via JavaScript dans SettingsContext */
-/* Les polices dynamiques sont appliquées via JavaScript dans SettingsContext */
+/* Variables CSS dynamiques pour les thèmes de couleur */
+:root {
+  /* Les variables seront définies par JavaScript via SettingsContext */
+  --animation-duration: 200ms;
+}
 
-/* Classes fixes pour light/dark backgrounds */
+/* Classes Tailwind utilisant les couleurs dynamiques */
 .bg-light {
-  background-color: #F2F2F2 !important;
+  background-color: #F2F2F2;
+}
+
+.dark .bg-light {
+  background-color: var(--color-light, #F2F2F2);
+}
+
+.bg-dark {
+  background-color: #161616;
 }
 
 .dark .bg-dark {
-  background-color: #161616 !important;
+  background-color: var(--color-dark, #161616);
 }
 
-/* Support RTL pour l'arabe */
+.text-lightElements {
+  color: var(--tw-color-lightElements, #7C3AED);
+}
+
+.dark .text-darkElements {
+  color: var(--tw-color-darkElements, #A855F7);
+}
+
+.bg-lightElements {
+  background-color: var(--tw-color-lightElements, #7C3AED);
+}
+
+.dark .bg-darkElements {
+  background-color: var(--tw-color-darkElements, #A855F7);
+}
+
+.text-lightPoints {
+  color: var(--tw-color-lightPoints, #C282FF);
+}
+
+.dark .text-darkPoints {
+  color: var(--tw-color-darkPoints, #5A00B0);
+}
+
+.bg-lightPoints {
+  background-color: var(--tw-color-lightPoints, #C282FF);
+}
+
+.dark .bg-darkPoints {
+  background-color: var(--tw-color-darkPoints, #5A00B0);
+}
+
+.bg-lightList {
+  background-color: var(--tw-color-lightList, #5B1FC0);
+}
+
+.dark .bg-darkList {
+  background-color: var(--tw-color-darkList, #C8A0EF);
+}
+
+.bg-lightBar {
+  background-color: var(--tw-color-lightBar, #5B1FC0);
+}
+
+.dark .bg-darkBar {
+  background-color: var(--tw-color-darkBar, #C8A0EF);
+}
+
+.bg-lightProgressBar {
+  background-color: var(--tw-color-lightProgressBar, #6D00D8);
+}
+
+.dark .bg-darkProgressBar {
+  background-color: var(--tw-color-darkProgressBar, #B46CFA);
+}
+
+.bg-lightSelectedBar {
+  background-color: var(--tw-color-lightSelectedBar, #B46CFA);
+}
+
+.dark .bg-darkSelectedBar {
+  background-color: var(--tw-color-darkSelectedBar, #5A00B0);
+}
+
+.text-lightPlaceHolder {
+  color: var(--tw-color-lightPlaceHolder, #9D72C7);
+}
+
+.dark .text-darkPlaceHolder {
+  color: var(--tw-color-darkPlaceHolder, #9D72C7);
+}
+
+.border-lightPlaceHolder {
+  border-color: var(--tw-color-lightPlaceHolder, #9D72C7);
+}
+
+.dark .border-darkPlaceHolder {
+  border-color: var(--tw-color-darkPlaceHolder, #9D72C7);
+}
+
+.placeholder\:text-lightPlaceHolder::placeholder {
+  color: var(--tw-color-lightPlaceHolder, #9D72C7);
+}
+
+.dark .placeholder\:text-darkPlaceHolder::placeholder {
+  color: var(--tw-color-darkPlaceHolder, #9D72C7);
+}
+
+/* Support pour les animations désactivées */
+.no-animations * {
+  animation-duration: 0ms !important;
+  transition-duration: 0ms !important;
+}
+
+/* Transitions par défaut */
+* {
+  transition-duration: var(--animation-duration);
+}
+
+/* Support RTL pour l'arabe (si vous l'activez) */
 [dir="rtl"] {
   direction: rtl;
 }
@@ -43,8 +159,4 @@
 
 [dir="rtl"] .text-right {
   text-align: left;
-}
-
-[dir="rtl"] .flex-row {
-  flex-direction: row-reverse;
 }
