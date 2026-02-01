@@ -81,7 +81,7 @@ export default function DisplaySound({ sound, onClose }) {
   return (
     <div className="fixed bottom-0 w-full bg-lightElements dark:bg-darkElements p-5 z-100 rounded-tl-2xl rounded-tr-2xl BtoT">
       <div className="flex flex-row items-center">
-        <img src={sound.coverImage} alt={sound.title} className="w-16 h-16 rounded-lg mr-2 "></img>
+        <img src={sound.coverImage} alt={sound.title} className="w-16 h-16 rounded-lg mr-2 "/>
         <div>
           <div className="text-light dark:text-dark font-medium">{sound.title}</div>
           <div className="text-gray-300 dark:text-gray-800">{sound.author}</div>
