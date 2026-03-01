@@ -27,7 +27,7 @@
     }
   ],
   
-  "permissions": ["storage", "notifications", "alarms", "activeTab", "offscreen"],
+  "permissions": ["storage", "notifications", "alarms", "activeTab", "offscreen" ,  "tabs"],
 
   "options_page": "src/options/options.html",
   
