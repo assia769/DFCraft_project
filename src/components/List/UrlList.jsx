@@ -139,7 +139,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
             handleChangeBlocked(urlElement.url);
             handleChangeSownd(urlElement.url);
         } if (selected === "none") {
-            handleChangeNone(urlElement.url)
+            handleChangeNselectedone(urlElement.url)
         }
     }, [selected])
 
