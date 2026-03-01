@@ -17,7 +17,7 @@
   
   "background": {
     "scripts": ["background.js"],
-    "persistent": false
+    "persistent": true
   },
   
   "content_scripts": [
@@ -33,6 +33,7 @@
   
   "web_accessible_resources": [
     "sounds/*.wav",
+    "sounds/*.mp3",
     "offscreen.html",
     "offscreen.js"
   ],

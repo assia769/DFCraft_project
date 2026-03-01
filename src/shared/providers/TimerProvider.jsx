@@ -7,9 +7,11 @@ export function TimerProvider({ children }) {
   const [originalTime, setOriginalTime] = useState(1500); // Add this
   const [workTime, setWorkTime] = useState(1500);
   const [breakTime, setBreakTime] = useState(300);
+  const [longBreakTime, setLongBreakTime] = useState(900);
   const [phaseType, setPhaseType] = useState("work");
   const [isRunning, setIsRunning] = useState(false);
   const [reset, setReset] = useState(false);
+  const [sessionCount, setSessionCount] = useState(0)
 
   const isInitialized = useRef(false); // ✅ Prevent initial sync
   const isMounted = useRef(true);
@@ -29,8 +31,10 @@ export function TimerProvider({ children }) {
           setOriginalTime(res.originalTime);
           setWorkTime(res.workTime);
           setBreakTime(res.breakTime);
+          setLongBreakTime(res.longBreakTime);
           setPhaseType(res.phaseType);
           setIsRunning(res.isRunning);
+          setSessionCount(res.sessionCount);
           isInitialized.current = true; // ✅ Now safe to sync
           console.log("✅ State initialized:", res);
         }
@@ -52,6 +56,7 @@ export function TimerProvider({ children }) {
         setOriginalTime(message.data.originalTime);
         setPhaseType(message.data.phaseType);
         setIsRunning(message.data.isRunning);
+        setSessionCount(message.data.sessionCount);
       }
     };
 
@@ -79,7 +84,9 @@ export function TimerProvider({ children }) {
           originalTime,
           workTime,
           breakTime,
+          longBreakTime,
           phaseType,
+          sessionCount
         });
         await browserAPI.runtime.sendMessage({
           type: "UPDATE_TIMER",
@@ -88,8 +95,10 @@ export function TimerProvider({ children }) {
             originalTime,
             workTime,
             breakTime,
+            longBreakTime,
             phaseType,
             isRunning,
+            sessionCount
           },
         });
         console.log("✅ Sync complete");
@@ -99,15 +108,15 @@ export function TimerProvider({ children }) {
     };
 
     syncTimer();
-  }, [time, originalTime, workTime, breakTime, phaseType, isRunning]);
+  }, [time, originalTime, workTime, breakTime, longBreakTime, phaseType, isRunning, sessionCount]);
 
   // Handle reset
   useEffect(() => {
     if (reset) {
       console.log("🔄 RESET triggered");
       setTime(originalTime);
+      setSessionCount(0);
       setIsRunning(false);
-      setReset(false);
     }
   }, [reset, originalTime]);
 
@@ -126,8 +135,12 @@ export function TimerProvider({ children }) {
         setWorkTime,
         breakTime,
         setBreakTime,
+        longBreakTime,
+        setLongBreakTime,
         phaseType,
         setPhaseType,
+        sessionCount,
+        setSessionCount,
       }}
     >
       {children}
