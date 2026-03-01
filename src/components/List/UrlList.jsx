@@ -108,7 +108,7 @@ function UrlItem({ element, setElements, setDeletingElement }) {
 function MultiSelect({ urlElement, setUrlElement }) {
 
     const [clicked, setClicked] = useState(false);
-    const [selected, setSelected] = useState("none");
+    const [selected, setSelected] = useState("");
 
     function handleChangeSownd(url) {
         setUrlElement((prv) =>
@@ -123,7 +123,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
         setClicked(false)
     }
 
-    function handleChangeNone(url) {
+    function handleChangeNselectedone(url) {
         setUrlElement((prv) =>
             prv.map(item => item.url === url ? { ...item, urlBlocked: false, sowndBlocked: false } : item)
         );

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import UrlContext from "../context/urlContext";
 import { browserAPI } from "../utils/browserAPI";
+import { copySync } from "fs-extra";
 
 
 
@@ -17,21 +18,21 @@ async function testLocalStorage() {
 
 
 const useSaveUrl =()=>{
-        testLocalStorage();
+        // testLocalStorage();
       console.log("useSaveUrl")
       const { urlElements, setUrlElement } = useContext(UrlContext)
       useEffect(()=>{
            
             async function saveUrl(){
-                console.log("urlElements", urlElements)
                 if(!urlElements.length){
                   await browserAPI.storage.local.set({ urls: [] });
                   return 
                 }
+                console.log("urlElements", urlElements)
                 await browserAPI.storage.local.set({ urls: urlElements });
             }
     
-            saveUrl()
+             saveUrl()
 
         },[urlElements])
 

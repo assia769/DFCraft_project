@@ -119,7 +119,7 @@ async function init() {
   startTimerLoop();
   blockWorker() ;
 
-  console.log("C'est le background")
+  console.log("C'est le background    .........")
 
 }
 
