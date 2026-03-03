@@ -1,44 +1,43 @@
 import SoundsList from "./SoundsList";
 import { useState } from "react";
+import { ListFilter } from "lucide-react";
+import DisplayCatigories from "./DisplayCatigories";
 
 export default function ListByCategory() {
-  const [category, setCategory] = useState("rain");
-
-  const categories = [
-    {
-      id: "rain",
-      name: "Rain & Thunder",
-    },
-    {
-      id: "nature",
-      name: "Nature & Forest",
-    },
-    {
-      id: "white-noise",
-      name: "White Noise",
-    },
-    {
-      id: "cafe-indoor",
-      name: "Café & Indor",
-    },
-  ];
-
-  const listCat = categories.map((c) => {
-    return (
-      <div
-        key={c.id}
-        onClick={() => setCategory(c.id)}
-        className="p-2 text-white bg-blue-500 mr-1"
-      >
-        {c.name}
-      </div>
-    );
-  });
+  const [category, setCategory] = useState("all");
+  const [categories, setCategories] = useState([]);
+  const [showCats, setShowCats] = useState(false);
+  const [searchSound, setSearchSound] = useState("");
 
   return (
-    <>
-      <div className="flex items-center">{listCat}</div>
-      <SoundsList category={category} />
-    </>
+    <div className="bg-light dark:bg-dark">
+      <div className="flex flex-row justify-between items-center mb-2">
+        <input
+          onChange={(e) => setSearchSound(e.target.value)}
+          type="text"
+          placeholder="Search for sound, Author..."
+          className="p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder w-full ml-6"
+        />
+        <button
+          onClick={() => {
+            setShowCats(true);
+          }}
+          className="transition-colors relative mr-6"
+          aria-label="Menu"
+        >
+          <ListFilter className="w-6 h-6 text-lightElements dark:text-darkElements" />
+        </button>
+      </div>
+      <SoundsList category={category} searchSound={searchSound} />
+      {showCats && (
+        <DisplayCatigories
+          category={category}
+          categories={categories}
+          setCategory={setCategory}
+          setCategories={setCategories}
+          setShowCats={setShowCats}
+        />
+      )}
+    </div>
   );
 }

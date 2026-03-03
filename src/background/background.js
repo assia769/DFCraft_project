@@ -48,7 +48,7 @@ function updateTimerFromLastSave() {
     timerData.time = Math.max(0, timerData.time - secondsPassed);
     timerData.lastUpdate = now;
     console.log(
-      `⏩ Calculated elapsed time: ${secondsPassed}s (${oldTime} → ${timerData.time})`
+      `⏩ Calculated elapsed time: ${secondsPassed}s (${oldTime} → ${timerData.time})`,
     );
     saveTimerData();
   }
@@ -61,6 +61,8 @@ function saveTimerData() {
 let currentAmbientAudio = null;
 let isAmbientPlaying = false;
 let firefoxAudio = null;
+let firefoxListeners = null;
+let firefoxTimeInterval = null;
 
 // Message listener
 browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -89,8 +91,14 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === "PLAY_AMBIENT_SOUND") {
+    currentAmbientAudio = request.soundUrl;
+    isAmbientPlaying = true;
 
-    broadcastAudioStatus("loading", { progress: 0 });
+    // ✅ Now broadcast with the CORRECT currentSound
+    broadcastAudioStatus("loading", {
+      progress: 0,
+      currentSound: request.soundUrl, // Explicitly pass the new sound
+    });
 
     playAmbientSound(request.soundUrl)
       .then(() => {
@@ -107,31 +115,38 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "PAUSE_AMBIENT_SOUND") {
     pauseAmbientSound();
     isAmbientPlaying = false;
-  broadcastAudioStatus("paused");
-  sendResponse({ success: true });
+    broadcastAudioStatus("paused");
+    sendResponse({ success: true });
+    return true;
   }
 
   if (request.type === "STOP_AMBIENT_SOUND") {
     stopAmbientSound();
+    isAmbientPlaying = false;
+    currentAmbientAudio = null;
+    broadcastAudioStatus("stopped"); // Add this broadcast
     sendResponse({ success: true });
+    return true;
   }
 
   if (request.type === "GET_AMBIENT_STATUS") {
-    if (browserAPI.offscreen){
-      try{
-
-        browserAPI.runtime.sendMessage({type: "GET_AMBIENT_STATUS_OFFSCREEN"}, (response) => {
-          if(browserAPI.runtime.lastError){
-            sendResponse({
-              isPlaying: isAmbientPlaying,
-              currentSound: currentAmbientAudio || null,
-            }); 
-          }else{
-            sendResponse(response);
-          }
-        });
+    if (browserAPI.offscreen) {
+      try {
+        browserAPI.runtime.sendMessage(
+          { type: "GET_AMBIENT_STATUS_OFFSCREEN" },
+          (response) => {
+            if (browserAPI.runtime.lastError) {
+              sendResponse({
+                isPlaying: isAmbientPlaying,
+                currentSound: currentAmbientAudio || null,
+              });
+            } else {
+              sendResponse(response);
+            }
+          },
+        );
         return true;
-      }catch(e){
+      } catch (e) {
         console.error("GET_AMBIENT_STATUS error:", e);
       }
     }
@@ -144,12 +159,31 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === "AUDIO_STATUS_FROM_OFFSCREEN") {
-    isAmbientPlaying = request.isPlaying;
-    currentAmbientAudio = request.currentSound || currentAmbientAudio;
+    console.log("[BG] 📥 Status from offscreen:", request);
+
+    // ✅ Don't let offscreen clear the currentSound unless it's explicitly stopped
+    if (request.status === "stopped" || request.status === "error") {
+      isAmbientPlaying = false;
+      currentAmbientAudio = null;
+    } else {
+      isAmbientPlaying = request.isPlaying;
+      // Only update if offscreen provides a valid URL
+      if (request.currentSound) {
+        currentAmbientAudio = request.currentSound;
+      }
+    }
 
     // Broadcast to popup
-    broadcastAudioStatus(request.status, request);
+    broadcastAudioStatus(request.status, {
+      progress: request.progress,
+      error: request.error,
+      currentSound: currentAmbientAudio,
+      currentTime: request.currentTime,
+      duration: request.duration,
+    });
+
     sendResponse({ success: true });
+    return true; // ✅ Keep channel open
   }
 
   if (request.type === "OFFSCREEN_READY") {
@@ -159,6 +193,32 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ ok: true });
     return true;
   }
+  
+  if (request.type === "SEEK_TO_POSITION") {
+    if (browserAPI.offscreen) {
+      // Chrome - forward to offscreen
+      browserAPI.runtime.sendMessage(
+        { type: "SEEK_TO_POSITION_OFFSCREEN", time: request.time },
+        (resp) => {
+          if (browserAPI.runtime.lastError) {
+            console.error("[BG] Seek failed:", browserAPI.runtime.lastError.message);
+            sendResponse({ success: false, error: "Seek failed" });
+          } else {
+            sendResponse(resp);
+          }
+        }
+      );
+    } else if (firefoxAudio) {
+      // Firefox - seek directly
+      try {
+        firefoxAudio.currentTime = request.time;
+        sendResponse({ success: true });
+      } catch (e) {
+        sendResponse({ success: false, error: String(e) });
+      }
+  }
+  return true;
+}
 
   return true; // Keep channel open for async response
 });
@@ -170,7 +230,7 @@ async function playSound(soundName) {
     if (browserAPI.offscreen) {
       const existingContexts = await browserAPI.runtime.getContexts({});
       const offscreenDocument = existingContexts.find(
-        (context) => context.contextType === "OFFSCREEN_DOCUMENT"
+        (context) => context.contextType === "OFFSCREEN_DOCUMENT",
       );
 
       if (!offscreenDocument) {
@@ -188,7 +248,7 @@ async function playSound(soundName) {
     } else {
       // Firefox fallback
       const audio = new Audio(
-        browserAPI.runtime.getURL(`sounds/${soundName}.wav`)
+        browserAPI.runtime.getURL(`sounds/${soundName}.wav`),
       );
       audio.play().catch((err) => {
         console.error("Firefox audio playback failed:", err);
@@ -263,6 +323,7 @@ async function playAmbientSound(soundUrl) {
     typeof browserAPI.offscreen.createDocument === "function"
   ) {
     await ensureOffscreenDocument();
+    await new Promise((r) => setTimeout(r, 50));
     // instruct offscreen to play
     browserAPI.runtime.sendMessage(
       { type: "PLAY_AMBIENT_SOUND_OFFSCREEN", soundUrl },
@@ -270,73 +331,118 @@ async function playAmbientSound(soundUrl) {
         if (browserAPI.runtime.lastError) {
           console.warn(
             "[BG] sendMessage to offscreen lastError:",
-            browserAPI.runtime.lastError.message
+            browserAPI.runtime.lastError.message,
           );
+          broadcastAudioStatus("error", {
+            error: "Failed to communicate with audio player",
+            currentSound: soundUrl, // ✅ Include the sound URL
+          });
+          isAmbientPlaying = false;
+          currentAmbientAudio = null;
         } else {
           console.log("[BG] offscreen play request sent:", resp);
+          currentAmbientAudio = soundUrl;
+          isAmbientPlaying = true;
         }
-      }
+      },
     );
-    currentAmbientAudio = soundUrl;
-    isAmbientPlaying = true;
     return;
   }
 
   if (typeof Audio !== "undefined") {
     console.log(
-      "[BG] Playing ambient in background (direct Audio) - Firefox fallback"
+      "[BG] Playing ambient in background (direct Audio) - Firefox fallback",
     );
     // stop existing firefoxAudio
+    if (firefoxAudio && firefoxAudio.src === soundUrl && firefoxAudio.paused) {
+      console.log("▶️ [FIREFOX] Resuming paused audio");
+      firefoxAudio.play().catch((err) => {
+        console.error("[BG] firefoxAudio resume failed:", err);
+        broadcastAudioStatus("error", { error: "Playback failed" });
+      });
+      currentAmbientAudio = soundUrl;
+      isAmbientPlaying = true;
+      return;
+    }
+
+    console.log("🆕 [FIREFOX] Loading new audio");
+
+    // Stop existing firefoxAudio
     if (firefoxAudio) {
       try {
         firefoxAudio.pause();
+        removeFirefoxListeners();
+        firefoxAudio.src = "";
+        firefoxAudio = null;
       } catch (e) {
         console.error("[BG] firefoxAudio pause error:", e);
       }
-      removeFirefoxListeners();
-      firefoxAudio = null;
     }
 
     firefoxAudio = new Audio(soundUrl);
     firefoxAudio.loop = true;
     firefoxAudio.preload = "auto";
-    firefoxAudio.volume = 0.7;
+
+    firefoxListeners = {
+      loadstart: () => broadcastAudioStatus("loading", { progress: 0 }),
+      canplay: () => broadcastAudioStatus("ready", { progress: 100 }),
+      playing: () => {
+        isAmbientPlaying = true;
+        if (firefoxTimeInterval) {
+                  clearInterval(firefoxTimeInterval);
+                }
+                firefoxTimeInterval = setInterval(() => {
+                  if (firefoxAudio && !firefoxAudio.paused) {
+                    broadcastAudioStatus("timeupdate", {
+                      currentTime: firefoxAudio.currentTime || 0,
+                      duration: firefoxAudio.duration || 0
+                    });
+                  }
+                }, 500);
+        broadcastAudioStatus("playing");
+      },
+      pause: () => {
+        isAmbientPlaying = false;
+        if (firefoxTimeInterval) {
+                  clearInterval(firefoxTimeInterval);
+                  firefoxTimeInterval = null;
+                }
+        broadcastAudioStatus("paused");
+      },
+      waiting: () => broadcastAudioStatus("buffering"),
+      error: (e) => {
+        isAmbientPlaying = false;
+        broadcastAudioStatus("error", {
+          error: e?.message || "Playback error",
+        });
+      },
+      progress: () => {
+        if (
+          firefoxAudio &&
+          firefoxAudio.buffered.length > 0 &&
+          firefoxAudio.duration
+        ) {
+          try {
+            const bufferedEnd = firefoxAudio.buffered.end(
+              firefoxAudio.buffered.length - 1,
+            );
+            const progress = (bufferedEnd / firefoxAudio.duration) * 100;
+            broadcastAudioStatus("progress", { progress });
+          } catch (e) {
+            console.error("[BG] firefoxAudio progress calculation error:", e);
+          }
+        }
+      },
+    };
 
     // add listeners similar to offscreen
-    firefoxAudio.addEventListener("loadstart", () =>
-      broadcastAudioStatus("loading", { progress: 0 })
-    );
-    firefoxAudio.addEventListener("canplay", () =>
-      broadcastAudioStatus("ready", { progress: 100 })
-    );
-    firefoxAudio.addEventListener("playing", () => {
-      isAmbientPlaying = true;
-      broadcastAudioStatus("playing");
-    });
-    firefoxAudio.addEventListener("pause", () => {
-      isAmbientPlaying = false;
-      broadcastAudioStatus("paused");
-    });
-    firefoxAudio.addEventListener("waiting", () =>
-      broadcastAudioStatus("buffering")
-    );
-    firefoxAudio.addEventListener("error", (e) => {
-      isAmbientPlaying = false;
-      broadcastAudioStatus("error", { error: e?.message });
-    });
-    firefoxAudio.addEventListener("progress", () => {
-      if (firefoxAudio.buffered.length > 0 && firefoxAudio.duration) {
-        try {
-          const bufferedEnd = firefoxAudio.buffered.end(
-            firefoxAudio.buffered.length - 1
-          );
-          const progress = (bufferedEnd / firefoxAudio.duration) * 100;
-          broadcastAudioStatus("progress", { progress });
-        } catch (e) {
-          console.error("[BG] firefoxAudio progress calculation error:", e);
-        }
-      }
-    });
+    firefoxAudio.addEventListener("loadstart", firefoxListeners.loadstart);
+    firefoxAudio.addEventListener("canplay", firefoxListeners.canplay);
+    firefoxAudio.addEventListener("playing", firefoxListeners.playing);
+    firefoxAudio.addEventListener("pause", firefoxListeners.pause);
+    firefoxAudio.addEventListener("waiting", firefoxListeners.waiting);
+    firefoxAudio.addEventListener("error", firefoxListeners.error);
+    firefoxAudio.addEventListener("progress", firefoxListeners.progress);
 
     firefoxAudio.play().catch((err) => {
       console.error("[BG] firefoxAudio play failed:", err);
@@ -353,14 +459,19 @@ async function playAmbientSound(soundUrl) {
 }
 
 function removeFirefoxListeners() {
-  if (!firefoxAudio) return;
-  firefoxAudio.onloadstart = null;
-  firefoxAudio.oncanplay = null;
-  firefoxAudio.onplaying = null;
-  firefoxAudio.onpause = null;
-  firefoxAudio.onwaiting = null;
-  firefoxAudio.onerror = null;
-  firefoxAudio.onprogress = null;
+  if (!firefoxAudio || !firefoxListeners) return;
+    
+    console.log("[BG] 🧹 Removing Firefox listeners");
+    
+    firefoxAudio.removeEventListener("loadstart", firefoxListeners.loadstart);
+    firefoxAudio.removeEventListener("canplay", firefoxListeners.canplay);
+    firefoxAudio.removeEventListener("playing", firefoxListeners.playing);
+    firefoxAudio.removeEventListener("pause", firefoxListeners.pause);
+    firefoxAudio.removeEventListener("waiting", firefoxListeners.waiting);
+    firefoxAudio.removeEventListener("error", firefoxListeners.error);
+    firefoxAudio.removeEventListener("progress", firefoxListeners.progress);
+    
+    firefoxListeners = null;
 }
 
 async function pauseAmbientSound() {
@@ -375,12 +486,12 @@ async function pauseAmbientSound() {
           if (browserAPI.runtime.lastError) {
             console.warn(
               "[BG] pauseOffscreen lastError:",
-              browserAPI.runtime.lastError.message
+              browserAPI.runtime.lastError.message,
             );
           } else {
             console.log("[BG] pauseOffscreen resp:", resp);
           }
-        }
+        },
       );
     } catch (e) {
       console.error(e);
@@ -402,7 +513,19 @@ async function stopAmbientSound() {
   if (browserAPI.offscreen) {
     try {
       await ensureOffscreenDocument();
-      browserAPI.runtime.sendMessage({ type: "STOP_AMBIENT_SOUND_OFFSCREEN" });
+      browserAPI.runtime.sendMessage(
+        { type: "STOP_AMBIENT_SOUND_OFFSCREEN" },
+        (resp) => {
+          if (browserAPI.runtime.lastError) {
+            console.warn(
+              "[BG] Stop failed:",
+              browserAPI.runtime.lastError.message,
+            );
+          } else {
+            console.log("[BG] ✅ Stop confirmed:", resp);
+          }
+        },
+      );
       isAmbientPlaying = false;
       currentAmbientAudio = null;
     } catch (error) {
@@ -415,6 +538,10 @@ async function stopAmbientSound() {
       removeFirefoxListeners();
       firefoxAudio.src = "";
       firefoxAudio = null;
+      isAmbientPlaying = false;
+      currentAmbientAudio = null;
+      broadcastAudioStatus("stopped");
+      console.log("[BG] ✅ Firefox audio stopped");
     } catch (e) {
       console.error("[BG] firefoxAudio stop error:", e);
     }
@@ -430,7 +557,7 @@ async function ensureOffscreenDocument() {
   try {
     const existingContexts = await browserAPI.runtime.getContexts({});
     const offscreenDocument = existingContexts.find(
-      (context) => context.contextType === "OFFSCREEN_DOCUMENT"
+      (context) => context.contextType === "OFFSCREEN_DOCUMENT",
     );
 
     if (!offscreenDocument) {
@@ -448,12 +575,12 @@ async function ensureOffscreenDocument() {
       }
       if (!offscreenReady) {
         console.warn(
-          "[BG] offscreen created but OFFSCREEN_READY not received within timeout"
+          "[BG] offscreen created but OFFSCREEN_READY not received within timeout",
         );
       } else {
         console.log(
           "[BG] offscreen reported READY at",
-          new Date(offscreenReadyTs).toISOString()
+          new Date(offscreenReadyTs).toISOString(),
         );
       }
     } else {
@@ -469,7 +596,7 @@ async function ensureOffscreenDocument() {
             } else {
               console.log(
                 "[BG] ping_offscreen failed:",
-                browserAPI.runtime.lastError?.message
+                browserAPI.runtime.lastError?.message,
               );
             }
           });
@@ -483,22 +610,45 @@ async function ensureOffscreenDocument() {
   }
 }
 
+firefoxTimeInterval = setInterval(() => {
+  if (firefoxAudio && !firefoxAudio.paused) {
+    broadcastAudioStatus("timeupdate", {
+      currentTime: firefoxAudio.currentTime,
+      duration: firefoxAudio.duration || 0
+    });
+  }
+}, 500);
+
+// When audio stops/pauses, clear it:
+if (firefoxTimeInterval) {
+  clearInterval(firefoxTimeInterval);
+  firefoxTimeInterval = null;
+}
+
 function broadcastAudioStatus(status, data = {}) {
   const message = {
     type: "AUDIO_STATUS_UPDATE",
     status,
     isPlaying: isAmbientPlaying,
-    currentSound: currentAmbientAudio,
+    currentSound: data.currentSound || currentAmbientAudio,
     ...data,
   };
+
+  console.log("[BG] 📤 Broadcasting:", message);
 
   try {
     browserAPI.runtime.sendMessage(message, (resp) => {
       if (browserAPI.runtime.lastError) {
-        console.warn(
-          "[BG] sendMessage lastError:",
-          browserAPI.runtime.lastError?.message
-        );
+        if (
+          !browserAPI.runtime.lastError.message.includes(
+            "Receiving end does not exist",
+          )
+        ) {
+          console.warn(
+            "[BG] sendMessage lastError:",
+            browserAPI.runtime.lastError?.message,
+          );
+        }
       } else {
         // optional debug
         // console.log("[BG] sendMessage resp:", resp);
