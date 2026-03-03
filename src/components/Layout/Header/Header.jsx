@@ -15,8 +15,8 @@ export default function Header({ setChoosenPage }) {
 
   useEffect(() => {
     try {
-      if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.getURL) {
-        setUrlLogo(browser.runtime.getURL("icons/LOGO.png"));
+      if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+        setUrlLogo(chrome.runtime.getURL("icons/LOGO.png"));
       } else {
         setUrlLogo("icons/LOGO.png");
       }
