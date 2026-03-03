@@ -87,7 +87,7 @@ try {
     __dirname,
     "..",
     "firefox",
-    "manifest.firefox.json"
+    "manifest.json"
   );
   const firefoxManifestDest = path.join(firefoxDir, "manifest.json");
   fs.copyFileSync(firefoxManifestSrc, firefoxManifestDest);
