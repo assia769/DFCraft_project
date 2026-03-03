@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import "./DisplaySound.css";
 
-export default function DisplaySound({ sound, onClose }) {
+export default function DisplaySound({ sound }) {
   const {
     isPlaying,
     currentSound,
@@ -24,6 +24,7 @@ export default function DisplaySound({ sound, onClose }) {
     seek,
   } = useBackgroundAudio();
 
+  // for pausing sound i guess or playing the sound
   const togglePlay = () => {
     console.log("🎵 TOGGLE PLAY");
     console.log("  sound.file:", sound.file);

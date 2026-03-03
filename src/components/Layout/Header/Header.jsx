@@ -1,6 +1,5 @@
 import { Menu, X, Home, AudioLines, BarChart3, Shield, Settings, ListChecks } from "lucide-react";
 import { useEffect, useState } from "react";
-import { browserAPI } from "../../../shared/utils/browserAPI";
 import { useSettings } from "../../../shared/context/SettingsContext";
 import { useTranslation } from "../../../shared/i18n/translations";
 
