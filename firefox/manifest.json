@@ -11,7 +11,7 @@
   },
   
   "browser_action": {
-    "default_popup": "src/popup/popup.html",
+    "default_popup": "popup.html",
     "default_title": "DFCraft"
   },
   
@@ -22,23 +22,18 @@
   
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["content.js"]
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
     }
   ],
   
-  "permissions": ["storage", "notifications", "alarms", "activeTab", "offscreen"],
+  "permissions": ["storage", "notifications", "alarms", "activeTab", "tabs"],
 
-  "options_page": "src/options/options.html",
-  
-  "web_accessible_resources": [
-    "sounds/*.wav",
-    "offscreen.html",
-    "offscreen.js"
-  ],
+  "options_page": "options.html",
   
   "options_ui": {
-    "page": "src/options/options.html",
+    "page": "options.html",
     "open_in_tab": true
   },
   
