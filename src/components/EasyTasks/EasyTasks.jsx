@@ -1,23 +1,4 @@
-import { useScrollTrigger } from "@mui/material";
 import { useEffect, useState } from "react";
-
-const Tasks = [
-  {
-    id: 1,
-    title: "Task 1",
-    completed: true,
-  },
-  {
-    id: 2,
-    title: "Task 2",
-    completed: false,
-  },
-  {
-    id: 3,
-    title: "Task 3",
-    completed: false,
-  },
-];
 
 export default function EasyTasks() {
   const [tasks, setTasks] = useState([]);
@@ -25,12 +6,15 @@ export default function EasyTasks() {
   const [completedTasks, setCompletedTasks] = useState(0);
 
   useEffect(() => {
+    const Tasks = JSON.parse(localStorage.getItem("dfcraft_todos") || "[]");
+    console.log("tasks: ",Tasks);
     setTasks(Tasks);
     setCompletedTasks(Tasks.filter((task) => task.completed).length);
   }, []);
 
   useEffect(() => {
     setCompletedTasks(tasks.filter((task) => task.completed).length);
+    localStorage.setItem("dfcraft_todos", JSON.stringify(tasks));
   }, [tasks]);
 
   return (

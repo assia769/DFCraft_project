@@ -3,20 +3,22 @@ import { blockWorker } from './blockerWorker.js';
 import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
 
  const browserAPI = (() => {
-  // Firefox uses 'browser', Chrome uses 'chrome'
   if (typeof browser !== 'undefined' && browser.runtime) {
-    return browser; // Firefox (already Promise-based)
+    return browser;
   }
 
   if (typeof chrome !== 'undefined' && chrome.runtime) {
     return {
       runtime: {
-        sendMessage: (message) =>
+        sendMessage: (message, callback) =>
           new Promise((resolve, reject) => {
             try {
               chrome.runtime.sendMessage(message, (response) => {
                 if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-                else resolve(response);
+                else {
+                  if (callback) callback(response);
+                  resolve(response)
+                };
               });
             } catch (err) {
               reject(err);
@@ -27,6 +29,7 @@ import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
           removeListener: (cb) => chrome.runtime.onMessage.removeListener(cb),
         },
         getURL: (path) => chrome.runtime.getURL(path),
+        getContexts : (filter) => chrome.runtime.getContexts(filter),
       },
       storage: {
         local: {
