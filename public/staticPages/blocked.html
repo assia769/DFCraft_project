@@ -1,229 +1,158 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accès Bloqué</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Access Blocked</title>
+    <link rel="icon" href="../icons/Stop.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Concert+One&family=Ysabeau+Office:ital,wght@0,1..1000;1,1..1000&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        
-        .container {
-            text-align: center;
-            max-width: 600px;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            z-index: 1;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            position: relative;
-            display: inline-block;
-        }
-        
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-            border-radius: 3px;
-        }
-        
-        p {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-            color: #e0e0e0;
-        }
-        
-        .lock-icon {
-            font-size: 5rem;
-            margin-bottom: 2rem;
-            color: #ff4b2b;
-            animation: pulse 2s infinite;
-        }
-        
-        .blocked-message {
-            background: rgba(255, 75, 43, 0.1);
-            border: 1px solid rgba(255, 75, 43, 0.3);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .button {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
-        }
-        
-        .button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 65, 108, 0.6);
-        }
-        
-        .floating-shapes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-        
-        .shape {
-            position: absolute;
-            opacity: 0.1;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-            animation: float 15s infinite linear;
-        }
-        
-        .shape:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-        
-        .shape:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 70%;
-            left: 80%;
-            animation-delay: -5s;
-        }
-        
-        .shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            top: 50%;
-            left: 20%;
-            animation-delay: -10s;
-        }
-        
-        .shape:nth-child(4) {
-            width: 100px;
-            height: 100px;
-            top: 20%;
-            left: 70%;
-            animation-delay: -7s;
-        }
-        
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            25% {
-                transform: translate(20px, 50px) rotate(90deg);
-            }
-            50% {
-                transform: translate(0, 100px) rotate(180deg);
-            }
-            75% {
-                transform: translate(-20px, 50px) rotate(270deg);
-            }
-            100% {
-                transform: translate(0, 0) rotate(360deg);
-            }
-        }
-        
-        .countdown {
-            font-size: 1.5rem;
-            margin-top: 1rem;
-            font-weight: bold;
-            color: #ff4b2b;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            p {
-                font-size: 1rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-    
-    <div class="container">
-        <div class="lock-icon">🔒</div>
-        <h1>Accès Bloqué</h1>
-        
-        <div class="blocked-message">
-            <p>Désolé, cette page n'est pas accessible pour le moment.</p>
-            <p>L'accès à cette ressource a été restreint par l'administrateur du système.</p>
-        </div>
-        
-        <p>Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le support technique.</p>
-        
-        <div class="countdown" id="countdown">Redirection dans 10 secondes</div>
-      
-    </div>
+      body {
+        background-color: #161616;
+        font-family: "Concert One", sans-serif;
+      }
 
-   
-</body>
+      .warn_img {
+        display: block;
+        width: 400px;
+        height: 400px;
+      }
+
+      .warn_section {
+        background-color: #a855f7;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        border-radius: 15px;
+        margin-top: 80px;
+        margin-right: 60px;
+        margin-left: 60px;
+        transition:
+          box-shadow 0.3s ease,
+          transform 0.3s ease;
+        border: 3px solid #161616;
+      }
+
+      .warn_section:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 10px 20px #a855f7;
+        transition:
+          box-shadow 0.3s ease,
+          transform 0.3s ease;
+      }
+
+      .warn_text {
+        max-width: 600px;
+        color: #161616;
+      }
+
+      .title {
+        font-size: 60px;
+        margin-bottom: 20px;
+      }
+
+      .sub_title {
+        font-size: 40px;
+        margin-bottom: 20px;
+      }
+
+      .message {
+        font-size: 18px;
+        line-height: 1.5;
+        max-width: 600px;
+      }
+
+      .info_section {
+        margin: 40px auto;
+        max-width: 900px;
+        color: #f2f2f2;
+        padding: 20px;
+        border-radius: 6px;
+      }
+
+      .visit_doc_button {
+        padding: 10px 20px;
+        background-color: #a855f7;
+        color: #161616;
+        font-family: "Concert One", sans-serif;
+        border: 1px solid #161616;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-top: 20px;
+        cursor: pointer;
+         transition:
+          background-color 0.3s ease,
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .visit_doc_button:hover {
+        background-color: #cc95ff;
+        transform: scale(1.05);
+        box-shadow: 0px 5px 15px #cc95ff;
+        transition:
+          background-color 0.3s ease,
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="warn_section">
+      <img
+        src="../icons/StopPage.png"
+        alt="Pls don't acces this page, it will just distract you"
+        class="warn_img"
+      />
+      <div class="warn_text">
+        <h1 class="title">Page Access Blocked</h1>
+        <p class="message">
+          We apologize for the inconvenience, but we cannot let you access this
+          page. Please return to the previous page or navigate to a different
+          section of the website.
+        </p>
+      </div>
+    </div>
+    <div class="info_section">
+      <h1 class="sub_title">Why we blocked this page ?</h1>
+      <p>
+        This page has been blocked by our extension because it has been
+        identified as a source of distraction or unproductive content. We
+        understand that everyone has different preferences and needs when it
+        comes to their online experience, and we want to help you stay focused
+        on what matters most. 
+      </p>
+      <p>
+        By blocking access to certain websites, we aim to
+        create a more productive and enjoyable browsing environment for you. If
+        you believe this page has been blocked in error, please contact us with
+        the URL and we will review it for potential inclusion in our allowed
+        list.
+      </p>
+    </div>
+    <div class="info_section">
+      <h1 class="sub_title">How to unblock this page ?</h1>
+      <p>
+        If you wish to unblock this page, you can do so by accessing the
+        extension's "Block pages" section and removing the URL from the blocked
+        list. Please note that unblocking a page may lead to increased
+        distractions, so we recommend carefully considering whether you want to
+        unblock it.
+      </p>
+      <p>
+        For more information on how to manage your blocked pages, please refer
+        to our extension's settings and documentation. We are committed to
+        helping you create a productive online environment while respecting your
+        preferences.
+      </p>
+      <button class="visit_doc_button">Visit documentation</button>
+    </div>
+  </body>
 </html>

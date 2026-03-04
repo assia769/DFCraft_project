@@ -29,12 +29,12 @@ try {
 
   // 4️⃣ Files needed from main build
   const neededFiles = [
-     "background.js",
+    "background.js",
     "content.js",
     "main.js",
     "main.css",
     "popup.css",
-    "offscreen.html", // Add this
+    "offscreen.html",
     "offscreen.js",
     "src"
   ];
@@ -80,6 +80,16 @@ try {
   fs.copyFileSync(
     path.join(__dirname, '..', 'public', 'manifest.chrome.json'),
     path.join(chromeDir, 'manifest.json')
+  );
+
+  fs.copySync(
+    path.join(__dirname, '..', 'public', 'staticPages', 'blocked.html'),
+    path.join(chromeDir, 'staticPages', 'blocked.html')
+  );
+
+  fs.copySync(
+    path.join(__dirname, '..', 'public', 'staticPages', 'blocked.html'),
+    path.join(firefoxDir, 'staticPages', 'blocked.html')
   );
 
   fs.copyFileSync(

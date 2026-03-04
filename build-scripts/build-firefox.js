@@ -82,6 +82,11 @@ try {
 
   fs.copyFileSync(firefoxManifestPath, path.join(firefoxDir, "manifest.json"));
 
+  fs.copySync(
+      path.join(__dirname, '..', 'public', 'staticPages', 'blocked.html'),
+      path.join(firefoxDir, 'staticPages', 'blocked.html')
+  );
+
   // Copy icons and sounds
   console.log("🎨 Copying assets...");
 

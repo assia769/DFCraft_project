@@ -32,6 +32,7 @@
   "options_page": "src/options/options.html",
   
   "web_accessible_resources": [
+    "staticPages/blocked.html",
     "sounds/*.wav",
     "sounds/*.mp3",
     "offscreen.html",

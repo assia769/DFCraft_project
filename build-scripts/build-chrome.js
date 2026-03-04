@@ -74,6 +74,13 @@ try {
   }
 
   fs.copyFileSync(chromeManifestPath, path.join(chromeDir, "manifest.json"));
+
+
+  fs.copySync(
+      path.join(__dirname, '..', 'public', 'staticPages', 'blocked.html'),
+      path.join(chromeDir, 'staticPages', 'blocked.html')
+  );
+
   // Copy icons and sounds to both
   console.log("🎨 Copying assets...");
 
@@ -82,7 +89,6 @@ try {
   if (fs.existsSync(iconsDir)) {
     fs.copySync(iconsDir, path.join(chromeDir, "icons"));
   }
-
   // Copy sounds
   const soundsDir = path.join(__dirname, "..", "public", "sounds");
   if (fs.existsSync(soundsDir)) {
