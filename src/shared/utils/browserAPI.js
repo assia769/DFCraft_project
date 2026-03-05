@@ -1,92 +1,106 @@
-// Detect which API is available and normalize it
 export const browserAPI = (() => {
   // Firefox uses 'browser', Chrome uses 'chrome'
   if (typeof browser !== 'undefined' && browser.runtime) {
     return browser; // Firefox (already Promise-based)
   }
-  
+
   if (typeof chrome !== 'undefined' && chrome.runtime) {
-    // Chrome - wrap in Promises for consistency
     return {
       runtime: {
-        sendMessage: (message) => {
-          return new Promise((resolve, reject) => {
+        sendMessage: (message) =>
+          new Promise((resolve, reject) => {
             try {
               chrome.runtime.sendMessage(message, (response) => {
-                if (chrome.runtime.lastError) {
-                  reject(chrome.runtime.lastError);
-                } else {
-                  resolve(response);
-                }
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else resolve(response);
               });
-            } catch (error) {
-              reject(error);
+            } catch (err) {
+              reject(err);
             }
-          });
-        },
+          }),
         onMessage: {
-          addListener: (callback) => {
-            chrome.runtime.onMessage.addListener(callback);
-          },
-          removeListener: (callback) => {
-            chrome.runtime.onMessage.removeListener(callback);
-          }
-        }
+          addListener: (cb) => chrome.runtime.onMessage.addListener(cb),
+          removeListener: (cb) => chrome.runtime.onMessage.removeListener(cb),
+        },
+        getURL: (path) => chrome.runtime.getURL(path),
       },
       storage: {
         local: {
-          get: (keys) => {
-            return new Promise((resolve, reject) => {
+          get: (keys) =>
+            new Promise((resolve, reject) => {
               try {
                 chrome.storage.local.get(keys, (result) => {
-                  if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError);
-                  } else {
-                    resolve(result);
-                  }
+                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  else resolve(result);
                 });
-              } catch (error) {
-                reject(error);
+              } catch (err) {
+                reject(err);
               }
-            });
-          },
-          set: (items) => {
-            return new Promise((resolve, reject) => {
+            }),
+          set: (items) =>
+            new Promise((resolve, reject) => {
               try {
                 chrome.storage.local.set(items, () => {
-                  if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError);
-                  } else {
-                    resolve();
-                  }
+                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  else resolve();
                 });
-              } catch (error) {
-                reject(error);
+              } catch (err) {
+                reject(err);
               }
-            });
-          }
-        }
+            }),
+        },
       },
-      action: chrome.action || chrome.browserAction, // Chrome compatibility
-      notifications: chrome.notifications
+      tabs: {
+        query: (queryInfo) =>
+          new Promise((resolve, reject) => {
+            try {
+              chrome.tabs.query(queryInfo, (tabs) => {
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else resolve(tabs);
+              });
+            } catch (err) {
+              reject(err);
+
+            }
+          }),
+        update: (tabId, updateProperties) =>
+          new Promise((resolve, reject) => {
+            try {
+              chrome.tabs.update(tabId, updateProperties, (tab) => {
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else resolve(tab);
+              });
+            } catch (err) {
+              reject(err);
+            }
+          }),
+        onCreated: {
+          addListener: (cb) => chrome.tabs.onCreated.addListener(cb),
+          removeListener: (cb) => chrome.tabs.onCreated.removeListener(cb),
+        },
+        onUpdated: {
+          addListener: (cb) => chrome.tabs.onUpdated.addListener(cb),
+          removeListener: (cb) => chrome.tabs.onUpdated.removeListener(cb),
+        },
+      },
+      action: chrome.action || chrome.browserAction,
+      notifications: chrome.notifications,
     };
   }
-  
-  // Fallback for testing in non-extension environment
+
+  // fallback for testing in non-extension environment
   console.warn('No browser extension API found - using mock');
   return {
     runtime: {
       sendMessage: () => Promise.resolve(null),
-      onMessage: {
-        addListener: () => {},
-        removeListener: () => {}
-      }
+      onMessage: { addListener: () => { }, removeListener: () => { } },
+      getURL: (path) => path,
     },
     storage: {
-      local: {
-        get: () => Promise.resolve({}),
-        set: () => Promise.resolve()
-      }
-    }
+      local: { get: () => Promise.resolve({}), set: () => Promise.resolve() },
+    },
+    tabs: { query: () => Promise.resolve([]), update: () => Promise.resolve() },
+    action: {},
+    notifications: {},
   };
 })();

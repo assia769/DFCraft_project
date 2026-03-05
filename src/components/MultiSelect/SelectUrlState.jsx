@@ -24,14 +24,13 @@ function SelectUrlState({ setElements }) {
   }, [selected, setElements]);
 
   return (
-    <div className="flex flex-col items-center space-y-2">
-      <select value={selected} onChange={handleChange} className="border border-gray-300 p-2 rounded focus:outline-none">
-        <option value="">--Select--</option>
+    <div className="flex justify-end items-center dark:text-black text-white  ">
+      <select value={selected} onChange={handleChange} className=" p-2 rounded focus:outline-none dark:bg-darkElements bg-[#5B1FC0]">
+        <option value="">Select</option>
         <option value="sownd">Sownd</option>
         <option value="acces">Acces</option>
         <option value="both">Both</option>
       </select>
-      <p className="text-sm text-gray-600">Selected: {selected}</p>
     </div>
   );
 }

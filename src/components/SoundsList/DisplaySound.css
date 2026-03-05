@@ -1,3 +1,59 @@
+/* Light mode (default) */
+:root {
+  --selected-bar-color: #B46CFA;
+  --bar-color: #5B1FC0;
+  --bar-track-color: #6D00D8;
+}
+
+
+.dark {
+  --selected-bar-color: #5A00B0;
+  --bar-color: #C8A0EF;
+  --bar-track-color: #B46CFA;
+}
+
+/* Remove default browser styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Style the track - Chrome/Edge/Safari */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Style the thumb - Chrome/Edge/Safari */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--selected-bar-color);
+  margin-top: -4px; /* Centers the thumb on the track */
+  cursor: pointer;
+}
+
+/* Style the track - Firefox */
+input[type="range"]::-moz-range-track {
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Style the thumb - Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--selected-bar-color);
+  border: none;
+  cursor: pointer;
+}
+
 @keyframes BtoT{
     0%{
         transform: translateY(200px);

@@ -1,24 +1,132 @@
-// Use the same wrapper approach
-const browserAPI = (() => {
-  if (typeof browser !== "undefined") return browser;
-  if (typeof chrome !== "undefined") {
+// background.js
+import { blockWorker } from './blockerWorker.js';
+import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
+
+ const browserAPI = (() => {
+  if (typeof browser !== 'undefined' && browser.runtime) {
+    return browser;
+  }
+
+  if (typeof chrome !== 'undefined' && chrome.runtime) {
     return {
-      runtime: chrome.runtime,
+      runtime: {
+        sendMessage: (message, callback) =>
+          new Promise((resolve, reject) => {
+            try {
+              chrome.runtime.sendMessage(message, (response) => {
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else {
+                  if (callback) callback(response);
+                  resolve(response)
+                };
+              });
+            } catch (err) {
+              reject(err);
+            }
+          }),
+        onMessage: {
+          addListener: (cb) => chrome.runtime.onMessage.addListener(cb),
+          removeListener: (cb) => chrome.runtime.onMessage.removeListener(cb),
+        },
+        getURL: (path) => chrome.runtime.getURL(path),
+        getContexts : (filter) => chrome.runtime.getContexts(filter),
+      },
       storage: {
         local: {
           get: (keys) =>
-            new Promise((resolve) => chrome.storage.local.get(keys, resolve)),
+            new Promise((resolve, reject) => {
+              try {
+                chrome.storage.local.get(keys, (result) => {
+                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  else resolve(result);
+                });
+              } catch (err) {
+                reject(err);
+              }
+            }),
           set: (items) =>
-            new Promise((resolve) => chrome.storage.local.set(items, resolve)),
+            new Promise((resolve, reject) => {
+              try {
+                chrome.storage.local.set(items, () => {
+                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  else resolve();
+                });
+              } catch (err) {
+                reject(err);
+              }
+            }),
         },
       },
+      tabs: {
+        query: (queryInfo) =>
+          new Promise((resolve, reject) => {
+            try {
+              chrome.tabs.query(queryInfo, (tabs) => {
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else resolve(tabs);
+              });
+            } catch (err) {
+              reject(err);
+            }
+          }),
+        update: (tabId, updateProperties) =>
+          new Promise((resolve, reject) => {
+            try {
+              chrome.tabs.update(tabId, updateProperties, (tab) => {
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else resolve(tab);
+              });
+            } catch (err) {
+              reject(err);
+            }
+          }),
+      },
+      action: chrome.action || chrome.browserAction,
       action: chrome.action || chrome.browserAction,
       offscreen: chrome.offscreen, // Add this
       notifications: chrome.notifications,
     };
   }
+
+  // fallback for testing in non-extension environment
+  console.warn('No browser extension API found - using mock');
+  return {
+    runtime: {
+      sendMessage: () => Promise.resolve(null),
+      onMessage: { addListener: () => {}, removeListener: () => {} },
+      getURL: (path) => path,
+    },
+    storage: {
+      local: { get: () => Promise.resolve({}), set: () => Promise.resolve() },
+    },
+    tabs: { query: () => Promise.resolve([]), update: () => Promise.resolve() },
+    action: {},
+    notifications: {},
+  };
 })();
 
+
+
+
+
+
+
+async function init() {
+ await loadTimer();
+
+  // 2️⃣ Installer le listener spécifique au timer
+  setupTimerListener();
+
+  // 3️⃣ Démarrer la boucle du timer
+
+  startTimerLoop();
+  blockWorker() ;
+
+  console.log("C'est le background    .........")
+
+}
+
+init();
 let offscreenReady = false;
 let offscreenReadyTs = 0;
 
@@ -29,7 +137,9 @@ let timerData = {
   originalTime: 1500,
   workTime: 1500,
   breakTime: 300,
+  longBreakTime: 900,
   phaseType: "work",
+  sessionCount: 0,
 };
 
 // Load saved state
@@ -223,14 +333,25 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true; // Keep channel open for async response
 });
 
-// Notification sound player for the timer
+let _audioCtx = null;
+
+function getAudioContext() {
+  if (!_audioCtx || _audioCtx.state === "closed") {
+    _audioCtx = new AudioContext();
+  }
+  if (_audioCtx.state === "suspended") {
+    _audioCtx.resume();
+  }
+  return _audioCtx;
+}
+
 async function playSound(soundName) {
   try {
-    // Check if offscreen API exists (Chrome only)
+    // ── Chrome path (offscreen document) ──────────────────────
     if (browserAPI.offscreen) {
       const existingContexts = await browserAPI.runtime.getContexts({});
       const offscreenDocument = existingContexts.find(
-        (context) => context.contextType === "OFFSCREEN_DOCUMENT",
+        (c) => c.contextType === "OFFSCREEN_DOCUMENT",
       );
 
       if (!offscreenDocument) {
@@ -245,20 +366,61 @@ async function playSound(soundName) {
         type: "PLAY_SOUND",
         soundUrl: browserAPI.runtime.getURL(`sounds/${soundName}.wav`),
       });
-    } else {
-      // Firefox fallback
+
+      return; // ← done for Chrome
+    }
+
+    const formats = [`sounds/${soundName}.wav`, `sounds/${soundName}.mp3`];
+
+    let arrayBuffer = null;
+    let lastError = null;
+
+    for (const fmt of formats) {
+      try {
+        const url = browserAPI.runtime.getURL(fmt);
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} for ${url}`);
+        }
+
+        arrayBuffer = await response.arrayBuffer();
+        break; // success — stop trying other formats
+      } catch (err) {
+        lastError = err;
+        console.warn(`[BG] Could not load ${fmt}:`, err);
+      }
+    }
+
+    if (!arrayBuffer) {
+      throw lastError ?? new Error("All audio formats failed to load");
+    }
+
+    const ctx = getAudioContext();
+    const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+
+    const source = ctx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(ctx.destination);
+    source.start(0);
+
+    console.log(`[BG] ✅ Firefox notification sound played: ${soundName}`);
+
+  } catch (error) {
+    console.error("[BG] playSound failed:", error);
+
+    // ── Last-resort HTML5 Audio fallback ─────────────────────
+    // Works in some Firefox configurations; harmless if it fails.
+    try {
       const audio = new Audio(
         browserAPI.runtime.getURL(`sounds/${soundName}.wav`),
       );
-      audio.play().catch((err) => {
-        console.error("Firefox audio playback failed:", err);
-      });
+      await audio.play();
+    } catch (fallbackErr) {
+      console.error("[BG] HTML5 Audio fallback also failed:", fallbackErr);
     }
-  } catch (error) {
-    console.error("Failed to play sound:", error);
   }
 }
-
 // Timer loop
 // In background.js, inside the timer loop:
 setInterval(() => {
@@ -281,13 +443,21 @@ setInterval(() => {
       .catch(() => {});
   } else if (timerData.time === 0 && timerData.isRunning) {
     // Timer hit 0, switch phases
-    if (timerData.phaseType === "work" && timerData.breakTime > 0) {
-      timerData.phaseType = "break";
-      timerData.time = timerData.breakTime;
-      timerData.originalTime = timerData.breakTime;
+    if (timerData.phaseType === "work") {
+      timerData.sessionCount++;
+      
+      if (timerData.sessionCount % 4 === 0 && timerData.longBreakTime > 0) {
+        timerData.phaseType = "longBreak";
+        timerData.time = timerData.longBreakTime;
+        timerData.originalTime = timerData.longBreakTime;
+        console.log("Switching to long break phase:", timerData.longBreakTime);
+      } else if (timerData.breakTime > 0) {
+        timerData.phaseType = "break";
+        timerData.time = timerData.breakTime;
+        timerData.originalTime = timerData.breakTime;
+        console.log("Switching to break phase:", timerData.breakTime);
+      }
       timerData.lastUpdate = Date.now();
-      console.log("Switching to break phase:", timerData.breakTime);
-
       playSound("notification");
     } else if (timerData.phaseType === "break" && timerData.workTime > 0) {
       timerData.phaseType = "work";
@@ -295,7 +465,14 @@ setInterval(() => {
       timerData.originalTime = timerData.workTime;
       timerData.lastUpdate = Date.now();
       console.log("Switching to work phase:", timerData.workTime);
-
+      playSound("notification");
+    } else if (timerData.phaseType === "longBreak" && timerData.workTime > 0) {
+      timerData.sessionCount = 0;
+      timerData.phaseType = "work";
+      timerData.time = timerData.workTime;
+      timerData.originalTime = timerData.workTime;
+      timerData.lastUpdate = Date.now();
+      console.log("Switching to work phase:", timerData.workTime);
       playSound("notification");
     } else {
       // No break/work time set, just stop

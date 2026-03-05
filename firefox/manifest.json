@@ -17,7 +17,7 @@
   
   "background": {
     "scripts": ["background.js"],
-    "persistent": false
+    "persistent": true
   },
   
   "content_scripts": [
@@ -28,9 +28,17 @@
     }
   ],
   
-  "permissions": ["storage", "notifications", "alarms", "activeTab", "tabs"],
+  "permissions": ["storage", "notifications", "alarms", "activeTab", "offscreen" ,  "tabs"],
 
-  "options_page": "options.html",
+  "options_page": "src/options/options.html",
+  
+  "web_accessible_resources": [
+    "staticPages/blocked.html",
+    "sounds/*.wav",
+    "sounds/*.mp3",
+    "offscreen.html",
+    "offscreen.js"
+  ],
   
   "options_ui": {
     "page": "options.html",

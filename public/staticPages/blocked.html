@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Access Blocked</title>
+    <link rel="icon" href="../icons/Stop.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Concert+One&family=Ysabeau+Office:ital,wght@0,1..1000;1,1..1000&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #161616;
+        font-family: "Concert One", sans-serif;
+      }
+
+      .warn_img {
+        display: block;
+        width: 400px;
+        height: 400px;
+      }
+
+      .warn_section {
+        background-color: #a855f7;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        border-radius: 15px;
+        margin-top: 80px;
+        margin-right: 60px;
+        margin-left: 60px;
+        transition:
+          box-shadow 0.3s ease,
+          transform 0.3s ease;
+        border: 3px solid #161616;
+      }
+
+      .warn_section:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 10px 20px #a855f7;
+        transition:
+          box-shadow 0.3s ease,
+          transform 0.3s ease;
+      }
+
+      .warn_text {
+        max-width: 600px;
+        color: #161616;
+      }
+
+      .title {
+        font-size: 60px;
+        margin-bottom: 20px;
+      }
+
+      .sub_title {
+        font-size: 40px;
+        margin-bottom: 20px;
+      }
+
+      .message {
+        font-size: 18px;
+        line-height: 1.5;
+        max-width: 600px;
+      }
+
+      .info_section {
+        margin: 40px auto;
+        max-width: 900px;
+        color: #f2f2f2;
+        padding: 20px;
+        border-radius: 6px;
+      }
+
+      .visit_doc_button {
+        padding: 10px 20px;
+        background-color: #a855f7;
+        color: #161616;
+        font-family: "Concert One", sans-serif;
+        border: 1px solid #161616;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-top: 20px;
+        cursor: pointer;
+         transition:
+          background-color 0.3s ease,
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .visit_doc_button:hover {
+        background-color: #cc95ff;
+        transform: scale(1.05);
+        box-shadow: 0px 5px 15px #cc95ff;
+        transition:
+          background-color 0.3s ease,
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="warn_section">
+      <img
+        src="../icons/StopPage.png"
+        alt="Pls don't acces this page, it will just distract you"
+        class="warn_img"
+      />
+      <div class="warn_text">
+        <h1 class="title">Page Access Blocked</h1>
+        <p class="message">
+          We apologize for the inconvenience, but we cannot let you access this
+          page. Please return to the previous page or navigate to a different
+          section of the website.
+        </p>
+      </div>
+    </div>
+    <div class="info_section">
+      <h1 class="sub_title">Why we blocked this page ?</h1>
+      <p>
+        This page has been blocked by our extension because it has been
+        identified as a source of distraction or unproductive content. We
+        understand that everyone has different preferences and needs when it
+        comes to their online experience, and we want to help you stay focused
+        on what matters most. 
+      </p>
+      <p>
+        By blocking access to certain websites, we aim to
+        create a more productive and enjoyable browsing environment for you. If
+        you believe this page has been blocked in error, please contact us with
+        the URL and we will review it for potential inclusion in our allowed
+        list.
+      </p>
+    </div>
+    <div class="info_section">
+      <h1 class="sub_title">How to unblock this page ?</h1>
+      <p>
+        If you wish to unblock this page, you can do so by accessing the
+        extension's "Block pages" section and removing the URL from the blocked
+        list. Please note that unblocking a page may lead to increased
+        distractions, so we recommend carefully considering whether you want to
+        unblock it.
+      </p>
+      <p>
+        For more information on how to manage your blocked pages, please refer
+        to our extension's settings and documentation. We are committed to
+        helping you create a productive online environment while respecting your
+        preferences.
+      </p>
+      <button class="visit_doc_button">Visit documentation</button>
+    </div>
+  </body>
+</html>

@@ -10,7 +10,6 @@ export default defineConfig({
       input: {
         popup: resolve(fileURLToPath(new URL('.', import.meta.url)), 'src/popup/popup.html'),
         options: resolve(fileURLToPath(new URL('.', import.meta.url)), 'src/options/options.html'),
-        background: resolve(fileURLToPath(new URL('.', import.meta.url)), 'src/background/background.js'),
         content: resolve(fileURLToPath(new URL('.', import.meta.url)), 'src/content/contentScript.js'),
       },
       output: {

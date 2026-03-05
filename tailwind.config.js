@@ -7,6 +7,7 @@ export default {
       fontFamily: {
         "concert": ["Concert One", "cursive"],
       },
+      
       colors: {
         // Light mode colors
         light: "#F2F2F2",
@@ -17,6 +18,7 @@ export default {
         lightProgressBar: "#6D00D8",
         lightSelectedBar: "#B46CFA",
         lightPlaceHolder: "#9D72C7",
+        lightFontText: '#000000' , 
 
         // Dark mode colors
         dark: "#161616",
@@ -27,7 +29,23 @@ export default {
         darkProgressBar: "#B46CFA",
         darkSelectedBar: "#5A00B0",
         darkPlaceHolder: "#9D72C7",
+        darkFontText: '#FFFFFF', 
+
+        // AccentColor 
+        
+        
       },
+      keyframes: {
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(-4px)' },
+          '50%': { transform: 'translateX(4px)' },
+          '75%': { transform: 'translateX(-4px)' },
+        }
+      },
+      animation: {
+        shake: 'shake 0.2s ease-in-out 0s 2',
+      }
     },
   },
   plugins: [],
