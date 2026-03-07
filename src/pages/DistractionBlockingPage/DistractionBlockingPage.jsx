@@ -74,7 +74,7 @@ const DistractionBlockingPage = () => {
           </button>
         )}
       </div>
-      <section className="p-4 rounded-xl text-darkFontText text-[17px] dark:text-white mt-3 dark:text-lightFontText dark:shadow-[inset_10px_10px_37px_-16px_rgba(127,45,191,0.27)] z-10">
+      <section className="p-4 rounded-xl text-lightElements dark:text-darkElements text-[17px] mt-3">
         {searchedValue !== "" ? (
           searchedElement.length > 0 ? (
             <UrlList

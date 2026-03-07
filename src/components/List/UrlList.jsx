@@ -115,7 +115,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
   function handleChangeSownd(url) {
     setUrlElement((prv) =>
       prv.map((item) =>
-        item.url === url ? { ...item, sowndBlocked: true } : item,
+        item.url === url ? { ...item, sowndBlocked: true, urlBlocked: false } : item,
       ),
     );
     setClicked(false);
@@ -123,7 +123,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
   function handleChangeBlocked(url) {
     setUrlElement((prv) =>
       prv.map((item) =>
-        item.url === url ? { ...item, urlBlocked: true } : item,
+        item.url === url ? { ...item, urlBlocked: true, sowndBlocked: false } : item,
       ),
     );
     setClicked(false);
@@ -160,14 +160,13 @@ function MultiSelect({ urlElement, setUrlElement }) {
     setClicked(!clicked);
   };
   return (
-    <div className="relative flex text-[10px] w-[57px]  justify-center items-center  ">
+    <div className="relative text-light dark:text-dark flex text-[10px] justify-center items-center z-1">
       {urlElement.sowndBlocked || urlElement.urlBlocked ? (
         <span
-          className={` transform ${clicked ? "rotate-180" : "rotate-0"} 
+          className={`transform ${clicked ? "rotate-180" : "rotate-0"} 
                         transition-transform p-[3px] rounded-lg 
-                         duration-300
-                         ${urlElement.sowndBlocked && urlElement.urlBlocked ? "bg-[#ffff00a3]" : urlElement.sowndBlocked ? "bg-[#008000ad]" : "bg-[#ff4747]"}
-                         `}
+                        duration-300
+                        ${urlElement.sowndBlocked && urlElement.urlBlocked ? "bg-[#ffff00a3]" : urlElement.sowndBlocked ? "bg-[#008000ad]" : "bg-[#ff4747]"}`}
           onClick={handleOnClick}
         >
           {urlElement.sowndBlocked && urlElement.urlBlocked
@@ -178,7 +177,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
         </span>
       ) : (
         <span
-          className={` transform ${clicked ? "rotate-180" : "rotate-0"} transition-transform duration-300    rounded-xl `}
+          className={`transform ${clicked ? "rotate-180" : "rotate-0"} transition-transform duration-300 rounded-xl text-lightElements dark:text-darkElements`}
           onClick={handleOnClick}
         >
           <ChevronDown />
@@ -189,32 +188,32 @@ function MultiSelect({ urlElement, setUrlElement }) {
         className={`${clicked ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"} transition-all duration-300 ease-in-out origin-top flex  dark:bg-darkElements rounded-xl bg-[#C282FF]  p-2 flex-col top-0 left-0 z-10  w-[45px] justify-center items-center absolute`}
       >
         <div
-          className={`w-full  flex justify-start items-center transform transition-transform duration-300 ${clicked ? "rotate-180" : "rotate-0"}`}
+          className={`w-full flex justify-start items-center transform transition-transform duration-300 ${clicked ? "rotate-180" : "rotate-0"}`}
           onClick={handleOnClick}
         >
           <ChevronDown color="white" />
         </div>
         <div
           onClick={() => setSelected("sownd")}
-          className="w-full cursor-pointer  "
+          className="w-full cursor-pointer hover:bg-[#cc95fe80] rounded-[9px]   flex justify-center items-center gap-1"
         >
           Sownd
         </div>
         <div
-          className="w-full cursor-pointer"
+          className="w-full cursor-pointer hover:bg-[#cc95fe80] rounded-[9px]   flex justify-center items-center gap-1"
           onClick={() => setSelected("acces")}
         >
           Acces
         </div>
         <div
           onClick={() => setSelected("both")}
-          className="w-full cursor-pointer"
+          className="w-full cursor-pointer hover:bg-[#cc95fe80] rounded-[9px]   flex justify-center items-center gap-1"
         >
           Both
         </div>
         <div
           onClick={() => setSelected("none")}
-          className="w-full cursor-pointer"
+          className="w-full cursor-pointer hover:bg-[#cc95fe80] rounded-[9px]   flex justify-center items-center gap-1"
         >
           None
         </div>
