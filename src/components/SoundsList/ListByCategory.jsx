@@ -16,7 +16,7 @@ export default function ListByCategory() {
           onChange={(e) => setSearchSound(e.target.value)}
           type="text"
           placeholder="Search for sound, Author..."
-          className="p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder w-full ml-6"
+          className="p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder focus:outline-none w-full ml-6"
         />
         <button
           onClick={() => {
