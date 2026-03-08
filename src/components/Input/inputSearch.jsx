@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 
 function InputSearch({ Element, setSearchedElement, value, setValue }) {
   useEffect(() => {
@@ -24,7 +24,7 @@ function InputSearch({ Element, setSearchedElement, value, setValue }) {
           }
         }}
         placeholder="Add url"
-        className="p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList placeholder:text-lightPlaceHolder dark:text-darkPlaceHolder w-full focus:outline-none ml-6"
+        className={`p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList ${value ? 'text-light dark:text-dark' : 'placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder'} w-full focus:outline-none ml-6`}
     />
   );
 }

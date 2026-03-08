@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import InputAddUrl from "../../components/Input/InputAddUrl";
 import UrlList from "../../components/List/UrlList";
 import SelectUrlState from "../../components/MultiSelect/SelectUrlState";
-import { Shield, Trash, ListFilter } from "lucide-react";
+import { Shield, Trash, ListFilter, Plus } from "lucide-react";
 import { X } from "lucide-react";
 import useSaveUrl from "../../shared/hooks/useSaveUrl";
 import InputSearch from "../../components/Input/inputSearch";
@@ -10,7 +10,7 @@ import DisplayBlockTypes from "../../components/DisplayBlockTypes/DisplayBlockTy
 
 const DistractionBlockingPage = () => {
   const [showDialog, setShowDialog] = useState(false);
-  const [showAddInput, setShowAddInput] = useState(false);
+  const [showAddSection, setShowAddSection] = useState(false);
   const [selectedElement, setSelectedElement] = useState([]);
   const [searchedElement, setsearchedElement] = useState([]);
   const [isDelete, setisDelete] = useState(false);
@@ -48,6 +48,7 @@ const DistractionBlockingPage = () => {
     // On retire la classe après la fin de l'animation (200ms)
     setTimeout(() => setIsShaking(false), 200);
   };
+
   function handleDelete() {
     setUrlElement((prv) =>
       prv.filter((item) => !selectedElement.includes(item)),
@@ -60,7 +61,6 @@ const DistractionBlockingPage = () => {
     console.log("selectedElement", selectedElement);
     if (selectedElement.length > 0) {
       setisDelete(true);
-      setShowAddInput(false);
     } else {
       setisDelete(false);
     }
@@ -80,7 +80,7 @@ const DistractionBlockingPage = () => {
             }
           }}
           placeholder="Add url"
-          className="p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList placeholder:text-lightPlaceHolder dark:text-darkPlaceHolder w-full focus:outline-none ml-6"
+          className={`p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList ${searchedValue ? 'text-light dark:text-dark' : 'placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder'} w-full focus:outline-none ml-6`}
         />
         {isDelete ? (
           <button
@@ -113,12 +113,25 @@ const DistractionBlockingPage = () => {
         />
       </section>
       <div className="absolute h-[50%] w-[50%] bottom-[-25%] left-[50%] blur-[50px] dark:bg-darkElements bg-[#A855F7] z-[-1]"></div>
+      <button
+        className="fixed bottom-8 right-5 bg-lightElements dark:bg-darkElements hover:bg-[#6112e9] dark:hover:bg-[#bf81f8] rounded-full flex justify-center items-center w-14 h-14 hover:w-[3.75rem] hover:h-[3.75rem]"
+        onClick={() => setShowAddSection(true)}
+      >
+        <Plus strokeWidth={2} className="text-light dark:text-dark" />
+      </button>
       {showBlockTypes && (
         <DisplayBlockTypes
           showBlockTypes={showBlockTypes}
           setShowBlockTypes={setShowBlockTypes}
           selectedBlockTypes={selectedBlockTypes}
           setSelectedBlockTypes={setSelectedBlockTypes}
+        />
+      )}
+      {showAddSection && (
+        <InputAddUrl
+          setShowAddSection={setShowAddSection}
+          elements={urlElements}
+          setElement={setUrlElement}
         />
       )}
     </div>

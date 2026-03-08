@@ -129,6 +129,17 @@ function MultiSelect({ urlElement, setUrlElement }) {
     setClicked(false);
   }
 
+  function handleChangeBoth(url) {
+    setUrlElement((prv) =>
+      prv.map((item) =>
+        item.url === url
+          ? { ...item, urlBlocked: true, sowndBlocked: true }
+          : item,
+      ),
+    );
+    setClicked(false);
+  }
+
   function handleChangeNselectedone(url) {
     setUrlElement((prv) =>
       prv.map((item) =>
@@ -148,8 +159,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
       handleChangeBlocked(urlElement.url);
     }
     if (selected === "both") {
-      handleChangeBlocked(urlElement.url);
-      handleChangeSownd(urlElement.url);
+      handleChangeBoth(urlElement.url);
     }
     if (selected === "none") {
       handleChangeNselectedone(urlElement.url);
@@ -222,12 +232,4 @@ function MultiSelect({ urlElement, setUrlElement }) {
   );
 }
 
-function Separator({ className = "" }) {
-  return (
-    <div
-      className={` ${className}   h-[2px] rounded-sm  `}
-      style={{ marginRight: "19px" }}
-    ></div>
-  );
-}
 export default UrlList;

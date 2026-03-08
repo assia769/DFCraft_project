@@ -15,6 +15,7 @@ body * {
     font-family: 'Concert One', cursive;
     background-color: #F2F2F2; /* light background */
     min-height: 100vh;
+    font-size: medium;
   }
   
   /* Dark mode */
