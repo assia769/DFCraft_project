@@ -16,7 +16,6 @@ export default function MainLayout() {
         <UrlProvider>
           <Body choosenPage={choosenPage} />
         </UrlProvider>
-        <Footer />
       </TimerProvider>
     </>
   );

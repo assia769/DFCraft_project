@@ -10,7 +10,7 @@ function InputSearch({ Element, setSearchedElement, value, setValue }) {
       return;
     }
     setSearchedElement([]);
-  }, [value]);
+  }, [value, Element]);
 
   return (
     <input

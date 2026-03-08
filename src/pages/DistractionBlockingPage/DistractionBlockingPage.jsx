@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import InputAddUrl from "../../components/Input/InputAddUrl";
 import UrlList from "../../components/List/UrlList";
 import SelectUrlState from "../../components/MultiSelect/SelectUrlState";
@@ -6,6 +6,7 @@ import { Shield, Trash, ListFilter } from "lucide-react";
 import { X } from "lucide-react";
 import useSaveUrl from "../../shared/hooks/useSaveUrl";
 import InputSearch from "../../components/Input/inputSearch";
+import DisplayBlockTypes from "../../components/DisplayBlockTypes/DisplayBlockTypes";
 
 const DistractionBlockingPage = () => {
   const [showDialog, setShowDialog] = useState(false);
@@ -14,10 +15,33 @@ const DistractionBlockingPage = () => {
   const [searchedElement, setsearchedElement] = useState([]);
   const [isDelete, setisDelete] = useState(false);
   const [searchedValue, setSearchedValue] = useState("");
-
+  const [showBlockTypes, setShowBlockTypes] = useState(false);
+  const [selectedBlockTypes, setSelectedBlockTypes] = useState("all");
   const { urlElements, setUrlElement } = useSaveUrl();
 
   const [isShaking, setIsShaking] = useState(false);
+
+  const filteredElement = useMemo(() => {
+    const filteredElements =
+      searchedValue == ""
+        ? urlElements
+        : urlElements.filter((element) =>
+            element.url.toLowerCase().includes(searchedValue.toLowerCase()),
+          );
+    if (selectedBlockTypes === "access")
+      return filteredElements.filter((element) => element.accessBlocked);
+    else if (selectedBlockTypes === "sownd")
+      return filteredElements.filter((element) => element.sowndBlocked);
+    else if (selectedBlockTypes === "both")
+      return filteredElements.filter(
+        (element) => element.accessBlocked && element.sowndBlocked,
+      );
+    else if (selectedBlockTypes === "none")
+      return filteredElements.filter(
+        (element) => !element.accessBlocked && !element.sowndBlocked,
+      );
+    return filteredElements;
+  }, [searchedValue, selectedBlockTypes, urlElements]);
 
   const handleClick = () => {
     setIsShaking(true);
@@ -43,13 +67,20 @@ const DistractionBlockingPage = () => {
   }, [selectedElement]);
 
   return (
-    <div className="relative overflow-hidden dark:bg-dark bg-light">
-      <div className="flex flex-row justify-between items-center mb-2">
-        <InputSearch
-          Element={urlElements}
+    <div className="relative dark:bg-dark bg-light">
+      <div className="flex flex-row justify-between items-center">
+        <input
           value={searchedValue}
-          setValue={setSearchedValue}
-          setSearchedElement={setsearchedElement}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => setSearchedValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              console.log("Le key est Enter est presse");
+              addElement(searchedValue);
+            }
+          }}
+          placeholder="Add url"
+          className="p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList placeholder:text-lightPlaceHolder dark:text-darkPlaceHolder w-full focus:outline-none ml-6"
         />
         {isDelete ? (
           <button
@@ -65,7 +96,7 @@ const DistractionBlockingPage = () => {
         ) : (
           <button
             onClick={() => {
-              setShowCats(true);
+              setShowBlockTypes(true);
             }}
             className="transition-colors relative mr-6"
             aria-label="Menu"
@@ -74,27 +105,22 @@ const DistractionBlockingPage = () => {
           </button>
         )}
       </div>
-      <section className="p-4 rounded-xl text-lightElements dark:text-darkElements text-[17px] mt-3">
-        {searchedValue !== "" ? (
-          searchedElement.length > 0 ? (
-            <UrlList
-              urlElements={searchedElement}
-              setUrlElements={setUrlElement}
-              setSelectedElement={setSelectedElement}
-            />
-          ) : (
-            <div className="text-center p-4">Cette url n'existe pas </div>
-          )
-        ) : (
-          <UrlList
-            urlElements={urlElements}
-            setUrlElements={setUrlElement}
-            setSelectedElement={setSelectedElement}
-          />
-        )}
+      <section className="p-4 rounded-xl text-lightElements dark:text-darkElements text-[17px]">
+        <UrlList
+          urlElements={filteredElement}
+          setUrlElements={setUrlElement}
+          setSelectedElement={setSelectedElement}
+        />
       </section>
-
-      <div className="absolute h-[50%] w-[50%]  bottom-[-25%] left-[50%]  blur-[50px]     dark:bg-darkElements bg-[#A855F7] z-[-1]"></div>
+      <div className="absolute h-[50%] w-[50%] bottom-[-25%] left-[50%] blur-[50px] dark:bg-darkElements bg-[#A855F7] z-[-1]"></div>
+      {showBlockTypes && (
+        <DisplayBlockTypes
+          showBlockTypes={showBlockTypes}
+          setShowBlockTypes={setShowBlockTypes}
+          selectedBlockTypes={selectedBlockTypes}
+          setSelectedBlockTypes={setSelectedBlockTypes}
+        />
+      )}
     </div>
   );
 };

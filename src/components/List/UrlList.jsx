@@ -5,10 +5,10 @@ import { ChevronDown } from "lucide-react";
 
 const UrlList = ({ urlElements, setUrlElements, setSelectedElement }) => {
   if (urlElements.length === 0)
-    return <div className="text-center p-4">Aucun url est définie</div>;
+    return <div className="text-start text-lightElements dark:text-darkElements p-4">URL doesn't exist</div>;
   console.log("urlElements", urlElements);
   return (
-    <div className="my-4">
+    <div>
       <List
         ItemComponent={UrlItem}
         items={urlElements}
@@ -44,7 +44,7 @@ function UrlItem({ element, setElements, setDeletingElement }) {
     if (selected === "sownd") {
       handleChangeSownd(element);
     }
-    if (selected === "acces") {
+    if (selected === "access") {
       handleChangeBlocked(element);
     }
     if (selected === "both") {
@@ -82,7 +82,7 @@ function UrlItem({ element, setElements, setDeletingElement }) {
     <div
       className={`flex flex-col w-full justify-center items-end space-x-4 p-2`}
     >
-      <div className="flex w-full items-center justify-between p-2 ">
+      <div className="flex w-full items-center justify-between">
         <div className="h-full flex items-center gap-[10px] ">
           <input
             type="checkbox"
@@ -90,15 +90,15 @@ function UrlItem({ element, setElements, setDeletingElement }) {
             onChange={handleCheckboxChange}
             value="item1"
             className=" h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 
-                        dark:border-[#ba75fb] border-[#c995fa] checked:bg-[#ba75fb] checked:border-transparent
+                        border-lightElements dark:border-darkElements checked:bg-lightElements dark:checked:bg-darkElements checked:border-transparent
                         relative after:content-[''] after:absolute after:hidden checked:after:block
                         after:left-[5px] after:top-[1px] after:w-[5px] after:h-[10px] 
-                        after:border-white after:border-r-2 after:border-b-2 after:rotate-45
+                        after:border-r-2 after:border-b-2 after:rotate-45
                         transition-all duration-200"
           />
           <span>
-            {element.url.length > 30
-              ? element.url.slice(0, 30) + "..."
+            {element.url.length > 35
+              ? element.url.slice(0, 35) + "..."
               : element.url}
           </span>
         </div>
@@ -144,7 +144,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
     if (selected === "sownd") {
       handleChangeSownd(urlElement.url);
     }
-    if (selected === "acces") {
+    if (selected === "access") {
       handleChangeBlocked(urlElement.url);
     }
     if (selected === "both") {
@@ -173,7 +173,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
             ? "Both"
             : urlElement.sowndBlocked
               ? "Sownd"
-              : "Acces"}
+              : "Access"}
         </span>
       ) : (
         <span
@@ -201,9 +201,9 @@ function MultiSelect({ urlElement, setUrlElement }) {
         </div>
         <div
           className="w-full cursor-pointer hover:bg-[#cc95fe80] rounded-[9px]   flex justify-center items-center gap-1"
-          onClick={() => setSelected("acces")}
+          onClick={() => setSelected("access")}
         >
-          Acces
+          Access
         </div>
         <div
           onClick={() => setSelected("both")}
