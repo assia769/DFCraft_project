@@ -10,7 +10,7 @@ export default function Header({ setChoosenPage }) {
   
   // Utiliser les paramètres globaux
   const { settings } = useSettings();
-  const { t } = useTranslation(settings.language);
+  const { t } = useTranslation(settings.language, 'common');
 
   useEffect(() => {
     try {

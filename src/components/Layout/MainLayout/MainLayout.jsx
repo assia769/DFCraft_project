@@ -8,7 +8,6 @@ import { UrlProvider } from "../../../shared/providers/UrlProvider.jsx";
 export default function MainLayout() {
   const [choosenPage, setChoosenPage] = useState("");
 
-
   return (
     <>
       <TimerProvider>
