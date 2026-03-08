@@ -29,16 +29,16 @@ const DistractionBlockingPage = () => {
             element.url.toLowerCase().includes(searchedValue.toLowerCase()),
           );
     if (selectedBlockTypes === "access")
-      return filteredElements.filter((element) => element.accessBlocked);
+      return filteredElements.filter((element) => element.urlBlocked);
     else if (selectedBlockTypes === "sownd")
       return filteredElements.filter((element) => element.sowndBlocked);
     else if (selectedBlockTypes === "both")
       return filteredElements.filter(
-        (element) => element.accessBlocked && element.sowndBlocked,
+        (element) => element.urlBlocked && element.sowndBlocked,
       );
     else if (selectedBlockTypes === "none")
       return filteredElements.filter(
-        (element) => !element.accessBlocked && !element.sowndBlocked,
+        (element) => !element.urlBlocked && !element.sowndBlocked,
       );
     return filteredElements;
   }, [searchedValue, selectedBlockTypes, urlElements]);
