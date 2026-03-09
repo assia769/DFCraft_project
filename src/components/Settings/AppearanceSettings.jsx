@@ -8,7 +8,7 @@ import ColorPicker from './ColorPicker';
 
 export default function AppearanceSettings() {
   const { settings, updateSetting } = useSettings();
-  const { t } = useSettingsTranslation(settings.settingsLanguage);
+  const { t } = useSettingsTranslation("settings");
 
   const fontOptions = [
     { value: 'concert', label: t('fontConcert') },

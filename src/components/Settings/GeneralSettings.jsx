@@ -7,7 +7,7 @@ import SelectInput from './SelectInput';
 
 export default function GeneralSettings() {
   const { settings, updateSetting } = useSettings();
-  const { t } = useTranslation(settings.language);
+  const { t } = useTranslation("settings");
 
   const languageOptions = [
     { value: 'fr', label: t('french'), flag: '🇫🇷' },

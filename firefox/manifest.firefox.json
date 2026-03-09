@@ -36,7 +36,8 @@
     "sounds/*.wav",
     "sounds/*.mp3",
     "offscreen.html",
-    "offscreen.js"
+    "offscreen.js",
+    "fonts/*.ttf"
   ],
   
   "options_ui": {

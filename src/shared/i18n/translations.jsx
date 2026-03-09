@@ -1,5 +1,6 @@
 // Traductions GLOBALES pour toute l'extension DFCraft
 import translations from "../../../languages.json";
+import { useSettings } from "../context/SettingsContext";
 
 // export const translations = {
 //   fr: {
@@ -280,7 +281,11 @@ import translations from "../../../languages.json";
 // };
 
 // Hook pour utiliser les traductions
-export function useTranslation(language = "en", namespace = 'common') {
+
+export function useTranslation(namespace = 'common') {
+  const { settings } = useSettings();
+  const language = settings.language;
+
   const t = (key) => {
     // 1. Try the requested namespace first
     const value = translations[namespace]?.[language]?.[key];

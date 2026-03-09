@@ -25,6 +25,171 @@
       "settings": "الإعدادات"
     }
   },
+  "home": {
+    "fr": {
+        "work" : "Travail",
+        "break" : "Pause",
+        "longBreak" : "Longue pause",
+        "completedTasks": "Total des tâches complétées"
+    },
+    "en": {
+        "work" : "Work",
+        "break" : "Break",
+        "longBreak" : "Long Break",
+        "completedTasks": "Total completed tasks"
+    },
+    "ar": {
+        "work" : "عمل",
+        "break" : "استراحة",
+        "longBreak" : "استراحة طويلة",
+        "completedTasks": "إجمالي المهام المكتملة"
+    }
+  },
+  "sound": {
+    "fr": {
+      "placeHolderSearch": "Rechercher un son, auteur...",
+      "existance": "Aucun son ou auteur avec ",
+      "categories": "Catégories:"
+    },
+    "en": {
+      "placeHolderSearch": "Search for a sound, author...",
+      "existance": "No such sound or author with",
+      "categories": "Categories:"
+    },
+    "ar": {
+      "placeHolderSearch": "ابحث عن صوت او مؤلف ...",
+      "existance": "لا يوجد صوت أو مؤلف ب",
+      "categories": ":الفئات"
+    }
+  },
+  "ToDoTasks": {
+    "fr": {
+      "helloHeader" : "Organisez vos tâches",
+      "descHeader" : "Gérez vos tâches quotidiennes avec efficacité et restez productif",
+      "start" : "Commencer",
+      "newTask" : "Nouvelle Tâche",
+      "title" : "Mes Tâches",
+      "total" : "Total: ",
+      "active" : "Actives: ",
+      "completed" : "Terminées: ",
+      "filter" : "Filtres",
+      "type" : "Type",
+      "properity" : "Propriété",
+      "status": "Statut",
+      "ajouter" : "Ajouter une tâche",
+      "existSearch" : "Aucune tâche ne correspond aux filtres",
+      "existance" : "Aucune tâche pour le moment",
+      "titleT" : "Titre *",
+      "placHTitre" : "Titre de la tâche",
+      "placHTitre2" : "Ex: Faire les courses",
+      "desc" : "Description (optionnel)",
+      "placeDesc" : "Description (optionnel)",
+      "placeDesc2" : "Ajouter des détails...",
+      "taskType" : "Type de tâche",
+      "priority" : "Priorité",
+      "personal" : "Personnel",
+      "all" : "Tous",
+      "actives" : "Actives",
+      "ended" : "Terminées",
+      "allType" : "Tous les types",
+      "work" : "Travail",
+      "courses" : "Courses",
+      "health" : "Santé",
+      "underestanding" : "Apprentissage",
+      "others" : "Autres",
+      "allProperity" : "Toutes les priorités",
+      "low" : "Basse",
+      "medium" : "Moyenne",
+      "high" : "Haute",
+      "add" : "Ajouter",
+      "save" : "Sauvegarder",
+      "cancel" : "Annuler"
+    },
+    "en": {
+      "helloHeader" : "Organize your tasks",
+      "descHeader" : "Manage your daily tasks efficiently and stay productive",
+      "start" : "Start",
+      "newTask" : "New Task",
+      "total" : "Total: ",
+      "active" : "Active: ",
+      "completed" : "Completed: ",
+      "title" : "My Tasks",
+      "filter" : "Filters",
+      "type" : "Type",
+      "properity" : "Properity",
+      "status": "Status",
+      "ajouter" : "Add a task",
+      "existSearch" : "No task matches the filters",
+      "existance" : "No tasks for now",
+      "titleT" : "Title *",
+      "placHTitre" : "Task title",
+      "placHTitre2" : "Ex: Do the shopping",
+      "desc" : "Description (optional)",
+      "placeDesc" : "Description (optional)",
+      "placeDesc2" : "Add details...",
+      "taskType" : "Task type",
+      "priority" : "Priority",
+      "all" : "All",
+      "actives" : "Actives",
+      "ended" : "Ended",
+      "allType" : "All Types",
+      "allProperity" : "All Priorities",
+      "personal" : "Personal",
+      "work" : "Work",
+      "courses" : "Courses",
+      "health" : "Health",
+      "underestanding" : "Understanding",
+      "others" : "Others",
+      "low" : "Low",
+      "medium" : "Medium",
+      "high" : "High",
+      "add" : "Add",
+      "save" : "Save",
+      "cancel" : "Cancel"
+    },
+    "ar": {
+      "helloHeader" : "قم تنظيم مهامك",
+      "descHeader" : "قم إدارة مهامك اليومية بفعالية والبقاء منتجًا",
+      "start" : "ابداء",
+      "newTask" : "مهمة جديدة",
+      "total" : "المجموع: ",
+      "active" : "نشطة: ",
+      "completed" : "مكتملة: ",
+      "filter" : "الفلاتر",
+      "type" : "النوع",
+      "title" : "مهامي",
+      "properity" : "الأولوية",
+      "status": "الحالة",
+      "ajouter" : "إضافة مهمة",
+      "existSearch" : "لا توجد مهمة تطابق الفلاتر",
+      "existance" : "لا توجد مهام في الوقت الحالي",
+      "titleT" : "العنوان *",
+      "placHTitre" : "عنوان المهمة",
+      "placHTitre2" : "مثال: قم بالتسوق",
+      "desc" : "الوصف (اختياري)",
+      "placeDesc" : "الوصف (اختياري)",
+      "placeDesc2" : "أضف التفاصيل...",
+      "taskType" : "نوع المهمة",
+      "priority" : "الأولوية",
+      "all" : "الكل",
+      "actives" : "نشطة",
+      "ended" : "مكتملة",
+      "allType" : "جميع الأنواع",
+      "allProperity" : "جميع الأولويات",
+      "personal" : "شخصي",
+      "work" : "عمل",
+      "courses" : "دورات",
+      "health" : "صحة",
+      "underestanding" : "تعلم",
+      "others" : "أخرى",
+      "low" : "منخفضة",
+      "medium" : "متوسطة",
+      "high" : "عالية",
+      "add" : "إضافة",
+      "save" : "حفظ",
+      "cancel" : "إلغاء"
+    }
+  },
   "settings": {
     "fr": {
       "save": "Enregistrer",
@@ -86,7 +251,6 @@
       "light": "Clair",
       "dark": "Sombre"
     },
-
     "en": {
       "save": "Save",
       "cancel": "Cancel",
@@ -147,7 +311,6 @@
       "light": "Light",
       "dark": "Dark"
     },
-
     "ar": {
       "save": "حفظ",
       "cancel": "إلغاء",
@@ -209,8 +372,41 @@
       "dark": "داكن"
     }
   },
-  "home": {},
-  "sound": {},
-  "tasks": {},
-  "blockPages": {}
+  "blockPages": {
+    "fr" : {
+      "add" : "Ajouter une URL de page",
+      "all" : "Tout",
+      "sound" : "Son",
+      "access" : "Accès",
+      "both" : "Les deux",
+      "none" : "Aucun",
+      "bType" : "Type de blockage:",
+      "Atitle" : "Entrez une URL de page:",
+      "SplaceHolder" : "Search for a URL page"
+    },
+    "en" : {
+      "add" : "Add a page URL",
+      "all" : "All",
+      "sound" : "Sound",
+      "access" : "Access",
+      "both" : "Both",
+      "none" : "None",
+      "bType" : "Block Type:",
+      "Atitle" : "Enter a page URL:",
+      "SplaceHolder" : "Search for a URL page",
+      "existance" : "URL doesn't exist"
+    },
+    "ar" : {
+      "add" : "إضافة عنوان URL لصفحة",
+      "all" : "الكل",
+      "sound" : "الصوت",
+      "access" : "الوصول",
+      "both" : "الاثنان",
+      "none" : "لا شيء",
+      "bType" : "نوع الحظر:",
+      "Atitle" : "أدخل عنوان URL لصفحة:",
+      "SplaceHolder" : "ابحث عن صفحة URL",
+      "existance" : "عنوان URL غير موجود"
+    }
+  }
 }

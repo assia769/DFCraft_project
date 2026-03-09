@@ -7,8 +7,8 @@ import AdvancedSettings from '../../components/Settings/AdvancedSettings';
 import { Settings, Palette, Sliders } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { settings, resetSettings } = useSettings();
-  const { t } = useTranslation(settings.language, 'settings');
+  const { resetSettings } = useSettings();
+  const { t } = useTranslation('settings');
   const [activeTab, setActiveTab] = useState('general');
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 

@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 export default function AdvancedSettings() {
   const { settings } = useSettings();
-  const { t } = useSettingsTranslation(settings.settingsLanguage);
+  const { t } = useSettingsTranslation("settings");
   const [notification, setNotification] = useState('');
 
   const showNotification = (message) => {

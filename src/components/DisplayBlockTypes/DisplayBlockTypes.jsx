@@ -1,10 +1,15 @@
+import { useTranslation } from "../../shared/i18n/translations";
+
 export default function DisplayBlockTypes({ showBlockTypes, setShowBlockTypes, selectedBlockTypes, setSelectedBlockTypes }) {
+    
+    const { t } = useTranslation("blockPages");
+    
     const blockTypes = [
-        { id: "all", name: "All" },
-        { id: "sownd", name: "Sound" },
-        { id: "access", name: "Access" },
-        { id: "both", name: "Both" },
-        { id: "none", name: "None" },
+        { id: "all", name: t("all") },
+        { id: "sound", name: t("sound") },
+        { id: "access", name: t("access") },
+        { id: "both", name: t("both") },
+        { id: "none", name: t("none") },
     ];
 
     const selectedClass = (type) => {
@@ -20,7 +25,7 @@ export default function DisplayBlockTypes({ showBlockTypes, setShowBlockTypes, s
                 />
             )}
             <div className={`fixed bottom-0 rounded-t-3xl w-full bg-lightElements dark:bg-darkElements p-6 BtoT ${showBlockTypes ? "" : "hidden"}`}>
-                <h1 className='text-3xl mb-4 text-light dark:text-dark'>Block Types:</h1>
+                <h1 className='text-3xl mb-4 text-light dark:text-dark'>{t("bType")}</h1>
                 <div className='flex flex-wrap gap-2'>
                     {blockTypes.map((type) => (
                         <div

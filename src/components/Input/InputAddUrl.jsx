@@ -1,11 +1,9 @@
 import { useState } from "react";
+import { useTranslation } from "../../shared/i18n/translations";
 
-const InputAddUrl = ({
-  elements,
-  setElement,
-  setShowAddSection,
-}) => {
+const InputAddUrl = ({ elements, setElement, setShowAddSection }) => {
   const [value, setValue] = useState("");
+  const { t } = useTranslation("blockPages");
 
   function addElement(value) {
     const existe = elements.some((el) => el.url === value);
@@ -31,7 +29,7 @@ const InputAddUrl = ({
       />
       <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-lightElements dark:bg-darkElements rounded-lg p-4 w-[90%] flex flex-col items-center justify-center">
         <span className="text-light dark:text-dark text-sm mb-1 block">
-          Enter the URL you want to block:
+          {t("add")}
         </span>
         <input
           value={value}
@@ -43,8 +41,8 @@ const InputAddUrl = ({
               addElement(value);
             }
           }}
-          placeholder="Search for a link"
-          className={`m-2 p-3 w-full rounded-lg bg-lightList dark:bg-darkList ${value ? 'text-light dark:text-dark' : 'placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder'} focus:outline-none`}
+          placeholder={t("Atitle")}
+          className={`m-2 p-3 w-full rounded-lg bg-lightList dark:bg-darkList ${value ? "text-light dark:text-dark" : "placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder"} focus:outline-none`}
         />
       </div>
     </div>

@@ -1,11 +1,14 @@
-import { CircleCheckBigIcon, Flag } from "lucide-react";
 import List from "./List";
-import { use, useState, useEffect } from "react";
+import {useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "../../shared/i18n/translations";
 
 const UrlList = ({ urlElements, setUrlElements, setSelectedElement }) => {
+
+  const { t } = useTranslation("blockPages");
+
   if (urlElements.length === 0)
-    return <div className="text-start text-lightElements dark:text-darkElements p-4">URL doesn't exist</div>;
+    return <div className="text-start text-lightElements dark:text-darkElements p-4">{t("existance")}</div>;
   console.log("urlElements", urlElements);
   return (
     <div>
@@ -111,6 +114,7 @@ function UrlItem({ element, setElements, setDeletingElement }) {
 function MultiSelect({ urlElement, setUrlElement }) {
   const [clicked, setClicked] = useState(false);
   const [selected, setSelected] = useState("");
+  const { t } = useTranslation("blockPages");
 
   function handleChangeSownd(url) {
     setUrlElement((prv) =>
@@ -180,10 +184,10 @@ function MultiSelect({ urlElement, setUrlElement }) {
           onClick={handleOnClick}
         >
           {urlElement.sowndBlocked && urlElement.urlBlocked
-            ? "Both"
+            ? t("both")
             : urlElement.sowndBlocked
-              ? "Sownd"
-              : "Access"}
+              ? t("sound")
+              : t("access")}
         </span>
       ) : (
         <span
@@ -195,7 +199,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
       )}
 
       <div
-        className={`${clicked ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"} transition-all duration-300 ease-in-out origin-top flex  dark:bg-darkElements rounded-xl bg-[#C282FF]  p-2 flex-col top-0 left-0 z-10  w-[45px] justify-center items-center absolute`}
+        className={`${clicked ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"} transition-all duration-300 ease-in-out origin-top flex  dark:bg-darkElements rounded-xl bg-[#C282FF]  p-2 flex-col top-0 left-0 z-10  w-[55px] justify-center items-center absolute`}
       >
         <div
           className={`w-full flex justify-start items-center transform transition-transform duration-300 ${clicked ? "rotate-180" : "rotate-0"}`}
@@ -207,25 +211,25 @@ function MultiSelect({ urlElement, setUrlElement }) {
           onClick={() => setSelected("sownd")}
           className="w-full cursor-pointer hover:bg-[#cc95fe80] rounded-[9px]   flex justify-center items-center gap-1"
         >
-          Sownd
+          {t("sound")}
         </div>
         <div
           className="w-full cursor-pointer hover:bg-[#cc95fe80] rounded-[9px]   flex justify-center items-center gap-1"
           onClick={() => setSelected("access")}
         >
-          Access
+          {t("access")}
         </div>
         <div
           onClick={() => setSelected("both")}
           className="w-full cursor-pointer hover:bg-[#cc95fe80] rounded-[9px]   flex justify-center items-center gap-1"
         >
-          Both
+          {t("both")}
         </div>
         <div
           onClick={() => setSelected("none")}
           className="w-full cursor-pointer hover:bg-[#cc95fe80] rounded-[9px]   flex justify-center items-center gap-1"
         >
-          None
+          {t("none")}
         </div>
       </div>
     </div>

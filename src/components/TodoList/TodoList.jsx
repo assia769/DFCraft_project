@@ -3,21 +3,8 @@ import { Plus, Calendar } from "lucide-react";
 import TodoItem from "./TodoItem";
 import AddTodoDialog from "./AddTodoDialog";
 import FilterBar from "./FilterBar";
-
-const TASK_TYPES = [
-  { id: "work", label: "Travail", color: "blue" },
-  { id: "personal", label: "Personnel", color: "green" },
-  { id: "shopping", label: "Courses", color: "orange" },
-  { id: "health", label: "Santé", color: "red" },
-  { id: "learning", label: "Apprentissage", color: "purple" },
-  { id: "other", label: "Autre", color: "gray" }
-];
-
-const PRIORITIES = [
-  { id: "high", label: "Haute", color: "red" },
-  { id: "medium", label: "Moyenne", color: "yellow" },
-  { id: "low", label: "Basse", color: "green" }
-];
+import { useTranslation } from "../../shared/i18n/translations";
+import { useSettings } from "../../shared/context/SettingsContext";
 
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
@@ -25,6 +12,22 @@ export default function TodoList() {
   const [filterType, setFilterType] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
+  const { t } = useTranslation("ToDoTasks");
+
+  const TASK_TYPES = [
+    { id: "work", label: t("work"), color: "blue" },
+    { id: "personal", label: t("personal"), color: "green" },
+    { id: "shopping", label: t("courses"), color: "orange" },
+    { id: "health", label: t("health"), color: "red" },
+    { id: "learning", label: t("underestanding"), color: "purple" },
+    { id: "other", label: t("others"), color: "gray" },
+  ];
+
+  const PRIORITIES = [
+    { id: "high", label: t("high"), color: "red" },
+    { id: "medium", label: t("medium"), color: "yellow" },
+    { id: "low", label: t("low"), color: "green" },
+  ];
 
   // Charger les todos depuis localStorage
   useEffect(() => {
@@ -44,32 +47,37 @@ export default function TodoList() {
       id: Date.now(),
       ...todo,
       completed: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
     setTodos([newTodo, ...todos]);
     setShowAddDialog(false);
   };
 
   const toggleTodo = (id) => {
-    setTodos(todos.map(todo => 
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ));
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
   };
 
   const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id));
+    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
   const editTodo = (id, updatedTodo) => {
-    setTodos(todos.map(todo => 
-      todo.id === id ? { ...todo, ...updatedTodo } : todo
-    ));
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, ...updatedTodo } : todo,
+      ),
+    );
   };
 
   // Filtrer les todos
-  const filteredTodos = todos.filter(todo => {
+  const filteredTodos = todos.filter((todo) => {
     if (filterType !== "all" && todo.type !== filterType) return false;
-    if (filterPriority !== "all" && todo.priority !== filterPriority) return false;
+    if (filterPriority !== "all" && todo.priority !== filterPriority)
+      return false;
     if (filterStatus === "completed" && !todo.completed) return false;
     if (filterStatus === "active" && todo.completed) return false;
     return true;
@@ -84,17 +92,19 @@ export default function TodoList() {
     return priorityOrder[a.priority] - priorityOrder[b.priority];
   });
 
+  const { settings } = useSettings();
+
   // Obtenir la date actuelle
   const today = new Date();
-  const formattedDate = today.toLocaleDateString("fr-FR", { 
-    month: "long", 
-    day: "numeric" 
+  const formattedDate = today.toLocaleDateString(settings.language, {
+    month: "long",
+    day: "numeric",
   });
 
   const stats = {
     total: todos.length,
-    completed: todos.filter(t => t.completed).length,
-    active: todos.filter(t => !t.completed).length
+    completed: todos.filter((t) => t.completed).length,
+    active: todos.filter((t) => !t.completed).length,
   };
 
   return (
@@ -109,22 +119,35 @@ export default function TodoList() {
             </span>
           </div>
           <h1 className="text-3xl font-bold text-lightElements dark:text-darkElements mb-4">
-            Mes Tâches
+            {t("title")}
           </h1>
-          
+
           {/* Stats */}
           <div className="flex gap-4 mb-4">
             <div className="bg-lightList dark:bg-darkList rounded-lg px-4 py-2">
-              <span className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">Total: </span>
-              <span className="font-bold text-lightElements dark:text-darkElements">{stats.total}</span>
+              <span className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">
+                {" "}
+                {t("total")}
+              </span>
+              <span className="font-bold text-lightElements dark:text-darkElements">
+                {stats.total}
+              </span>
             </div>
             <div className="bg-lightList dark:bg-darkList rounded-lg px-4 py-2">
-              <span className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">Actives: </span>
+              <span className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">
+                {" "}
+                {t("active")}
+              </span>
               <span className="font-bold text-blue-500">{stats.active}</span>
             </div>
             <div className="bg-lightList dark:bg-darkList rounded-lg px-4 py-2">
-              <span className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">Terminées: </span>
-              <span className="font-bold text-green-500">{stats.completed}</span>
+              <span className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">
+                {" "}
+                {t("completed")}
+              </span>
+              <span className="font-bold text-green-500">
+                {stats.completed}
+              </span>
             </div>
           </div>
         </div>
@@ -147,7 +170,7 @@ export default function TodoList() {
           className="w-full mb-4 p-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
         >
           <Plus className="w-5 h-5" />
-          Ajouter une tâche
+          {t("ajouter")}
         </button>
 
         {/* Todo List */}
@@ -155,13 +178,13 @@ export default function TodoList() {
           {sortedTodos.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-lightPlaceHolder dark:text-darkPlaceHolder text-lg">
-                {filteredTodos.length === 0 && todos.length > 0 
-                  ? "Aucune tâche ne correspond aux filtres"
-                  : "Aucune tâche pour le moment"}
+                {filteredTodos.length === 0 && todos.length > 0
+                  ? t("existSearch")
+                  : t("existance")}
               </p>
             </div>
           ) : (
-            sortedTodos.map(todo => (
+            sortedTodos.map((todo) => (
               <TodoItem
                 key={todo.id}
                 todo={todo}

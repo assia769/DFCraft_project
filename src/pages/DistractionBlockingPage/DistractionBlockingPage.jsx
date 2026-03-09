@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import useSaveUrl from "../../shared/hooks/useSaveUrl";
 import InputSearch from "../../components/Input/inputSearch";
 import DisplayBlockTypes from "../../components/DisplayBlockTypes/DisplayBlockTypes";
+import { useTranslation } from "../../shared/i18n/translations";
 
 const DistractionBlockingPage = () => {
   const [showDialog, setShowDialog] = useState(false);
@@ -18,8 +19,8 @@ const DistractionBlockingPage = () => {
   const [showBlockTypes, setShowBlockTypes] = useState(false);
   const [selectedBlockTypes, setSelectedBlockTypes] = useState("all");
   const { urlElements, setUrlElement } = useSaveUrl();
-
   const [isShaking, setIsShaking] = useState(false);
+  const { t } = useTranslation("blockPages");
 
   const filteredElement = useMemo(() => {
     const filteredElements =
@@ -79,7 +80,7 @@ const DistractionBlockingPage = () => {
               addElement(searchedValue);
             }
           }}
-          placeholder="Add url"
+          placeholder={t("SplaceHolder")}
           className={`p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList ${searchedValue ? 'text-light dark:text-dark' : 'placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder'} w-full focus:outline-none ml-6`}
         />
         {isDelete ? (

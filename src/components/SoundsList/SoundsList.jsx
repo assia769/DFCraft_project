@@ -4,6 +4,7 @@ import config from "../../shared/constants/config";
 import DisplaySound from "./DisplaySound";
 import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 import { Skeleton } from "@mui/material";
+import { useTranslation } from "../../shared/i18n/translations";
 
 
 export default function SoundsList({ category, searchSound }) {
@@ -11,6 +12,7 @@ export default function SoundsList({ category, searchSound }) {
   const [soundsByCat, setSoundsByCat] = useState(null);
   const [listenPage, setListenPage] = useState(false);
   const [listenSound, setListenSound] = useState(null);
+  const { t } = useTranslation("sound");
 
   const { play, isPlaying, currentSound } = useBackgroundAudio();
   
@@ -145,7 +147,7 @@ export default function SoundsList({ category, searchSound }) {
         soundslist.length > 0
         ? soundslist
         : <div className="text-lightElements dark:text-darkElements text-4xl m-6">
-            No such sound with {searchSound ? searchSound : "this"} or from {searchSound ? searchSound : "this"}.
+            {t("existance")} {searchSound ? searchSound : "this"}.
           </div>
       }
       <div className="flex justify-center">{(listenPage || isPlaying) && <DisplaySound sound={listenSound} />}</div>

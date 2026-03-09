@@ -7,7 +7,7 @@ import VolumeSlider from './VolumeSlider';
 
 export default function AudioSettings() {
   const { settings, updateSetting } = useSettings();
-  const { t } = useTranslation(settings.language);
+  const { t } = useTranslation("settings");
 
   return (
     <div className="space-y-6">
