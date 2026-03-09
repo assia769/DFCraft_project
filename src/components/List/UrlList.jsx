@@ -100,8 +100,8 @@ function UrlItem({ element, setElements, setDeletingElement }) {
                         transition-all duration-200"
           />
           <span>
-            {element.url.length > 35
-              ? element.url.slice(0, 35) + "..."
+            {element.url.length > 33
+              ? element.url.slice(0, 33) + "..."
               : element.url}
           </span>
         </div>
@@ -180,7 +180,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
           className={`transform ${clicked ? "rotate-180" : "rotate-0"} 
                         transition-transform p-[3px] rounded-lg 
                         duration-300
-                        ${urlElement.sowndBlocked && urlElement.urlBlocked ? "bg-[#ffff00a3]" : urlElement.sowndBlocked ? "bg-[#008000ad]" : "bg-[#ff4747]"}`}
+                        bg-lightElements dark:bg-darkElements text-light dark:text-dark`}
           onClick={handleOnClick}
         >
           {urlElement.sowndBlocked && urlElement.urlBlocked
@@ -199,7 +199,7 @@ function MultiSelect({ urlElement, setUrlElement }) {
       )}
 
       <div
-        className={`${clicked ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"} transition-all duration-300 ease-in-out origin-top flex  dark:bg-darkElements rounded-xl bg-[#C282FF]  p-2 flex-col top-0 left-0 z-10  w-[55px] justify-center items-center absolute`}
+        className={`${clicked ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"} transition-all duration-300 ease-in-out origin-top flex bg-lightElements  dark:bg-darkElements rounded-xl p-2 flex-col top-0 right-0 z-10  w-[55px] justify-center items-center absolute`}
       >
         <div
           className={`w-full flex justify-start items-center transform transition-transform duration-300 ${clicked ? "rotate-180" : "rotate-0"}`}

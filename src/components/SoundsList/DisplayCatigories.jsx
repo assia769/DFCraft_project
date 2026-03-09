@@ -45,6 +45,11 @@ export default function DisplayCatigories({ category, categories, setCategory ,s
       <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
       <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
       <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
     </div>
   );
   

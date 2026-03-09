@@ -88,7 +88,7 @@ export default function DisplaySound({ sound }) {
     return <div className="bg-red-300 text-black">there is no audio</div>;
 
   return (
-    <div className="fixed bottom-0 w-full bg-lightElements dark:bg-darkElements p-5 z-100 rounded-tl-2xl rounded-tr-2xl BtoT">
+    <div dir="ltr" className="fixed bottom-0 w-full bg-lightElements dark:bg-darkElements p-5 z-100 rounded-tl-2xl rounded-tr-2xl BtoT">
       <div className="flex flex-row items-center">
         <img
           src={sound.coverImage}

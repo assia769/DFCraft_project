@@ -8,6 +8,7 @@ import useSaveUrl from "../../shared/hooks/useSaveUrl";
 import InputSearch from "../../components/Input/inputSearch";
 import DisplayBlockTypes from "../../components/DisplayBlockTypes/DisplayBlockTypes";
 import { useTranslation } from "../../shared/i18n/translations";
+import { useSettings } from "../../shared/context/SettingsContext";
 
 const DistractionBlockingPage = () => {
   const [showDialog, setShowDialog] = useState(false);
@@ -20,6 +21,7 @@ const DistractionBlockingPage = () => {
   const [selectedBlockTypes, setSelectedBlockTypes] = useState("all");
   const { urlElements, setUrlElement } = useSaveUrl();
   const [isShaking, setIsShaking] = useState(false);
+  const { settings } = useSettings();
   const { t } = useTranslation("blockPages");
 
   const filteredElement = useMemo(() => {
@@ -81,7 +83,7 @@ const DistractionBlockingPage = () => {
             }
           }}
           placeholder={t("SplaceHolder")}
-          className={`p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList ${searchedValue ? 'text-light dark:text-dark' : 'placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder'} w-full focus:outline-none ml-6`}
+          className={`p-2 ${settings.language === "ar" ? "mr-6 ml-2 " : "ml-6 mr-2"} rounded-lg bg-lightList dark:bg-darkList ${searchedValue ? 'text-light dark:text-dark' : 'placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder'} w-full focus:outline-none`}
         />
         {isDelete ? (
           <button
@@ -89,7 +91,7 @@ const DistractionBlockingPage = () => {
               e.stopPropagation();
               handleDelete();
             }}
-            className="transition-colors relative mr-6"
+            className={`transition-colors relative ${settings.language === "ar" ? "ml-6" : "mr-6"}`}
             aria-label="Menu"
           >
             <Trash className="w-6 h-6 text-lightElements dark:text-darkElements" />
@@ -99,7 +101,7 @@ const DistractionBlockingPage = () => {
             onClick={() => {
               setShowBlockTypes(true);
             }}
-            className="transition-colors relative mr-6"
+            className={`transition-colors relative ${settings.language === "ar" ? "ml-6" : "mr-6"}`}
             aria-label="Menu"
           >
             <ListFilter className="w-6 h-6 text-lightElements dark:text-darkElements" />

@@ -49,17 +49,26 @@
     "fr": {
       "placeHolderSearch": "Rechercher un son, auteur...",
       "existance": "Aucun son ou auteur avec ",
-      "categories": "Catégories:"
+      "categories": "Catégories:",
+      "pureExistance": "Aucune donnée de sons",
+      "catSoundExistace": "Aucun son dans",
+      "noConnection": "Pas de connexion internet, veuillez vérifier votre connexion et réessayer"
     },
     "en": {
       "placeHolderSearch": "Search for a sound, author...",
       "existance": "No such sound or author with",
-      "categories": "Categories:"
+      "categories": "Categories:",
+      "pureExistance": "No sounds data",
+      "catSoundExistace": "No sounds in",
+      "noConnection": "No internet connection, please check your connection and try again"
     },
     "ar": {
       "placeHolderSearch": "ابحث عن صوت او مؤلف ...",
       "existance": "لا يوجد صوت أو مؤلف ب",
-      "categories": ":الفئات"
+      "categories": ":الفئات",
+      "pureExistance": "لا توجد بيانات أصوات",
+      "catSoundExistace": "لا توجد أصوات في",
+      "noConnection": "لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى"
     }
   },
   "ToDoTasks": {
