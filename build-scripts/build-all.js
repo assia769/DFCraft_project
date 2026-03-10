@@ -36,6 +36,8 @@ try {
     "popup.css",
     "offscreen.html",
     "offscreen.js",
+    "statist.js",
+    "statist.html",
     "src",
   ];
 
@@ -88,8 +90,18 @@ try {
   );
 
   fs.copySync(
+    path.join(__dirname, "..", "public", "staticPages", "statist.html"),
+    path.join(chromeDir, "staticPages", "statist.html"),
+  );
+
+  fs.copySync(
     path.join(__dirname, "..", "public", "staticPages", "blocked.html"),
     path.join(firefoxDir, "staticPages", "blocked.html"),
+  );
+
+  fs.copySync(
+    path.join(__dirname, "..", "public", "staticPages", "statist.html"),
+    path.join(firefoxDir, "staticPages", "statist.html"),
   );
 
   fs.copyFileSync(

@@ -87,6 +87,11 @@ try {
     path.join(firefoxDir, "staticPages", "blocked.html"),
   );
 
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "statist.html"),
+      path.join(firefoxDir, "staticPages", "statist.html"),
+  );
+
   // Copy icons and sounds
   console.log("🎨 Copying assets...");
 

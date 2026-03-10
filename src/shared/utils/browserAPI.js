@@ -1,10 +1,10 @@
 export const browserAPI = (() => {
   // Firefox uses 'browser', Chrome uses 'chrome'
-  if (typeof browser !== 'undefined' && browser.runtime) {
+  if (typeof browser !== "undefined" && browser.runtime) {
     return browser; // Firefox (already Promise-based)
   }
 
-  if (typeof chrome !== 'undefined' && chrome.runtime) {
+  if (typeof chrome !== "undefined" && chrome.runtime) {
     return {
       runtime: {
         sendMessage: (message) =>
@@ -30,7 +30,8 @@ export const browserAPI = (() => {
             new Promise((resolve, reject) => {
               try {
                 chrome.storage.local.get(keys, (result) => {
-                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  if (chrome.runtime.lastError)
+                    reject(chrome.runtime.lastError);
                   else resolve(result);
                 });
               } catch (err) {
@@ -41,7 +42,8 @@ export const browserAPI = (() => {
             new Promise((resolve, reject) => {
               try {
                 chrome.storage.local.set(items, () => {
-                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  if (chrome.runtime.lastError)
+                    reject(chrome.runtime.lastError);
                   else resolve();
                 });
               } catch (err) {
@@ -60,7 +62,17 @@ export const browserAPI = (() => {
               });
             } catch (err) {
               reject(err);
-
+            }
+          }),
+        create: (createProperties) =>
+          new Promise((resolve, reject) => {
+            try {
+              chrome.tabs.create(createProperties, (tab) => {
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else resolve(tab);
+              });
+            } catch (err) {
+              reject(err);
             }
           }),
         update: (tabId, updateProperties) =>
@@ -89,11 +101,11 @@ export const browserAPI = (() => {
   }
 
   // fallback for testing in non-extension environment
-  console.warn('No browser extension API found - using mock');
+  console.warn("No browser extension API found - using mock");
   return {
     runtime: {
       sendMessage: () => Promise.resolve(null),
-      onMessage: { addListener: () => { }, removeListener: () => { } },
+      onMessage: { addListener: () => {}, removeListener: () => {} },
       getURL: (path) => path,
     },
     storage: {

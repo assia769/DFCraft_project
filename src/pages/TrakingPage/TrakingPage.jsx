@@ -1,5 +1,9 @@
+import { browserAPI } from "../../shared/utils/browserAPI";
+
 export default function TrackingPage() {
-    return (
-        <div>Tracking</div>
-    )
+  return (
+    <div>
+      hello
+    </div>
+  );
 }

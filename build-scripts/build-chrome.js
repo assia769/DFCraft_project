@@ -32,7 +32,7 @@ try {
     "popup.css",
     "offscreen.html", // Add this
     "offscreen.js",
-    "src", // This folder contains popup.html and options.html
+    "src",
   ];
 
   const neededItems = allItems.filter((item) => neededFiles.includes(item));
@@ -78,6 +78,11 @@ try {
   fs.copySync(
     path.join(__dirname, "..", "public", "staticPages", "blocked.html"),
     path.join(chromeDir, "staticPages", "blocked.html"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "statist.html"),
+      path.join(chromeDir, "staticPages", "statist.html"),
   );
 
   // Copy icons and sounds to both
