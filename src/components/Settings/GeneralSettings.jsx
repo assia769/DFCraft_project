@@ -10,19 +10,20 @@ export default function GeneralSettings() {
   const { t } = useTranslation("settings");
 
   const languageOptions = [
-    { value: 'fr', label: t('french'), flag: '🇫🇷' },
-    { value: 'en', label: t('english'), flag: '🇬🇧' },
-    { value: 'ar', label: t('arabic'), flag: '🇸🇦' },
+    { value: 'fr', label: t('french')},
+    { value: 'en', label: t('english')},
+    { value: 'ar', label: t('arabic')},
   ];
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-lightElements dark:text-darkElements mb-6">
+      <h2 className="text-2xl font-bold text-light dark:text-dark mb-6">
         {t('generalSettings')}
       </h2>
 
       {/* Notifications */}
-      <SettingItem
+      {/*10 March 2026: commanting it until i'll add the notification feature */}
+      {/* <SettingItem
         icon={Bell}
         title={t('notifications')}
         description={t('notificationsDesc')}
@@ -31,13 +32,14 @@ export default function GeneralSettings() {
           checked={settings.notifications}
           onChange={(checked) => updateSetting('notifications', checked)}
         />
-      </SettingItem>
+      </SettingItem> */}
 
       {/* Language (GLOBAL) */}
-      <SettingItem
+      <div className='flex flex-col justify-center'>
+        <SettingItem
         icon={Globe}
         title={t('language')}
-        description={t('languageDesc')}
+        // description={t('languageDesc')}
       >
         <SelectInput
           value={settings.language}
@@ -45,6 +47,7 @@ export default function GeneralSettings() {
           options={languageOptions}
         />
       </SettingItem>
+      </div>
     </div>
   );
 }

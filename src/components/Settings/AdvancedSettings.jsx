@@ -1,11 +1,11 @@
 import { Download, Trash2, Database } from 'lucide-react';
 import { useSettings } from '../../shared/context/SettingsContext';
-import { useSettingsTranslation } from '../../shared/i18n/settingsTranslations';
 import { useState } from 'react';
+import { useTranslation } from '../../shared/i18n/translations';
 
 export default function AdvancedSettings() {
   const { settings } = useSettings();
-  const { t } = useSettingsTranslation("settings");
+  const { t } = useTranslation("settings");
   const [notification, setNotification] = useState('');
 
   const showNotification = (message) => {
@@ -40,24 +40,24 @@ export default function AdvancedSettings() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-lightElements dark:text-darkElements mb-6">
+      <h2 className="text-2xl font-bold text-light dark:text-dark mb-6">
         {t('advancedSettings')}
       </h2>
 
       {/* Export Settings */}
-      <div className="p-4 bg-light dark:bg-dark rounded-xl">
+      <div className="p-4 bg-lightElements dark:bg-darkElements rounded-xl border-2 border-light dark:border-dark">
         <div className="flex items-start gap-3">
-          <Download className="w-5 h-5 text-lightElements dark:text-darkElements mt-1" />
+          <Download className="w-5 h-5 text-light dark:text-dark mt-1" />
           <div className="flex-1">
-            <h3 className="font-semibold text-lightElements dark:text-darkElements mb-1">
+            <h3 className="font-semibold text-light dark:text-dark mb-1">
               {t('exportSettings')}
             </h3>
-            <p className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder mb-3">
+            <p className="text-sm text-light dark:text-dark mb-3">
               {t('exportDesc')}
             </p>
             <button
               onClick={exportSettings}
-              className="px-4 py-2 bg-lightElements dark:bg-darkElements text-white rounded-lg hover:opacity-90 transition-opacity"
+              className="px-4 py-2 bg-lightElements dark:bg-darkElements text-light dark:text-dark rounded-lg hover:opacity-90 transition-opacity border border-light dark:border-dark"
             >
               {t('exportButton')}
             </button>
@@ -66,14 +66,14 @@ export default function AdvancedSettings() {
       </div>
 
       {/* Clear Cache */}
-      <div className="p-4 bg-light dark:bg-dark rounded-xl">
+      <div className="p-4 bg-lightElements dark:bg-darkElements rounded-xl border-2 border-light dark:border-dark">
         <div className="flex items-start gap-3">
-          <Trash2 className="w-5 h-5 text-red-500 mt-1" />
+          <Trash2 className="w-5 h-5 text-light dark:text-dark mt-1" />
           <div className="flex-1">
-            <h3 className="font-semibold text-lightElements dark:text-darkElements mb-1">
+            <h3 className="font-semibold text-light dark:text-dark mb-1">
               {t('clearCache')}
             </h3>
-            <p className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder mb-3">
+            <p className="text-sm text-light dark:text-dark mb-3">
               {t('clearCacheDesc')}
             </p>
             <button
@@ -87,14 +87,14 @@ export default function AdvancedSettings() {
       </div>
 
       {/* Storage Info */}
-      <div className="p-4 bg-light dark:bg-dark rounded-xl">
+      <div className="p-4 bg-lightElements dark:bg-darkElements rounded-xl border-2 border-light dark:border-dark">
         <div className="flex items-start gap-3">
-          <Database className="w-5 h-5 text-lightElements dark:text-darkElements mt-1" />
+          <Database className="w-5 h-5 text-lightElements dark:text-dark mt-1" />
           <div className="flex-1">
-            <h3 className="font-semibold text-lightElements dark:text-darkElements mb-1">
+            <h3 className="font-semibold text-lightElements dark:text-dark mb-1">
               {t('storageInfo')}
             </h3>
-            <p className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">
+            <p className="text-sm text-light dark:text-dark">
               {t('storageInfoDesc')}
             </p>
           </div>

@@ -258,7 +258,8 @@
       "previewTheme": "Thème",
       "previewMode": "Mode",
       "light": "Clair",
-      "dark": "Sombre"
+      "dark": "Sombre",
+      "personaliser" : "Personnalisez votre expérience DFCraft"
     },
     "en": {
       "save": "Save",
@@ -318,7 +319,8 @@
       "previewTheme": "Theme",
       "previewMode": "Mode",
       "light": "Light",
-      "dark": "Dark"
+      "dark": "Dark",
+      "personaliser" : "Personalize your DFCraft experience"
     },
     "ar": {
       "save": "حفظ",
@@ -378,7 +380,8 @@
       "previewTheme": "الموضوع",
       "previewMode": "الوضع",
       "light": "فاتح",
-      "dark": "داكن"
+      "dark": "داكن",
+      "personaliser" : "خصص تجربتك مع DFCraft"
     }
   },
   "blockPages": {
