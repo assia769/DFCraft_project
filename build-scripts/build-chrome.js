@@ -81,8 +81,18 @@ try {
   );
 
   fs.copySync(
-      path.join(__dirname, "..", "public", "staticPages", "statist.html"),
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "statist.html"),
       path.join(chromeDir, "staticPages", "statist.html"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "Script.js"),
+      path.join(chromeDir, "staticPages", "Script.js"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "Style.css"),
+      path.join(chromeDir, "staticPages", "Style.css"),
   );
 
   // Copy icons and sounds to both

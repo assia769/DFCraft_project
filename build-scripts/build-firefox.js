@@ -88,8 +88,18 @@ try {
   );
 
   fs.copySync(
-      path.join(__dirname, "..", "public", "staticPages", "statist.html"),
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "statist.html"),
       path.join(firefoxDir, "staticPages", "statist.html"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "Script.js"),
+      path.join(firefoxDir, "staticPages", "Script.js"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "Style.css"),
+      path.join(firefoxDir, "staticPages", "Style.css"),
   );
 
   // Copy icons and sounds
