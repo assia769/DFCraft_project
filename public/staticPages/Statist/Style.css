@@ -1,99 +1,178 @@
-@import url('https://fonts.googleapis.com/css2?family=Concert+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Concert+One&display=swap");
 
 @font-face {
-  font-family: 'AA-ANIQ';
-  src: url('../../fonts/arFont.ttf') format('truetype');
+  font-family: "AA-ANIQ";
+  src: url("../../fonts/arFont.ttf") format("truetype");
   font-display: swap;
 }
 
 :root {
-    --light: #F2F2F2;
-    --lightElements: #7C3AED;
-    --lightPoints: #C282FF;
-    --lightList: #5B1FC0;
-    --lightBar: #5B1FC0;
-    --lightProgressBar: #6D00D8;
-    --lightSelectedBar: #B46CFA;
-    --lightPlaceHolder: #9D72C7;
-    --lightFontText: #000000; 
-    --dark: #161616;
-    --darkElements: #A855F7;
-    --darkPoints: #5A00B0;
-    --darkList: #C8A0EF;
-    --darkBar: #C8A0EF;
-    --darkProgressBar: #B46CFA;
-    --darkSelectedBar: #5A00B0;
-    --darkPlaceHolder: #9D72C7;
-    --darkFontText: #FFFFFF;
+  --light: #f2f2f2;
+  --lightElements: #7c3aed;
+  --lightPoints: #c282ff;
+  --lightList: #5b1fc0;
+  --lightBar: #5b1fc0;
+  --lightProgressBar: #6d00d8;
+  --lightSelectedBar: #b46cfa;
+  --lightPlaceHolder: #9d72c7;
+  --lightFontText: #000000;
+  --dark: #161616;
+  --darkElements: #a855f7;
+  --darkPoints: #5a00b0;
+  --darkList: #c8a0ef;
+  --darkBar: #c8a0ef;
+  --darkProgressBar: #b46cfa;
+  --darkSelectedBar: #5a00b0;
+  --darkPlaceHolder: #9d72c7;
+  --darkFontText: #ffffff;
 }
 
-
-
-body{
-    background-color: var(--dark);
-    color: var(--light);
-    font-family: 'Concert One','AA-ANIQ', cursive;
+body {
+  background-color: var(--dark);
+  color: var(--light);
+  font-family: "Concert One", "AA-ANIQ", cursive !important;
 }
 
-header{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: start;
-    margin: 10px;
-    padding: 5px;
-    border-radius: 10px;
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px;
+  padding: 5px;
+  border-radius: 10px;
 }
 
-.Logo{
-    width: 15%;
-    height: auto;
+.Logo {
+  width: 15%;
+  height: auto;
 }
 
-.Cards{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
+/* make the icon + select act as one control */
+.custom_page {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-.Card_info{
-    background-color: var(--darkElements);
-    color: var(--dark);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    border-radius: 10px;
-    width: 140px;
-    transition:
-        box-shadow 0.3s ease,
-        transform 0.3s ease;
+.custom_page .bi-translate {
+  position: relative;
+  z-index: 1;
 }
 
-.Card_info:hover{
-    transform: scale(1.05);
-    box-shadow: 0px 10px 20px var(--darkBar);
-    transition:
-        box-shadow 0.3s ease,
-        transform 0.3s ease;
+#langIcon {
+  color: var(--darkElements);
+  width: 25px;
+  height: 25px;
+  border-radius: 8px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.title{
-    font-size:larger;
-    margin-top: 0;
-    margin-bottom: 5px;
+#langIcon:hover {
+  background-color: var(--darkElements);
+  color: var(--dark);
+ transition:
+    background-color 0.3s ease, color 0.3s ease;
 }
 
-.data{
-    font-size: small;
-    margin: 0;
+/* invisible select over the icon */
+#language-select {
+  position: absolute;
+  left: 0; /* align with svg */
+  top: 0;
+  width: 35px;
+  height: 35px;
+  color: transparent;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  z-index: 2;
+  cursor: pointer;
+  font-family: "Concert One", "AA-ANIQ", cursive !important;
+  scrollbar-width: none;
+  border-radius: 5px;
+  z-index: 1;
+  border: none;
+}
+
+#language-select::-webkit-scrollbar {
+  display: none;
+}
+
+#language-select option {
+  color: var(--dark);
+  background-color: var(--darkElements);
+  font-family: "Concert One", "AA-ANIQ", cursive !important;
+  width: 35px;
+}
+
+#language-select:focus {
+outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.Cards {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.Card_info {
+  background-color: var(--darkElements);
+  color: var(--dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 10px;
+  width: 140px;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.Card_info:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 10px 20px var(--darkBar);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.title {
+  font-size: larger;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.data {
+  font-size: small;
+  margin: 0;
+}
+
+.Chart {
+  color: var(--darkElements) !important;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 #chart-container {
-    position: relative;
-    height: 100vh;
-    overflow: hidden;
+  position: relative;
+  height: 50vh;
+  width: 90%;
+  overflow: hidden;
 }
-
