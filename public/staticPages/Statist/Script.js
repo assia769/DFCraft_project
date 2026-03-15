@@ -9,6 +9,7 @@ let mode = localStorage.getItem("theme") || "light";
 
 let option;
 
+// creating virtual data for calendar heatmap, working on after to get real data from backend
 function getVirtualData(year) {
   const date = +echarts.time.parse(year + "-01-01");
   const end = +echarts.time.parse(+year + 1 + "-01-01");
@@ -22,60 +23,80 @@ function getVirtualData(year) {
   }
   return data;
 }
-option = {
-  title: {
-    top: 30,
-    left: "center",
-    text: "Daily Step Count",
-    textStyle: {
-      color: "#e5e7eb", // title text color
-      fontFamily: "Arial, sans-serif", // title font family
-    },
-  },
-  tooltip: {
-    backgroundColor: "#111827", // tooltip box
-    textStyle: { color: "#f9fafb" }, // tooltip text
-  },
-  visualMap: {
-    min: 0,
-    max: 10000,
-    type: "piecewise",
-    orient: "horizontal",
-    left: "center",
-    top: 65,
-    textStyle: { color: "#d1d5db" }, // visualMap text
-    inRange: {
-      color: ["#C8A0EF", "#B46CFA", "#A855F7"], // low -> high colors
-    },
-  },
-  calendar: {
-    top: 120,
-    left: 30,
-    right: 30,
-    cellSize: ["auto", 13],
-    range: "2026",
-    itemStyle: {
-      borderWidth: 0.5,
-      borderColor: "#374151", // cell border
-      color: "#1f2937", // base cell color
-    },
-    dayLabel: { color: "#9ca3af" }, // Mon, Tue...
-    monthLabel: { color: "#9ca3af" }, // Jan, Feb...
-    yearLabel: { show: false, color: "#9ca3af" },
-  },
-  series: {
-    type: "heatmap",
-    coordinateSystem: "calendar",
-    data: getVirtualData("2026"),
-  },
-};
 
-if (option && typeof option === "object") {
-  myChart.setOption(option);
+// chart options
+function getChartOptions(theme) {
+  const isDark = theme === "dark";
+  return {
+    title: {
+      top: 30,
+      left: "center",
+      text: "Daily Step Count",
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    tooltip: {
+      backgroundColor: isDark ? "#161616" : "#f2f2f2",
+      textStyle: {
+        color: isDark ? "#f9fafb" : "#212121",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    visualMap: {
+      min: 0,
+      max: 10000,
+      type: "piecewise",
+      orient: "horizontal",
+      left: "center",
+      top: 65,
+      textStyle: {
+        color: isDark ? "#f9fafb" : "#212121",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      inRange: {
+        color: isDark
+          ? ["#3F1E5E", "#5D2E8C", "#7439AD", "#9148D9", "#AC54FF"]
+          : ["#C9BCE3", "#AD94E3", "#996FE3", "#8750E5", "#7C3AED"],
+      },
+    },
+    calendar: {
+      top: 120,
+      left: 30,
+      right: 30,
+      cellSize: ["auto", 13],
+      range: "2026",
+      itemStyle: {
+        borderWidth: 0.5,
+        borderColor: "#374151", // cell border
+        color: isDark ? "#161616" : "#f2f2f2", // base cell color
+      },
+      dayLabel: {
+        color: isDark ? "#f9fafb" : "#212121",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      }, // Mon, Tue...
+      monthLabel: {
+        color: isDark ? "#f9fafb" : "#212121",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      }, // Jan, Feb...
+      yearLabel: {
+        show: false,
+        color: isDark ? "#f9fafb" : "#212121",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    series: {
+      type: "heatmap",
+      coordinateSystem: "calendar",
+      data: getVirtualData("2026"),
+    },
+  };
 }
-
+``;
 window.addEventListener("resize", myChart.resize);
 
+// apply theme and save it to localStorage
 function applyTheme(theme) {
   if (theme === "light") {
     modeIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brightness-high-fill" id="langIcon" viewBox="0 0 16 16">
@@ -88,6 +109,7 @@ function applyTheme(theme) {
   }
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
+  myChart.setOption(getChartOptions(theme));
 }
 
 let modeSelect = document.getElementById("dark-mode-toggle");
@@ -105,3 +127,15 @@ modeSelect.addEventListener("click", function () {
   mode = mode == "dark" ? "light" : "dark";
   applyTheme(mode);
 });
+
+// getting the clicked data, working on after :)
+document.querySelector('.Timeframe').addEventListener('click', function(event) {
+  if (event.target.classList.contains('timeLable')) {
+    document.querySelectorAll('.timeLable').forEach(el => {
+      el.classList.remove('activeI');
+    });
+    event.target.classList.add('activeI');
+  }
+});
+
+
