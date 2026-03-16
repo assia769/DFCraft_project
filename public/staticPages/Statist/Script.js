@@ -1,3 +1,5 @@
+
+
 let calendarDom = document.getElementById("chart-container-calendar");
 let calendarChart = echarts.init(calendarDom, null, {
   renderer: "canvas",
@@ -238,7 +240,11 @@ function getPomodoroOptions(theme) {
       backgroundColor: isDark ? "#161616" : "#f2f2f2",
     },
     legend: {
-      data: [translations[currentLang].work, translations[currentLang].break, translations[currentLang].longBreak],
+      data: [
+        translations[currentLang].work,
+        translations[currentLang].break,
+        translations[currentLang].longBreak,
+      ],
       textStyle: {
         color: isDark ? "#f2f2f2" : "#161616",
         fontFamily: "'Concert One', 'AA-ANIQ', cursive",
@@ -389,7 +395,169 @@ function getSessionOptions(theme) {
   };
 }
 
-window.addEventListener("resize", calendarChart.resize);
+window.addEventListener("resize", sessionChart.resize);
+
+// creating Bar Chart for sound track
+
+let domSound = document.getElementById("chart-container-sound");
+let soundChart = echarts.init(domSound, null, {
+  renderer: "canvas",
+  useDirtyRect: false,
+});
+let soundApp = {};
+
+function getSoundOptions(theme) {
+  const isDark = theme === "dark";
+  return {
+    title: {
+      text: translations[currentLang].soundCTitle,
+      left: "center",
+      top: 20,
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      backgroundColor: isDark ? "#161616" : "#f2f2f2",
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
+    },
+    xAxis: [
+      {
+        type: "category",
+        data: translations[currentLang].days,
+        axisTick: {
+          alignWithLabel: true,
+        },
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    yAxis: [
+      {
+        type: "value",
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    series: [
+      {
+        name: translations[currentLang].sbarname,
+        type: "bar",
+        barWidth: "60%",
+        data: [10, 52, 200, 334, 390, 330, 220],
+        color: isDark ? "#AC54FF" : "#7C3AED",
+      },
+    ],
+  };
+}
+
+window.addEventListener("resize", soundChart.resize);
+
+// for tracking the tasks progress
+let domTasks = document.getElementById("chart-container-totalTasks");
+let tasksChart = echarts.init(domTasks, null, {
+  renderer: "canvas",
+  useDirtyRect: false,
+});
+let tasksApp = {};
+
+function getTasksOptions(theme) {
+  const isDark = theme === "dark";
+  return {
+    title: {
+      text: translations[currentLang].tasksCTitle,
+      left: "center",
+      top: 20,
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      backgroundColor: isDark ? "#161616" : "#f2f2f2",
+    },
+    legend: {
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    xAxis: {
+      type: "value",
+      axisLabel: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+    },
+    yAxis: {
+      type: "category",
+      data: translations[currentLang].calendarDays,
+      axisTick: {
+        alignWithLabel: true,
+      },
+      axisLabel: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+    },
+    series: [
+      {
+        name: translations[currentLang].completed,
+        type: "bar",
+        stack: "total",
+        emphasis: {
+          focus: "series",
+        },
+        data: [320, 302, 301, 334, 390, 330, 320],
+        color: isDark ? "#AC54FF" : "#7C3AED",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      {
+        name: translations[currentLang].pending,
+        type: "bar",
+        stack: "total",
+        emphasis: {
+          focus: "series",
+        },
+        data: [120, 132, 101, 134, 90, 230, 210],
+        color: isDark ? "#7439AD" : "#996FE3",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+  };
+}
+
+window.addEventListener("resize", tasksChart.resize);
 
 let modeIcon = document.getElementById("modeIcon");
 
@@ -409,6 +577,8 @@ function applyTheme(theme) {
   calendarChart.setOption(getChartOptions(theme));
   pomodoroChart.setOption(getPomodoroOptions(theme), true);
   sessionChart.setOption(getSessionOptions(theme), true);
+  soundChart.setOption(getSoundOptions(theme), true);
+  tasksChart.setOption(getTasksOptions(theme), true);
 }
 
 // for language changes selection

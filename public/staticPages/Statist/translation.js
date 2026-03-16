@@ -14,7 +14,12 @@ const translations =  {
       longBreak: "Longue pause",
       title: "Analyse de session complétée",
       barname: "Nombre de sessions",
-      days: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
+      days: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
+      soundCTitle: "Analyse du son",
+      sbarname: "Nombre de sons",
+      tasksCTitle: "Analyse du progrès des tâches",
+      completed: "Tâches complétées",
+      pending: "Tâches en attente",
     },
     en: {
       card1: "Today's focus",
@@ -31,7 +36,12 @@ const translations =  {
       longBreak: "Long Break",
       title: "Completed Session Analysis",
       barname: "Session count",
-      days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+      days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      soundCTitle: "Sound Analysis",
+      sbarname: "Sound count",
+      tasksCTitle: "Task progress Analysis",
+      completed: "Completed tasks",
+      pending: "Pending tasks",
     },
     ar: {
       card1: "تركيز اليوم",
@@ -48,6 +58,11 @@ const translations =  {
       longBreak: "استراحة طويلة",
       title: "تحليل الجلسات المكتملة",
       barname: "عدد الجلسات",
-      days: ["الإث", "الثل", "الأر", "الخم", "الجم", "الس", "الأح"]
+      days: ["الإث", "الثل", "الأر", "الخم", "الجم", "الس", "الأح"],
+      soundCTitle: "تحليل الصوت",
+      sbarname: "عدد الأصوات",
+      tasksCTitle: "تحليل تقدم المهام",
+      completed: "المهام المكتملة",
+      pending: "المهام المعلقة",
     }
   }

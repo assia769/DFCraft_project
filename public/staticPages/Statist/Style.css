@@ -270,3 +270,17 @@ header {
   width: 80%;
   overflow: hidden;
 }
+
+#chart-container-sound {
+  position: relative;
+  height: 70vh;
+  width: 80%;
+  overflow: hidden;
+}
+
+#chart-container-totalTasks {
+  position: relative;
+  height: 70vh;
+  width: 95%;
+  overflow: hidden;
+}
