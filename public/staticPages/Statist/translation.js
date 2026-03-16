@@ -20,6 +20,11 @@ const translations =  {
       tasksCTitle: "Analyse du progrès des tâches",
       completed: "Tâches complétées",
       pending: "Tâches en attente",
+      completedTasksTitle: "Analyse des tâches complétées par priorité",
+      high: "Haut",
+      medium: "Moyen",
+      low: "Bas",
+      blockedPagesTitle: "Analyse des pages bloquées",
     },
     en: {
       card1: "Today's focus",
@@ -42,6 +47,12 @@ const translations =  {
       tasksCTitle: "Task progress Analysis",
       completed: "Completed tasks",
       pending: "Pending tasks",
+      completedTasksTitle: "Completed Tasks by priority Analysis",
+      high: "High",
+      medium: "Medium",
+      low: "Low",
+      blockedPagesTitle: "Blocked Pages Analysis",
+
     },
     ar: {
       card1: "تركيز اليوم",
@@ -64,5 +75,10 @@ const translations =  {
       tasksCTitle: "تحليل تقدم المهام",
       completed: "المهام المكتملة",
       pending: "المهام المعلقة",
+      completedTasksTitle: "تحليل المهام المكتملة حسب الأولوية",
+      high: "عالية",
+      medium: "متوسطة",
+      low: "منخفضة",
+      blockedPagesTitle: "تحليل الصفحات المحظورة",
     }
   }

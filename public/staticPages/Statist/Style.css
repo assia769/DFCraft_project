@@ -284,3 +284,17 @@ header {
   width: 95%;
   overflow: hidden;
 }
+
+#chart-container-completedTasks {
+  position: relative;
+  height: 70vh;
+  width: 90%;
+  overflow: hidden;
+}
+
+#chart-container-blockedPages {
+  position: relative;
+  height: 70vh;
+  width: 90%;
+  overflow: hidden;
+}

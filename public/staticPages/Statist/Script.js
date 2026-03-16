@@ -1,5 +1,3 @@
-
-
 let calendarDom = document.getElementById("chart-container-calendar");
 let calendarChart = echarts.init(calendarDom, null, {
   renderer: "canvas",
@@ -559,6 +557,283 @@ function getTasksOptions(theme) {
 
 window.addEventListener("resize", tasksChart.resize);
 
+let completedTasksDom = document.getElementById(
+  "chart-container-completedTasks",
+);
+let completedTasksChart = echarts.init(completedTasksDom, null, {
+  renderer: "canvas",
+  useDirtyRect: false,
+});
+let completedTasksApp = {};
+
+const tasksposList = [
+  "left",
+  "right",
+  "top",
+  "bottom",
+  "inside",
+  "insideTop",
+  "insideLeft",
+  "insideRight",
+  "insideBottom",
+  "insideTopLeft",
+  "insideTopRight",
+  "insideBottomLeft",
+  "insideBottomRight",
+];
+completedTasksApp.configParameters = {
+  rotate: {
+    min: -90,
+    max: 90,
+  },
+  align: {
+    options: {
+      left: "left",
+      center: "center",
+      right: "right",
+    },
+  },
+  verticalAlign: {
+    options: {
+      top: "top",
+      middle: "middle",
+      bottom: "bottom",
+    },
+  },
+  position: {
+    options: tasksposList.reduce(function (map, pos) {
+      map[pos] = pos;
+      return map;
+    }, {}),
+  },
+  distance: {
+    min: 0,
+    max: 100,
+  },
+};
+completedTasksApp.config = {
+  rotate: 90,
+  align: "left",
+  verticalAlign: "middle",
+  position: "insideBottom",
+  distance: 15,
+  onChange: function () {
+    const labelOption = {
+      rotate: completedTasksApp.config.rotate,
+      align: completedTasksApp.config.align,
+      verticalAlign: completedTasksApp.config.verticalAlign,
+      position: completedTasksApp.config.position,
+      distance: completedTasksApp.config.distance,
+    };
+    completedTasksChart.setOption({
+      series: [
+        {
+          label: taskslabelOption,
+        },
+        {
+          label: taskslabelOption,
+        },
+        {
+          label: taskslabelOption,
+        },
+        {
+          label: taskslabelOption,
+        },
+      ],
+    });
+  },
+};
+const taskslabelOption = {
+  show: true,
+  position: completedTasksApp.config.position,
+  distance: completedTasksApp.config.distance,
+  align: completedTasksApp.config.align,
+  verticalAlign: completedTasksApp.config.verticalAlign,
+  rotate: completedTasksApp.config.rotate,
+  formatter: "{c}  {name|{a}}",
+  fontSize: 16,
+  rich: {
+    name: {},
+  },
+};
+function getCompletedTasksOptions(theme) {
+  const isDark = theme === "dark";
+  const barLabelOption = {
+    show: false,
+    position: completedTasksApp.config.position,
+    distance: completedTasksApp.config.distance,
+    align: completedTasksApp.config.align,
+    verticalAlign: completedTasksApp.config.verticalAlign,
+    rotate: completedTasksApp.config.rotate,
+    formatter: "{c} {name|{a}}",
+    fontSize: 16,
+    color: isDark ? "#f2f2f2" : "#161616",
+    fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+    rich: {
+      name: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+  };
+  return {
+    title: {
+      text: translations[currentLang].completedTasksTitle,
+      left: "center",
+      top: 20,
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      backgroundColor: isDark ? "#161616" : "#f2f2f2",
+    },
+    legend: {
+      data: [
+        translations[currentLang].high,
+        translations[currentLang].medium,
+        translations[currentLang].low,
+      ],
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    toolbox: {
+      show: true,
+      orient: "vertical",
+      left: "right",
+      top: "center",
+      feature: {
+        mark: { show: true },
+        magicType: { show: true, type: ["stack"] },
+        restore: { show: true },
+        saveAsImage: { show: true },
+      },
+    },
+    xAxis: [
+      {
+        type: "category",
+        axisTick: { show: false },
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+        data: ["2012", "2013", "2014", "2015", "2016"],
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    yAxis: [
+      {
+        type: "value",
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    series: [
+      {
+        name: translations[currentLang].high,
+        type: "bar",
+        label: barLabelOption,
+        emphasis: {
+          focus: "series",
+        },
+        data: [220, 182, 191, 234, 290],
+        color: isDark ? "#AC54FF" : "#7C3AED",
+      },
+      {
+        name: translations[currentLang].medium,
+        type: "bar",
+        label: barLabelOption,
+        emphasis: {
+          focus: "series",
+        },
+        data: [150, 232, 201, 154, 190],
+        color: isDark ? "#9148D9" : "#8750E5",
+      },
+      {
+        name: translations[currentLang].low,
+        type: "bar",
+        label: barLabelOption,
+        emphasis: {
+          focus: "series",
+        },
+        data: [98, 77, 101, 99, 40],
+        color: isDark ? "#7439AD" : "#996FE3",
+      },
+    ],
+  };
+}
+
+window.addEventListener("resize", completedTasksChart.resize);
+
+let blockedDom = document.getElementById("chart-container-blockedPages");
+let blockedPagesChart = echarts.init(blockedDom, null, {
+  renderer: "canvas",
+  useDirtyRect: false,
+});
+let blockedPagesApp = {};
+
+function getBlockedPagesOptions(theme) {
+  const isDark = theme === "dark";
+  return {
+    title: {
+      text: translations[currentLang].blockedPagesTitle,
+      left: "center",
+      top: 20,
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    tooltip: {
+      trigger: "axis",
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      backgroundColor: isDark ? "#161616" : "#f2f2f2",
+    },
+    xAxis: {
+      type: "category",
+      data: translations[currentLang].days,
+      axisLabel: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    series: [
+      {
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: "line",
+        smooth: true,
+        color: isDark ? "#AC54FF" : "#7C3AED",
+      },
+    ],
+  };
+}
+
+window.addEventListener("resize", blockedPagesChart.resize);
+
 let modeIcon = document.getElementById("modeIcon");
 
 // apply theme and save it to localStorage
@@ -579,6 +854,8 @@ function applyTheme(theme) {
   sessionChart.setOption(getSessionOptions(theme), true);
   soundChart.setOption(getSoundOptions(theme), true);
   tasksChart.setOption(getTasksOptions(theme), true);
+  completedTasksChart.setOption(getCompletedTasksOptions(theme), true);
+  blockedPagesChart.setOption(getBlockedPagesOptions(theme), true);
 }
 
 // for language changes selection
