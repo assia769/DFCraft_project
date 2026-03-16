@@ -1,5 +1,5 @@
-let dom = document.getElementById("chart-container-calendar");
-let myChart = echarts.init(dom, null, {
+let calendarDom = document.getElementById("chart-container-calendar");
+let calendarChart = echarts.init(calendarDom, null, {
   renderer: "canvas",
   useDirtyRect: false,
 });
@@ -93,15 +93,15 @@ function getChartOptions(theme) {
     },
   };
 }
-window.addEventListener("resize", myChart.resize);
+window.addEventListener("resize", calendarChart.resize);
 
 //creating a bar chart for Pomodoro timer
-let dom2 = document.getElementById("chart-container-pomodoro");
-let myChart2 = echarts.init(dom2, null, {
+let pomodoroDom = document.getElementById("chart-container-pomodoro");
+let pomodoroChart = echarts.init(pomodoroDom, null, {
   renderer: "canvas",
   useDirtyRect: false,
 });
-let app2 = {};
+let pomodoroApp = {};
 
 const posList = [
   "left",
@@ -118,7 +118,7 @@ const posList = [
   "insideBottomLeft",
   "insideBottomRight",
 ];
-app2.configParameters = {
+pomodoroApp.configParameters = {
   rotate: {
     min: -90,
     max: 90,
@@ -148,7 +148,7 @@ app2.configParameters = {
     max: 100,
   },
 };
-app2.config = {
+pomodoroApp.config = {
   rotate: 90,
   align: "left",
   verticalAlign: "middle",
@@ -156,13 +156,13 @@ app2.config = {
   distance: 15,
   onChange: function () {
     const labelOption = {
-      rotate: app2.config.rotate,
-      align: app2.config.align,
-      verticalAlign: app2.config.verticalAlign,
-      position: app2.config.position,
-      distance: app2.config.distance,
+      rotate: pomodoroApp.config.rotate,
+      align: pomodoroApp.config.align,
+      verticalAlign: pomodoroApp.config.verticalAlign,
+      position: pomodoroApp.config.position,
+      distance: pomodoroApp.config.distance,
     };
-    myChart2.setOption({
+    pomodoroChart.setOption({
       series: [
         {
           label: labelOption,
@@ -182,26 +182,26 @@ app2.config = {
 };
 const labelOption = {
   show: true,
-  position: app2.config.position,
-  distance: app2.config.distance,
-  align: app2.config.align,
-  verticalAlign: app2.config.verticalAlign,
-  rotate: app2.config.rotate,
+  position: pomodoroApp.config.position,
+  distance: pomodoroApp.config.distance,
+  align: pomodoroApp.config.align,
+  verticalAlign: pomodoroApp.config.verticalAlign,
+  rotate: pomodoroApp.config.rotate,
   formatter: "{c}  {name|{a}}",
   fontSize: 16,
   rich: {
     name: {},
   },
 };
-function getOptions2(theme) {
+function getPomodoroOptions(theme) {
   const isDark = theme === "dark";
   const barLabelOption = {
     show: false,
-    position: app2.config.position,
-    distance: app2.config.distance,
-    align: app2.config.align,
-    verticalAlign: app2.config.verticalAlign,
-    rotate: app2.config.rotate,
+    position: pomodoroApp.config.position,
+    distance: pomodoroApp.config.distance,
+    align: pomodoroApp.config.align,
+    verticalAlign: pomodoroApp.config.verticalAlign,
+    rotate: pomodoroApp.config.rotate,
     formatter: "{c} {name|{a}}",
     fontSize: 16,
     color: isDark ? "#f2f2f2" : "#161616",
@@ -214,6 +214,15 @@ function getOptions2(theme) {
     },
   };
   return {
+    title: {
+      text: "Pomodoro Time Analysis",
+      left: "center",
+      top: 20,
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
     tooltip: {
       trigger: "axis",
       axisPointer: {
@@ -301,9 +310,83 @@ function getOptions2(theme) {
   };
 }
 
-window.addEventListener("resize", myChart2.resize);
+window.addEventListener("resize", pomodoroChart.resize);
 
-//
+// creating Bar Chart for Session track
+
+let domSession = document.getElementById("chart-container-session");
+let sessionChart = echarts.init(domSession, null, {
+  renderer: "canvas",
+  useDirtyRect: false,
+});
+let sessionApp = {};
+
+function getSessionOptions(theme) {
+  const isDark = theme === "dark";
+  return {
+    title: {
+      text: "Completed Session Analysis",
+      left: "center",
+      top: 20,
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      backgroundColor: isDark ? "#161616" : "#f2f2f2",
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
+    },
+    xAxis: [
+      {
+        type: "category",
+        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        axisTick: {
+          alignWithLabel: true,
+        },
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    yAxis: [
+      {
+        type: "value",
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    series: [
+      {
+        name: "Direct",
+        type: "bar",
+        barWidth: "60%",
+        data: [10, 52, 200, 334, 390, 330, 220],
+        color: isDark ? "#AC54FF" : "#7C3AED",
+      },
+    ],
+  };
+}
+
+window.addEventListener("resize", calendarChart.resize);
 
 // apply theme and save it to localStorage
 function applyTheme(theme) {
@@ -318,8 +401,9 @@ function applyTheme(theme) {
   }
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
-  myChart.setOption(getChartOptions(theme));
-  myChart2.setOption(getOptions2(mode), true);
+  calendarChart.setOption(getChartOptions(theme));
+  pomodoroChart.setOption(getPomodoroOptions(theme), true);
+  sessionChart.setOption(getSessionOptions(theme), true);
 }
 
 let modeSelect = document.getElementById("dark-mode-toggle");

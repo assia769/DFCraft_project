@@ -246,11 +246,27 @@ header {
     color 0.3s ease;
 }
 
+/* for all the graphs */
+
+.chart{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
 /* for pomodoro graph */
 
 #chart-container-pomodoro {
   position: relative;
   height: 70vh;
+  width: 90%;
   overflow: hidden;
-  margin-right: 50px;
+}
+
+#chart-container-session {
+  position: relative;
+  height: 70vh;
+  width: 80%;
+  overflow: hidden;
 }
