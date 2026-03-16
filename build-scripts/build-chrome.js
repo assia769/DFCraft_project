@@ -95,6 +95,11 @@ try {
       path.join(chromeDir, "staticPages", "Style.css"),
   );
 
+  fs.copySync(
+      path.join(__dirname, "..", "public", "vendor", "echarts.min.js"),
+      path.join(chromeDir, "vendor", "echarts.min.js"),
+  );
+
   // Copy icons and sounds to both
   console.log("🎨 Copying assets...");
 

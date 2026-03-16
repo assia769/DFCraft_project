@@ -102,6 +102,11 @@ try {
       path.join(firefoxDir, "staticPages", "Style.css"),
   );
 
+  fs.copySync(
+      path.join(__dirname, "..", "public", "vendor", "echarts.min.js"),
+      path.join(firefoxDir, "vendor", "echarts.min.js"),
+  );
+
   // Copy icons and sounds
   console.log("🎨 Copying assets...");
 
