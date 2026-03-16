@@ -105,6 +105,11 @@ try {
   );
 
   fs.copySync(
+    path.join(__dirname, "..", "public", "staticPages", "Statist", "translation.js"),
+    path.join(chromeDir, "staticPages", "translation.js"),
+  );
+
+  fs.copySync(
     path.join(__dirname, "..", "public", "vendor", "echarts.min.js"),
     path.join(chromeDir, "vendor", "echarts.min.js"),
   );
@@ -127,6 +132,11 @@ try {
   fs.copySync(
     path.join(__dirname, "..", "public", "staticPages", "Statist", "Style.css"),
     path.join(firefoxDir, "staticPages", "Style.css"),
+  );
+
+  fs.copySync(
+    path.join(__dirname, "..", "public", "staticPages", "Statist", "translation.js"),
+    path.join(firefoxDir, "staticPages", "translation.js"),
   );
 
   fs.copySync(

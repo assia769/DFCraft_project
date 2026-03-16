@@ -388,6 +388,8 @@ function getSessionOptions(theme) {
 
 window.addEventListener("resize", calendarChart.resize);
 
+let modeIcon = document.getElementById("modeIcon");
+
 // apply theme and save it to localStorage
 function applyTheme(theme) {
   if (theme === "light") {
@@ -406,8 +408,49 @@ function applyTheme(theme) {
   sessionChart.setOption(getSessionOptions(theme), true);
 }
 
+// for language changes selection
+let currentLang = localStorage.getItem("settings.language") || "en";
+
+function applyLanguage(lang) {
+  const t = translations[lang];
+  if (!t) return;
+
+  // RTL support for Arabic
+  document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+  document.documentElement.setAttribute("lang", lang);
+
+  // Page title
+  document.title = t.pageTitle;
+
+  // Cards
+  const titles = document.querySelectorAll(".Card_info .title");
+  const keys = ["card1", "card2", "card3", "card4"];
+  titles.forEach((el, i) => (el.textContent = t[keys[i]]));
+
+  // Timeframe labels
+  document.querySelectorAll(".timeLable").forEach((el, i) => {
+    el.textContent = t.timeframes[i];
+  });
+
+  // Save and re-render charts with new labels
+  currentLang = lang;
+  localStorage.setItem("settings.language", lang);
+  applyTheme(mode);
+}
+
+applyLanguage(currentLang);
+
+const langSelect = document.getElementById("language-select");
+
+// Set initial value from storage
+langSelect.value = currentLang;
+applyLanguage(currentLang);
+
+langSelect.addEventListener("change", function () {
+  applyLanguage(this.value);
+});
+
 let modeSelect = document.getElementById("dark-mode-toggle");
-let modeIcon = document.getElementById("modeIcon");
 
 const savedTheme = localStorage.getItem("theme");
 const systemPrefersDark = window.matchMedia(
