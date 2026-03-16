@@ -103,6 +103,11 @@ try {
   );
 
   fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "translation.js"),
+      path.join(firefoxDir, "staticPages", "translation.js"),
+    );
+
+  fs.copySync(
       path.join(__dirname, "..", "public", "vendor", "echarts.min.js"),
       path.join(firefoxDir, "vendor", "echarts.min.js"),
   );

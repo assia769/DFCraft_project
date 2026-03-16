@@ -27,11 +27,12 @@ function getVirtualData(year) {
 // chart options
 function getChartOptions(theme) {
   const isDark = theme === "dark";
+  const langTranslations = translations[currentLang] || translations.en;
   return {
     title: {
       top: 30,
       left: "center",
-      text: "Daily Step Count",
+      text: translations[currentLang].calendartitle,
       textStyle: {
         color: isDark ? "#f2f2f2" : "#161616",
         fontFamily: "'Concert One', 'AA-ANIQ', cursive",
@@ -73,10 +74,12 @@ function getChartOptions(theme) {
         color: isDark ? "#161616" : "#f2f2f2", // base cell color
       },
       dayLabel: {
+        nameMap: langTranslations.calendarDays,
         color: isDark ? "#f9fafb" : "#212121",
         fontFamily: "'Concert One', 'AA-ANIQ', cursive",
       }, // Mon, Tue...
       monthLabel: {
+        nameMap: langTranslations.calendarMonths,
         color: isDark ? "#f9fafb" : "#212121",
         fontFamily: "'Concert One', 'AA-ANIQ', cursive",
       }, // Jan, Feb...
@@ -215,7 +218,7 @@ function getPomodoroOptions(theme) {
   };
   return {
     title: {
-      text: "Pomodoro Time Analysis",
+      text: translations[currentLang].pomodorotitle,
       left: "center",
       top: 20,
       textStyle: {
@@ -235,7 +238,7 @@ function getPomodoroOptions(theme) {
       backgroundColor: isDark ? "#161616" : "#f2f2f2",
     },
     legend: {
-      data: ["Work", "Break", "Long Break"],
+      data: [translations[currentLang].work, translations[currentLang].break, translations[currentLang].longBreak],
       textStyle: {
         color: isDark ? "#f2f2f2" : "#161616",
         fontFamily: "'Concert One', 'AA-ANIQ', cursive",
@@ -277,7 +280,7 @@ function getPomodoroOptions(theme) {
     ],
     series: [
       {
-        name: "Work",
+        name: translations[currentLang].work,
         type: "bar",
         label: barLabelOption,
         emphasis: {
@@ -287,7 +290,7 @@ function getPomodoroOptions(theme) {
         color: isDark ? "#AC54FF" : "#7C3AED",
       },
       {
-        name: "Break",
+        name: translations[currentLang].break,
         type: "bar",
         label: barLabelOption,
         emphasis: {
@@ -297,7 +300,7 @@ function getPomodoroOptions(theme) {
         color: isDark ? "#9148D9" : "#8750E5",
       },
       {
-        name: "Long Break",
+        name: translations[currentLang].longBreak,
         type: "bar",
         label: barLabelOption,
         emphasis: {
@@ -325,7 +328,7 @@ function getSessionOptions(theme) {
   const isDark = theme === "dark";
   return {
     title: {
-      text: "Completed Session Analysis",
+      text: translations[currentLang].title,
       left: "center",
       top: 20,
       textStyle: {
@@ -353,7 +356,7 @@ function getSessionOptions(theme) {
     xAxis: [
       {
         type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        data: translations[currentLang].days,
         axisTick: {
           alignWithLabel: true,
         },
@@ -376,7 +379,7 @@ function getSessionOptions(theme) {
     ],
     series: [
       {
-        name: "Direct",
+        name: translations[currentLang].barname,
         type: "bar",
         barWidth: "60%",
         data: [10, 52, 200, 334, 390, 330, 220],

@@ -96,6 +96,11 @@ try {
   );
 
   fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "translation.js"),
+      path.join(chromeDir, "staticPages", "translation.js"),
+    );
+
+  fs.copySync(
       path.join(__dirname, "..", "public", "vendor", "echarts.min.js"),
       path.join(chromeDir, "vendor", "echarts.min.js"),
   );
