@@ -201,7 +201,7 @@ header {
   margin-top: 10px;
 }
 
-#chart-container {
+#chart-container-calendar {
   position: relative;
   height: 50vh;
   width: 90%;
@@ -244,4 +244,13 @@ header {
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+}
+
+/* for pomodoro graph */
+
+#chart-container-pomodoro {
+  position: relative;
+  height: 70vh;
+  overflow: hidden;
+  margin-right: 50px;
 }

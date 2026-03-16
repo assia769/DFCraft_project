@@ -1,4 +1,4 @@
-let dom = document.getElementById("chart-container");
+let dom = document.getElementById("chart-container-calendar");
 let myChart = echarts.init(dom, null, {
   renderer: "canvas",
   useDirtyRect: false,
@@ -93,8 +93,217 @@ function getChartOptions(theme) {
     },
   };
 }
-``;
 window.addEventListener("resize", myChart.resize);
+
+//creating a bar chart for Pomodoro timer
+let dom2 = document.getElementById("chart-container-pomodoro");
+let myChart2 = echarts.init(dom2, null, {
+  renderer: "canvas",
+  useDirtyRect: false,
+});
+let app2 = {};
+
+const posList = [
+  "left",
+  "right",
+  "top",
+  "bottom",
+  "inside",
+  "insideTop",
+  "insideLeft",
+  "insideRight",
+  "insideBottom",
+  "insideTopLeft",
+  "insideTopRight",
+  "insideBottomLeft",
+  "insideBottomRight",
+];
+app2.configParameters = {
+  rotate: {
+    min: -90,
+    max: 90,
+  },
+  align: {
+    options: {
+      left: "left",
+      center: "center",
+      right: "right",
+    },
+  },
+  verticalAlign: {
+    options: {
+      top: "top",
+      middle: "middle",
+      bottom: "bottom",
+    },
+  },
+  position: {
+    options: posList.reduce(function (map, pos) {
+      map[pos] = pos;
+      return map;
+    }, {}),
+  },
+  distance: {
+    min: 0,
+    max: 100,
+  },
+};
+app2.config = {
+  rotate: 90,
+  align: "left",
+  verticalAlign: "middle",
+  position: "insideBottom",
+  distance: 15,
+  onChange: function () {
+    const labelOption = {
+      rotate: app2.config.rotate,
+      align: app2.config.align,
+      verticalAlign: app2.config.verticalAlign,
+      position: app2.config.position,
+      distance: app2.config.distance,
+    };
+    myChart2.setOption({
+      series: [
+        {
+          label: labelOption,
+        },
+        {
+          label: labelOption,
+        },
+        {
+          label: labelOption,
+        },
+        {
+          label: labelOption,
+        },
+      ],
+    });
+  },
+};
+const labelOption = {
+  show: true,
+  position: app2.config.position,
+  distance: app2.config.distance,
+  align: app2.config.align,
+  verticalAlign: app2.config.verticalAlign,
+  rotate: app2.config.rotate,
+  formatter: "{c}  {name|{a}}",
+  fontSize: 16,
+  rich: {
+    name: {},
+  },
+};
+function getOptions2(theme) {
+  const isDark = theme === "dark";
+  const barLabelOption = {
+    show: false,
+    position: app2.config.position,
+    distance: app2.config.distance,
+    align: app2.config.align,
+    verticalAlign: app2.config.verticalAlign,
+    rotate: app2.config.rotate,
+    formatter: "{c} {name|{a}}",
+    fontSize: 16,
+    color: isDark ? "#f2f2f2" : "#161616",
+    fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+    rich: {
+      name: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+  };
+  return {
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+      backgroundColor: isDark ? "#161616" : "#f2f2f2",
+    },
+    legend: {
+      data: ["Work", "Break", "Long Break"],
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    toolbox: {
+      show: true,
+      orient: "vertical",
+      left: "right",
+      top: "center",
+      feature: {
+        mark: { show: true },
+        magicType: { show: true, type: ["stack"] },
+        restore: { show: true },
+        saveAsImage: { show: true },
+      },
+    },
+    xAxis: [
+      {
+        type: "category",
+        axisTick: { show: false },
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+        data: ["2012", "2013", "2014", "2015", "2016"],
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    yAxis: [
+      {
+        type: "value",
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    series: [
+      {
+        name: "Work",
+        type: "bar",
+        label: barLabelOption,
+        emphasis: {
+          focus: "series",
+        },
+        data: [220, 182, 191, 234, 290],
+        color: isDark ? "#AC54FF" : "#7C3AED",
+      },
+      {
+        name: "Break",
+        type: "bar",
+        label: barLabelOption,
+        emphasis: {
+          focus: "series",
+        },
+        data: [150, 232, 201, 154, 190],
+        color: isDark ? "#9148D9" : "#8750E5",
+      },
+      {
+        name: "Long Break",
+        type: "bar",
+        label: barLabelOption,
+        emphasis: {
+          focus: "series",
+        },
+        data: [98, 77, 101, 99, 40],
+        color: isDark ? "#7439AD" : "#996FE3",
+      },
+    ],
+  };
+}
+
+window.addEventListener("resize", myChart2.resize);
+
+//
 
 // apply theme and save it to localStorage
 function applyTheme(theme) {
@@ -110,6 +319,7 @@ function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
   myChart.setOption(getChartOptions(theme));
+  myChart2.setOption(getOptions2(mode), true);
 }
 
 let modeSelect = document.getElementById("dark-mode-toggle");
@@ -129,13 +339,13 @@ modeSelect.addEventListener("click", function () {
 });
 
 // getting the clicked data, working on after :)
-document.querySelector('.Timeframe').addEventListener('click', function(event) {
-  if (event.target.classList.contains('timeLable')) {
-    document.querySelectorAll('.timeLable').forEach(el => {
-      el.classList.remove('activeI');
-    });
-    event.target.classList.add('activeI');
-  }
-});
-
-
+document
+  .querySelector(".Timeframe")
+  .addEventListener("click", function (event) {
+    if (event.target.classList.contains("timeLable")) {
+      document.querySelectorAll(".timeLable").forEach((el) => {
+        el.classList.remove("activeI");
+      });
+      event.target.classList.add("activeI");
+    }
+  });
