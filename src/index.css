@@ -56,6 +56,14 @@ body * {
   background-color: var(--color-dark, #161616);
 }
 
+.text-light{
+  color: var(--tw-color-light, #F2F2F2);
+}
+
+.dark .text-dark {
+  color: var(--tw-color-dark, #161616);
+}
+
 .text-lightElements {
   color: var(--tw-color-lightElements, #7C3AED);
 }

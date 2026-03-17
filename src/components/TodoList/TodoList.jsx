@@ -124,28 +124,30 @@ export default function TodoList() {
 
           {/* Stats */}
           <div className="flex gap-4 mb-4">
-            <div className="bg-lightList dark:bg-darkList rounded-lg px-4 py-2">
-              <span className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">
+            <div className="bg-lightElements dark:bg-darkElements rounded-lg px-4 py-2">
+              <span className="text-sm text-light dark:text-dark">
                 {" "}
                 {t("total")}
               </span>
-              <span className="font-bold text-lightElements dark:text-darkElements">
+              <span className="font-bold text-light dark:text-dark">
                 {stats.total}
               </span>
             </div>
-            <div className="bg-lightList dark:bg-darkList rounded-lg px-4 py-2">
-              <span className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">
+            <div className="bg-lightElements dark:bg-darkElements rounded-lg px-4 py-2">
+              <span className="text-sm text-light dark:text-dark">
                 {" "}
                 {t("active")}
               </span>
-              <span className="font-bold text-blue-500">{stats.active}</span>
+              <span className="font-bold text-light dark:text-dark">
+                {stats.active}
+              </span>
             </div>
-            <div className="bg-lightList dark:bg-darkList rounded-lg px-4 py-2">
-              <span className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">
+            <div className="bg-lightElements dark:bg-darkElements rounded-lg px-4 py-2">
+              <span className="text-sm text-light dark:text-dark">
                 {" "}
                 {t("completed")}
               </span>
-              <span className="font-bold text-green-500">
+              <span className="font-bold text-light dark:text-dark">
                 {stats.completed}
               </span>
             </div>
@@ -167,7 +169,7 @@ export default function TodoList() {
         {/* Add Button */}
         <button
           onClick={() => setShowAddDialog(true)}
-          className="w-full mb-4 p-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
+          className="w-full mb-4 p-4 bg-gradient-to-r from-lightList to-lightElements dark:from-purple-600 dark:to-purple-400 hover:from-purple-500 hover:to-purple-700 text-light dark:text-dark font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
         >
           <Plus className="w-5 h-5" />
           {t("ajouter")}

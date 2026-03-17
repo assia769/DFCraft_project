@@ -27,22 +27,22 @@ export default function AddTodoDialog({ onAdd, onClose, taskTypes, priorities })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-light dark:bg-dark rounded-2xl shadow-2xl max-w-md w-full p-6">
+      <div className="bg-lightElements dark:bg-darkElements rounded-2xl shadow-2xl max-w-md w-full p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-lightElements dark:text-darkElements">
+          <h2 className="text-2xl font-bold text-light dark:text-dark">
             {t("newTask")}
           </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-lightList dark:hover:bg-darkList rounded-lg transition-colors"
           >
-            <X className="w-5 h-5 text-lightElements dark:text-darkElements" />
+            <X className="w-5 h-5 text-light dark:text-dark" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-lightElements dark:text-darkElements mb-2">
+            <label className="block text-sm font-medium text-light dark:text-dark mb-2">
               {t("titleT")}
             </label>
             <input
@@ -50,13 +50,13 @@ export default function AddTodoDialog({ onAdd, onClose, taskTypes, priorities })
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t("placHTitre")}
-              className="w-full p-3 rounded-lg bg-lightList dark:bg-darkList text-lightElements dark:text-darkElements placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 rounded-lg bg-lightList dark:bg-darkList text-light dark:text-dark placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder focus:outline-none focus:ring-2 focus:ring-blue-500"
               autoFocus
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-lightElements dark:text-darkElements mb-2">
+            <label className="block text-sm font-medium text-light dark:text-dark mb-2">
               {t("desc")}
             </label>
             <textarea
@@ -64,18 +64,18 @@ export default function AddTodoDialog({ onAdd, onClose, taskTypes, priorities })
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t("placeDesc2")}
               rows="3"
-              className="w-full p-3 rounded-lg bg-lightList dark:bg-darkList text-lightElements dark:text-darkElements placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full p-3 rounded-lg bg-lightList dark:bg-darkList text-light dark:text-dark placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-lightElements dark:text-darkElements mb-2">
+            <label className="block text-sm font-medium text-light dark:text-dark mb-2">
               {t("taskType")}
             </label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full p-3 rounded-lg bg-lightList dark:bg-darkList text-lightElements dark:text-darkElements focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 rounded-lg bg-lightList dark:bg-darkList text-light dark:text-dark focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {taskTypes.map(taskType => (
                 <option key={taskType.id} value={taskType.id}>
@@ -97,7 +97,7 @@ export default function AddTodoDialog({ onAdd, onClose, taskTypes, priorities })
                   onClick={() => setPriority(p.id)}
                   className={`p-3 rounded-lg font-medium transition-all ${
                     priority === p.id
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
+                      ? 'bg-gradient-to-r from-lightList to-lightElements dark:from-purple-600 dark:to-purple-400 hover:from-purple-500 hover:to-purple-700 text-light dark:text-dark shadow-lg'
                       : 'bg-lightList dark:bg-darkList text-lightElements dark:text-darkElements hover:bg-opacity-80'
                   }`}
                 >
@@ -118,7 +118,7 @@ export default function AddTodoDialog({ onAdd, onClose, taskTypes, priorities })
             <button
               type="submit"
               disabled={!title.trim()}
-              className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="flex-1 px-4 py-3 bg-gradient-to-r from-lightList to-lightElements dark:from-purple-600 dark:to-purple-400 hover:from-purple-500 hover:to-purple-700 text-light dark:text-dark rounded-lg font-medium shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {t("add")}
             </button>
