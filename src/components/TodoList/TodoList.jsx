@@ -89,6 +89,14 @@ export default function TodoList() {
   };
 
   const editTodo = (id, updatedTodo) => {
+    const todo = todos.find((t) => t.id === id);
+    browserAPI.runtime.sendMessage({
+      type: "UPDATE_TASK_STATS",
+      subType: "edit",
+      isCompleted: todo.completed,
+      prevPriority: todo.priority,
+      newPriority: updatedTodo.priority,
+    });
     setTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, ...updatedTodo } : todo,

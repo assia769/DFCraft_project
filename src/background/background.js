@@ -170,7 +170,7 @@ let firefoxListeners = null;
 let firefoxTimeInterval = null;
 
 // Message listener
-browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
+browserAPI.runtime.onMessage.addListener( async (request, sender, sendResponse) => {
   if (request.type === "GET_TIMER") {
     updateTimerFromLastSave();
     sendResponse(timerData);
@@ -333,21 +333,27 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     if (subType === "complete") {
       console.warn(`Updating task stats: ${isCompleted ? "Completing" : "Uncompleting"} a task with priority ${priority} (amount: ${amount})`);
-      updateStats("tasksCompleted", amount);
-      updateStats("tasksCompleted_" + priority, amount);
-      updateStats("tasksPending", -amount);
+      await updateStats("tasksCompleted", amount);
+      await updateStats("tasksCompleted_" + priority, amount);
+      await updateStats("tasksPending", -amount);
     }else if (subType === "delete") {
       if (!isCompleted){
-        updateStats("tasksPending", -1);
+        await updateStats("tasksPending", -1);
       }else{
         console.warn("Decrementing completed count for priority", "tasksCompleted_" + priority);
-        updateStats("tasksCompleted", -1);
-        updateStats("tasksCompleted_" + priority, -1);
+        await updateStats("tasksCompleted", -1);
+        await updateStats("tasksCompleted_" + priority, -1);
       }
     }else if (subType === "create") {
       console.warn("Incrementing created and pending task counts");
-      updateStats("tasksCreated", amount);
-      updateStats("tasksPending", amount);
+      await updateStats("tasksCreated", amount);
+      await updateStats("tasksPending", amount);
+    }else if(subType === "edit") {
+      console.warn(`Editing task priority from ${request.prevPriority} to ${request.newPriority}`);
+      if (request.isCompleted) {
+        await updateStats("tasksCompleted_" + request.prevPriority, -1);
+        await updateStats("tasksCompleted_" + request.newPriority, 1);
+      }
     }
   }
 
