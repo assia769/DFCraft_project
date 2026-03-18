@@ -1,13 +1,13 @@
 // background.js
-import { blockWorker } from './blockerWorker.js';
-import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
+import { blockWorker } from "./blockerWorker.js";
+import { loadTimer, startTimerLoop, setupTimerListener } from "./timeWorker.js";
 
- const browserAPI = (() => {
-  if (typeof browser !== 'undefined' && browser.runtime) {
+const browserAPI = (() => {
+  if (typeof browser !== "undefined" && browser.runtime) {
     return browser;
   }
 
-  if (typeof chrome !== 'undefined' && chrome.runtime) {
+  if (typeof chrome !== "undefined" && chrome.runtime) {
     return {
       runtime: {
         sendMessage: (message, callback) =>
@@ -17,8 +17,8 @@ import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
                 if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
                 else {
                   if (callback) callback(response);
-                  resolve(response)
-                };
+                  resolve(response);
+                }
               });
             } catch (err) {
               reject(err);
@@ -29,7 +29,7 @@ import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
           removeListener: (cb) => chrome.runtime.onMessage.removeListener(cb),
         },
         getURL: (path) => chrome.runtime.getURL(path),
-        getContexts : (filter) => chrome.runtime.getContexts(filter),
+        getContexts: (filter) => chrome.runtime.getContexts(filter),
       },
       storage: {
         local: {
@@ -37,7 +37,8 @@ import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
             new Promise((resolve, reject) => {
               try {
                 chrome.storage.local.get(keys, (result) => {
-                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  if (chrome.runtime.lastError)
+                    reject(chrome.runtime.lastError);
                   else resolve(result);
                 });
               } catch (err) {
@@ -48,7 +49,8 @@ import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
             new Promise((resolve, reject) => {
               try {
                 chrome.storage.local.set(items, () => {
-                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  if (chrome.runtime.lastError)
+                    reject(chrome.runtime.lastError);
                   else resolve();
                 });
               } catch (err) {
@@ -89,7 +91,7 @@ import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
   }
 
   // fallback for testing in non-extension environment
-  console.warn('No browser extension API found - using mock');
+  console.warn("No browser extension API found - using mock");
   return {
     runtime: {
       sendMessage: () => Promise.resolve(null),
@@ -105,14 +107,8 @@ import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
   };
 })();
 
-
-
-
-
-
-
 async function init() {
- await loadTimer();
+  await loadTimer();
 
   // 2️⃣ Installer le listener spécifique au timer
   setupTimerListener();
@@ -120,10 +116,9 @@ async function init() {
   // 3️⃣ Démarrer la boucle du timer
 
   startTimerLoop();
-  blockWorker() ;
+  blockWorker();
 
-  console.log("C'est le background    .........")
-
+  console.log("C'est le background    .........");
 }
 
 init();
@@ -303,7 +298,7 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ ok: true });
     return true;
   }
-  
+
   if (request.type === "SEEK_TO_POSITION") {
     if (browserAPI.offscreen) {
       // Chrome - forward to offscreen
@@ -311,12 +306,15 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
         { type: "SEEK_TO_POSITION_OFFSCREEN", time: request.time },
         (resp) => {
           if (browserAPI.runtime.lastError) {
-            console.error("[BG] Seek failed:", browserAPI.runtime.lastError.message);
+            console.error(
+              "[BG] Seek failed:",
+              browserAPI.runtime.lastError.message,
+            );
             sendResponse({ success: false, error: "Seek failed" });
           } else {
             sendResponse(resp);
           }
-        }
+        },
       );
     } else if (firefoxAudio) {
       // Firefox - seek directly
@@ -326,9 +324,32 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
       } catch (e) {
         sendResponse({ success: false, error: String(e) });
       }
+    }
+    return true;
   }
-  return true;
-}
+
+  if (request.type === "UPDATE_TASK_STATS") {
+    const { subType, priority, amount, isCompleted } = request;
+
+    if (subType === "complete") {
+      console.warn(`Updating task stats: ${isCompleted ? "Completing" : "Uncompleting"} a task with priority ${priority} (amount: ${amount})`);
+      updateStats("tasksCompleted", amount);
+      updateStats("tasksCompleted_" + priority, amount);
+      updateStats("tasksPending", -amount);
+    }else if (subType === "delete") {
+      if (!isCompleted){
+        updateStats("tasksPending", -1);
+      }else{
+        console.warn("Decrementing completed count for priority", "tasksCompleted_" + priority);
+        updateStats("tasksCompleted", -1);
+        updateStats("tasksCompleted_" + priority, -1);
+      }
+    }else if (subType === "create") {
+      console.warn("Incrementing created and pending task counts");
+      updateStats("tasksCreated", amount);
+      updateStats("tasksPending", amount);
+    }
+  }
 
   return true; // Keep channel open for async response
 });
@@ -405,7 +426,6 @@ async function playSound(soundName) {
     source.start(0);
 
     console.log(`[BG] ✅ Firefox notification sound played: ${soundName}`);
-
   } catch (error) {
     console.error("[BG] playSound failed:", error);
 
@@ -429,6 +449,14 @@ setInterval(() => {
     timerData.lastUpdate = Date.now();
     saveTimerData();
 
+    const typeMapping = {
+      work: "totalWorkTime",
+      break: "totalBreakTime",
+      longBreak: "totalLongBreakTime",
+    };
+
+    updateStats(typeMapping[timerData.phaseType], 1);
+
     // Update badge
     if (browserAPI.action && browserAPI.action.setBadgeText) {
       browserAPI.action.setBadgeText({ text: String(timerData.time) });
@@ -445,7 +473,7 @@ setInterval(() => {
     // Timer hit 0, switch phases
     if (timerData.phaseType === "work") {
       timerData.sessionCount++;
-      
+      updateStats("totalSessions", 1);
       if (timerData.sessionCount % 4 === 0 && timerData.longBreakTime > 0) {
         timerData.phaseType = "longBreak";
         timerData.time = timerData.longBreakTime;
@@ -489,6 +517,10 @@ setInterval(() => {
         data: timerData,
       })
       .catch(() => {});
+  }
+
+  if (isAmbientPlaying) {
+    updateStats("totalLinstenTime", 1);
   }
 }, 1000);
 
@@ -566,24 +598,24 @@ async function playAmbientSound(soundUrl) {
       playing: () => {
         isAmbientPlaying = true;
         if (firefoxTimeInterval) {
-                  clearInterval(firefoxTimeInterval);
-                }
-                firefoxTimeInterval = setInterval(() => {
-                  if (firefoxAudio && !firefoxAudio.paused) {
-                    broadcastAudioStatus("timeupdate", {
-                      currentTime: firefoxAudio.currentTime || 0,
-                      duration: firefoxAudio.duration || 0
-                    });
-                  }
-                }, 500);
+          clearInterval(firefoxTimeInterval);
+        }
+        firefoxTimeInterval = setInterval(() => {
+          if (firefoxAudio && !firefoxAudio.paused) {
+            broadcastAudioStatus("timeupdate", {
+              currentTime: firefoxAudio.currentTime || 0,
+              duration: firefoxAudio.duration || 0,
+            });
+          }
+        }, 500);
         broadcastAudioStatus("playing");
       },
       pause: () => {
         isAmbientPlaying = false;
         if (firefoxTimeInterval) {
-                  clearInterval(firefoxTimeInterval);
-                  firefoxTimeInterval = null;
-                }
+          clearInterval(firefoxTimeInterval);
+          firefoxTimeInterval = null;
+        }
         broadcastAudioStatus("paused");
       },
       waiting: () => broadcastAudioStatus("buffering"),
@@ -637,18 +669,18 @@ async function playAmbientSound(soundUrl) {
 
 function removeFirefoxListeners() {
   if (!firefoxAudio || !firefoxListeners) return;
-    
-    console.log("[BG] 🧹 Removing Firefox listeners");
-    
-    firefoxAudio.removeEventListener("loadstart", firefoxListeners.loadstart);
-    firefoxAudio.removeEventListener("canplay", firefoxListeners.canplay);
-    firefoxAudio.removeEventListener("playing", firefoxListeners.playing);
-    firefoxAudio.removeEventListener("pause", firefoxListeners.pause);
-    firefoxAudio.removeEventListener("waiting", firefoxListeners.waiting);
-    firefoxAudio.removeEventListener("error", firefoxListeners.error);
-    firefoxAudio.removeEventListener("progress", firefoxListeners.progress);
-    
-    firefoxListeners = null;
+
+  console.log("[BG] 🧹 Removing Firefox listeners");
+
+  firefoxAudio.removeEventListener("loadstart", firefoxListeners.loadstart);
+  firefoxAudio.removeEventListener("canplay", firefoxListeners.canplay);
+  firefoxAudio.removeEventListener("playing", firefoxListeners.playing);
+  firefoxAudio.removeEventListener("pause", firefoxListeners.pause);
+  firefoxAudio.removeEventListener("waiting", firefoxListeners.waiting);
+  firefoxAudio.removeEventListener("error", firefoxListeners.error);
+  firefoxAudio.removeEventListener("progress", firefoxListeners.progress);
+
+  firefoxListeners = null;
 }
 
 async function pauseAmbientSound() {
@@ -791,7 +823,7 @@ firefoxTimeInterval = setInterval(() => {
   if (firefoxAudio && !firefoxAudio.paused) {
     broadcastAudioStatus("timeupdate", {
       currentTime: firefoxAudio.currentTime,
-      duration: firefoxAudio.duration || 0
+      duration: firefoxAudio.duration || 0,
     });
   }
 }, 500);
@@ -834,4 +866,60 @@ function broadcastAudioStatus(status, data = {}) {
   } catch (e) {
     console.error("[BG] broadcast send error:", e);
   }
+}
+
+// For tracing the user usage of the application
+export async function updateStats(type, amount = 1) {
+  const today = new Date().toISOString().split("T")[0];
+  const result = await browserAPI.storage.local.get(["statistics"]); // getting data if exists
+
+  const stats = result.statistics || {
+    totalWorkTime: 0,
+    totalBreakTime: 0,
+    totalLongBreakTime: 0,
+    totalSessions: 0,
+    totalLinstenTime: 0,
+    totalDeflectionsAttempted: 0,
+    tasksCompleted: 0,
+    tasksCreated: 0,
+    tasksPending: 0,
+    tasksCompleted_high: 0,
+    tasksCompleted_medium: 0,
+    tasksCompleted_low: 0,
+    days: [],
+  };
+
+  let todayStats = stats.days.find((d) => d.date === today);
+  if (!todayStats) {
+    todayStats = {
+      date: today,
+      totalWorkTime: 0,
+      totalBreakTime: 0,
+      totalLongBreakTime: 0,
+      totalSessions: 0,
+      totalListenTime: 0,
+      totalDeflectionsAttempted: 0,
+      tasksCompleted: 0,
+      tasksCreated: 0,
+      tasksPending: 0,
+      tasksCompleted_high: 0,
+      tasksCompleted_medium: 0,
+      tasksCompleted_low: 0,
+    };
+    stats.days.push(todayStats);
+  }
+
+  if (stats[type] !== undefined) {
+    stats[type] += amount;
+  } else {
+    console.warn(`Unknown stats type: ${type}`);
+  }
+
+  if (todayStats[type] !== undefined) {
+    todayStats[type] += amount;
+  } else {
+    console.warn(`Unknown stats type for today: ${type}`);
+  }
+
+  await browserAPI.storage.local.set({ statistics: stats });
 }

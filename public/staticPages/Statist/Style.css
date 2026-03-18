@@ -167,7 +167,7 @@ header {
   justify-content: center;
   padding: 10px;
   border-radius: 10px;
-  width: 140px;
+  width: fit-content;
   transition:
     box-shadow 0.3s ease,
     transform 0.3s ease;
@@ -216,6 +216,7 @@ header {
   align-items: center;
   justify-content: start;
   margin-left: 70px;
+  margin-right: 70px;
   height: fit-content;
   width: fit-content;
   border-radius: 10px;

@@ -5,6 +5,7 @@ import AddTodoDialog from "./AddTodoDialog";
 import FilterBar from "./FilterBar";
 import { useTranslation } from "../../shared/i18n/translations";
 import { useSettings } from "../../shared/context/SettingsContext";
+import { browserAPI } from "../../shared/utils/browserAPI";
 
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
@@ -51,9 +52,24 @@ export default function TodoList() {
     };
     setTodos([newTodo, ...todos]);
     setShowAddDialog(false);
+    browserAPI.runtime.sendMessage({
+      type: "UPDATE_TASK_STATS",
+      subType: "create",
+      amount: 1,
+    });
   };
 
   const toggleTodo = (id) => {
+    const todo = todos.find((t) => t.id === id);
+    const newCompletedState = todo.completed;
+
+    // ADD THIS:
+    browserAPI.runtime.sendMessage({
+      type: "UPDATE_TASK_STATS",
+      subType: "complete",
+      priority: todo.priority,
+      amount: newCompletedState ? -1 : 1,
+    });
     setTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo,
@@ -62,7 +78,14 @@ export default function TodoList() {
   };
 
   const deleteTodo = (id) => {
+    const todoToDelete = todos.find((t) => t.id === id);
     setTodos(todos.filter((todo) => todo.id !== id));
+    browserAPI.runtime.sendMessage({
+      type: "UPDATE_TASK_STATS",
+      subType: "delete",
+      isCompleted: todoToDelete.completed,
+      priority: todoToDelete.priority,
+    });
   };
 
   const editTodo = (id, updatedTodo) => {
