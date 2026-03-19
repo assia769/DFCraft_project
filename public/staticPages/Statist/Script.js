@@ -1,34 +1,86 @@
-let calendarDom = document.getElementById("chart-container-calendar");
-let calendarChart = echarts.init(calendarDom, null, {
-  renderer: "canvas",
-  useDirtyRect: false,
-});
-let app = {};
-
-let mode = localStorage.getItem("theme") || "light";
-
-let option;
-
-// creating virtual data for calendar heatmap, working on after to get real data from backend
-function getVirtualData(year) {
-  const date = +echarts.time.parse(year + "-01-01");
-  const end = +echarts.time.parse(+year + 1 + "-01-01");
-  const dayTime = 3600 * 24 * 1000;
-  const data = [];
-  for (let time = date; time < end; time += dayTime) {
-    data.push([
-      echarts.time.format(time, "{yyyy}-{MM}-{dd}", false),
-      Math.floor(Math.random() * 10000),
-    ]);
+const browserAPI = (() => {
+  if (typeof browser !== "undefined" && browser.runtime) return browser;
+  if (typeof chrome !== "undefined" && chrome.runtime) {
+    return {
+      storage: {
+        local: {
+          get: (keys) =>
+            new Promise((resolve) => chrome.storage.local.get(keys, resolve)),
+        },
+      },
+    };
   }
-  return data;
+  return { storage: { local: { get: () => Promise.resolve({}) } } };
+})();
+
+let theme = localStorage.getItem("theme") || "light";
+let globalData = null;
+let devidedData = [];
+const timeFrame = [7, 30, 90, 180];
+
+async function initStatisticsPage() {
+  const result = await browserAPI.storage.local.get(["statistics"]);
+  globalData = result.statistics;
+
+  if (globalData && globalData.days) {
+    const today = new Date().toISOString().split("T")[0];
+    const todayStats = globalData.days.find((d) => d.date === today) || {};
+
+    // Update Info Cards
+    const workSeconds = todayStats.totalWorkTime || 0;
+    document.getElementById("todayFocus").textContent =
+      `${Math.floor(workSeconds / 3600)}h ${Math.floor((workSeconds % 3600) / 60)}m`;
+    document.getElementById("tasksSmashed").textContent =
+      todayStats.tasksCompleted || 0;
+    document.getElementById("quietTime").textContent =
+      `${Math.floor((todayStats.totalListenTime || 0) / 60)}min`;
+    document.getElementById("blocksDeflected").textContent =
+      todayStats.totalDeflectionsAttempted || 0;
+
+    const lables = document.querySelectorAll(".timeLable");
+    if (lables.length > 0) {
+      lables[0].classList.add("activeI");
+      updateDividedData(0);
+    }
+
+    renderAllCharts();
+  }
 }
 
-// chart options
-function getChartOptions(theme) {
+function getCalendarChartData() {
+  if (globalData && globalData.days) {
+    return globalData.days.map((day) => {
+      const minutes = Math.floor(
+        (day.totalWorkTime + day.totalBreakTime + day.totalLongBreakTime || 0) /
+          60,
+      );
+      const list = [day.date, minutes];
+      console.warn("Calendar data point:", list);
+      return list;
+    });
+  } else return [];
+}
+
+function renderAllCharts() {
+  renderCalendarChart();
+  renderDependedCharts();
+}
+
+function renderCalendarChart() {
+  let calendarDom = document.getElementById("chart-container-calendar");
+  let calendarChart = echarts.init(calendarDom, null, {
+    renderer: "canvas",
+    useDirtyRect: false,
+  });
+
+  // creating virtual data for calendar heatmap, working on after to get real data from backend
+  const year = new Date().getFullYear();
+  const progress = getCalendarChartData();
+
+  // chart options
   const isDark = theme === "dark";
   const langTranslations = translations[currentLang] || translations.en;
-  return {
+  const calendarOptions = {
     title: {
       top: 30,
       left: "center",
@@ -46,8 +98,8 @@ function getChartOptions(theme) {
       },
     },
     visualMap: {
-      min: 0,
-      max: 10000,
+      min: 1,
+      max: 121,
       type: "piecewise",
       orient: "horizontal",
       left: "center",
@@ -67,7 +119,7 @@ function getChartOptions(theme) {
       left: 30,
       right: 30,
       cellSize: ["auto", 13],
-      range: "2026",
+      range: year,
       itemStyle: {
         borderWidth: 0.5,
         borderColor: "#374151", // cell border
@@ -92,232 +144,256 @@ function getChartOptions(theme) {
     series: {
       type: "heatmap",
       coordinateSystem: "calendar",
-      data: getVirtualData("2026"),
+      data: progress,
     },
   };
+  window.addEventListener("resize", calendarChart.resize);
+  calendarChart.setOption(calendarOptions);
 }
-window.addEventListener("resize", calendarChart.resize);
 
-//creating a bar chart for Pomodoro timer
-let pomodoroDom = document.getElementById("chart-container-pomodoro");
-let pomodoroChart = echarts.init(pomodoroDom, null, {
-  renderer: "canvas",
-  useDirtyRect: false,
-});
-let pomodoroApp = {};
+function updateDividedData(index) {
+  const numDays = timeFrame[index];
+  if (globalData && globalData.days) {
+    const sortedDays = [...globalData.days].sort(
+      (a, b) => new Date(b.date) - new Date(a.date),
+    );
+    devidedData = sortedDays.slice(0, numDays);
+    renderDependedCharts();
+  }
+}
 
-const posList = [
-  "left",
-  "right",
-  "top",
-  "bottom",
-  "inside",
-  "insideTop",
-  "insideLeft",
-  "insideRight",
-  "insideBottom",
-  "insideTopLeft",
-  "insideTopRight",
-  "insideBottomLeft",
-  "insideBottomRight",
-];
-pomodoroApp.configParameters = {
-  rotate: {
-    min: -90,
-    max: 90,
-  },
-  align: {
-    options: {
-      left: "left",
-      center: "center",
-      right: "right",
+function renderDependedCharts() {
+  if (!devidedData || devidedData.length === 0){
+    console.warn("data may not be loaded yet, cannot render charts");
+    return;
+  }
+  renderPomodoroChart();
+}
+
+function renderPomodoroChart() {
+  const dates = devidedData.map((d) => d.date);
+  const workData = devidedData.map((d) => Math.floor((d.totalWorkTime || 0) / 60));
+  const breakData = devidedData.map((d) => Math.floor((d.totalBreakTime || 0) / 60));
+  const longBreakData = devidedData.map((d) => Math.floor((d.totalLongBreakTime || 0) / 60));
+  let pomodoroDom = document.getElementById("chart-container-pomodoro");
+  let pomodoroChart = echarts.init(pomodoroDom, null, {
+    renderer: "canvas",
+    useDirtyRect: false,
+  });
+  let pomodoroApp = {};
+
+  const posList = [
+    "left",
+    "right",
+    "top",
+    "bottom",
+    "inside",
+    "insideTop",
+    "insideLeft",
+    "insideRight",
+    "insideBottom",
+    "insideTopLeft",
+    "insideTopRight",
+    "insideBottomLeft",
+    "insideBottomRight",
+  ];
+  pomodoroApp.configParameters = {
+    rotate: {
+      min: -90,
+      max: 90,
     },
-  },
-  verticalAlign: {
-    options: {
-      top: "top",
-      middle: "middle",
-      bottom: "bottom",
+    align: {
+      options: {
+        left: "left",
+        center: "center",
+        right: "right",
+      },
     },
-  },
-  position: {
-    options: posList.reduce(function (map, pos) {
-      map[pos] = pos;
-      return map;
-    }, {}),
-  },
-  distance: {
-    min: 0,
-    max: 100,
-  },
-};
-pomodoroApp.config = {
-  rotate: 90,
-  align: "left",
-  verticalAlign: "middle",
-  position: "insideBottom",
-  distance: 15,
-  onChange: function () {
-    const labelOption = {
-      rotate: pomodoroApp.config.rotate,
-      align: pomodoroApp.config.align,
-      verticalAlign: pomodoroApp.config.verticalAlign,
-      position: pomodoroApp.config.position,
-      distance: pomodoroApp.config.distance,
-    };
-    pomodoroChart.setOption({
-      series: [
-        {
-          label: labelOption,
-        },
-        {
-          label: labelOption,
-        },
-        {
-          label: labelOption,
-        },
-        {
-          label: labelOption,
-        },
-      ],
-    });
-  },
-};
-const labelOption = {
-  show: true,
-  position: pomodoroApp.config.position,
-  distance: pomodoroApp.config.distance,
-  align: pomodoroApp.config.align,
-  verticalAlign: pomodoroApp.config.verticalAlign,
-  rotate: pomodoroApp.config.rotate,
-  formatter: "{c}  {name|{a}}",
-  fontSize: 16,
-  rich: {
-    name: {},
-  },
-};
-function getPomodoroOptions(theme) {
-  const isDark = theme === "dark";
-  const barLabelOption = {
-    show: false,
+    verticalAlign: {
+      options: {
+        top: "top",
+        middle: "middle",
+        bottom: "bottom",
+      },
+    },
+    position: {
+      options: posList.reduce(function (map, pos) {
+        map[pos] = pos;
+        return map;
+      }, {}),
+    },
+    distance: {
+      min: 0,
+      max: 100,
+    },
+  };
+  pomodoroApp.config = {
+    rotate: 90,
+    align: "left",
+    verticalAlign: "middle",
+    position: "insideBottom",
+    distance: 15,
+    onChange: function () {
+      const labelOption = {
+        rotate: pomodoroApp.config.rotate,
+        align: pomodoroApp.config.align,
+        verticalAlign: pomodoroApp.config.verticalAlign,
+        position: pomodoroApp.config.position,
+        distance: pomodoroApp.config.distance,
+      };
+      pomodoroChart.setOption({
+        series: [
+          {
+            label: labelOption,
+          },
+          {
+            label: labelOption,
+          },
+          {
+            label: labelOption,
+          },
+          {
+            label: labelOption,
+          },
+        ],
+      });
+    },
+  };
+  const labelOption = {
+    show: true,
     position: pomodoroApp.config.position,
     distance: pomodoroApp.config.distance,
     align: pomodoroApp.config.align,
     verticalAlign: pomodoroApp.config.verticalAlign,
     rotate: pomodoroApp.config.rotate,
-    formatter: "{c} {name|{a}}",
+    formatter: "{c}  {name|{a}}",
     fontSize: 16,
-    color: isDark ? "#f2f2f2" : "#161616",
-    fontFamily: "'Concert One', 'AA-ANIQ', cursive",
     rich: {
-      name: {
-        color: isDark ? "#f2f2f2" : "#161616",
-        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-      },
+      name: {},
     },
   };
-  return {
-    title: {
-      text: translations[currentLang].pomodorotitle,
-      left: "center",
-      top: 20,
-      textStyle: {
-        color: isDark ? "#f2f2f2" : "#161616",
-        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+    const isDark = theme === "dark";
+    const barLabelOption = {
+      show: false,
+      position: pomodoroApp.config.position,
+      distance: pomodoroApp.config.distance,
+      align: pomodoroApp.config.align,
+      verticalAlign: pomodoroApp.config.verticalAlign,
+      rotate: pomodoroApp.config.rotate,
+      formatter: "{c} {name|{a}}",
+      fontSize: 16,
+      color: isDark ? "#f2f2f2" : "#161616",
+      fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      rich: {
+        name: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
       },
-    },
-    tooltip: {
-      trigger: "axis",
-      axisPointer: {
-        type: "shadow",
+    };
+    const pomodoroOptions = {
+      title: {
+        text: translations[currentLang].pomodorotitle,
+        left: "center",
+        top: 20,
+        textStyle: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
       },
-      textStyle: {
-        color: isDark ? "#f2f2f2" : "#161616",
-        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "shadow",
+        },
+        textStyle: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+        backgroundColor: isDark ? "#161616" : "#f2f2f2",
       },
-      backgroundColor: isDark ? "#161616" : "#f2f2f2",
-    },
-    legend: {
-      data: [
-        translations[currentLang].work,
-        translations[currentLang].break,
-        translations[currentLang].longBreak,
+      legend: {
+        data: [
+          translations[currentLang].work,
+          translations[currentLang].break,
+          translations[currentLang].longBreak,
+        ],
+        textStyle: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
+      },
+      toolbox: {
+        show: true,
+        orient: "vertical",
+        left: "right",
+        top: "center",
+        feature: {
+          mark: { show: true },
+          magicType: { show: true, type: ["stack"] },
+          restore: { show: true },
+          saveAsImage: { show: true },
+        },
+      },
+      xAxis: [
+        {
+          type: "category",
+          axisTick: { show: false },
+          axisLabel: {
+            color: isDark ? "#f2f2f2" : "#161616",
+            fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+          },
+          data: dates,
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+        },
       ],
-      textStyle: {
-        color: isDark ? "#f2f2f2" : "#161616",
-        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-      },
-    },
-    toolbox: {
-      show: true,
-      orient: "vertical",
-      left: "right",
-      top: "center",
-      feature: {
-        mark: { show: true },
-        magicType: { show: true, type: ["stack"] },
-        restore: { show: true },
-        saveAsImage: { show: true },
-      },
-    },
-    xAxis: [
-      {
-        type: "category",
-        axisTick: { show: false },
-        axisLabel: {
-          color: isDark ? "#f2f2f2" : "#161616",
+      yAxis: [
+        {
+          type: "value",
+          axisLabel: {
+            color: isDark ? "#f2f2f2" : "#161616",
+            fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+          },
           fontFamily: "'Concert One', 'AA-ANIQ', cursive",
         },
-        data: ["2012", "2013", "2014", "2015", "2016"],
-        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-      },
-    ],
-    yAxis: [
-      {
-        type: "value",
-        axisLabel: {
-          color: isDark ? "#f2f2f2" : "#161616",
-          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      ],
+      series: [
+        {
+          name: translations[currentLang].work,
+          type: "bar",
+          label: barLabelOption,
+          emphasis: {
+            focus: "series",
+          },
+          data: workData,
+          color: isDark ? "#AC54FF" : "#7C3AED",
         },
-        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-      },
-    ],
-    series: [
-      {
-        name: translations[currentLang].work,
-        type: "bar",
-        label: barLabelOption,
-        emphasis: {
-          focus: "series",
+        {
+          name: translations[currentLang].break,
+          type: "bar",
+          label: barLabelOption,
+          emphasis: {
+            focus: "series",
+          },
+          data: breakData,
+          color: isDark ? "#9148D9" : "#8750E5",
         },
-        data: [220, 182, 191, 234, 290],
-        color: isDark ? "#AC54FF" : "#7C3AED",
-      },
-      {
-        name: translations[currentLang].break,
-        type: "bar",
-        label: barLabelOption,
-        emphasis: {
-          focus: "series",
+        {
+          name: translations[currentLang].longBreak,
+          type: "bar",
+          label: barLabelOption,
+          emphasis: {
+            focus: "series",
+          },
+          data: longBreakData,
+          color: isDark ? "#7439AD" : "#996FE3",
         },
-        data: [150, 232, 201, 154, 190],
-        color: isDark ? "#9148D9" : "#8750E5",
-      },
-      {
-        name: translations[currentLang].longBreak,
-        type: "bar",
-        label: barLabelOption,
-        emphasis: {
-          focus: "series",
-        },
-        data: [98, 77, 101, 99, 40],
-        color: isDark ? "#7439AD" : "#996FE3",
-      },
-    ],
-  };
-}
+      ],
+    };
 
-window.addEventListener("resize", pomodoroChart.resize);
+  window.addEventListener("resize", pomodoroChart.resize);
+  pomodoroChart.setOption(pomodoroOptions);
+}
 
 // creating Bar Chart for Session track
 
@@ -849,8 +925,7 @@ function applyTheme(theme) {
   }
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
-  calendarChart.setOption(getChartOptions(theme));
-  pomodoroChart.setOption(getPomodoroOptions(theme), true);
+  renderAllCharts(globalData);
   sessionChart.setOption(getSessionOptions(theme), true);
   soundChart.setOption(getSoundOptions(theme), true);
   tasksChart.setOption(getTasksOptions(theme), true);
@@ -864,6 +939,7 @@ let currentLang = localStorage.getItem("settings.language") || "en";
 function applyLanguage(lang) {
   const t = translations[lang];
   if (!t) return;
+  const mode = localStorage.getItem("theme") || "light";
 
   // RTL support for Arabic
   document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
@@ -911,8 +987,8 @@ const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
 applyTheme(initialTheme);
 
 modeSelect.addEventListener("click", function () {
-  mode = mode == "dark" ? "light" : "dark";
-  applyTheme(mode);
+  theme = theme == "dark" ? "light" : "dark";
+  applyTheme(theme);
 });
 
 // getting the clicked data, working on after :)
@@ -920,9 +996,15 @@ document
   .querySelector(".Timeframe")
   .addEventListener("click", function (event) {
     if (event.target.classList.contains("timeLable")) {
+      const lables = Array.from(document.querySelectorAll(".timeLable"));
       document.querySelectorAll(".timeLable").forEach((el) => {
         el.classList.remove("activeI");
       });
       event.target.classList.add("activeI");
+      // Here you can handle the timeframe change, e.g., update charts or fetch new data
+      const index = lables.indexOf(event.target);
+      updateDividedData(index);
     }
   });
+
+initStatisticsPage();
