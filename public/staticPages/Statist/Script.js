@@ -171,6 +171,8 @@ function renderDependedCharts() {
   renderPomodoroChart();
   renderSessionChart();
   renderSoundChart();
+  renderTasksChart();
+  renderTasksPriorityChart();
 }
 
 function renderPomodoroChart() {
@@ -484,7 +486,9 @@ function renderSessionChart() {
 
 function renderSoundChart() {
   const dates = devidedData.map((d) => d.date);
-  const soundData = devidedData.map((d) => Math.floor(d.totalListenTime || 0) / 60);
+  const soundData = devidedData.map(
+    (d) => Math.floor(d.totalListenTime || 0) / 60,
+  );
   console.warn("Sound chart data:", soundData);
 
   // creating Bar Chart for sound track
@@ -562,17 +566,20 @@ function renderSoundChart() {
   soundChart.setOption(soundOptions);
 }
 
-// for tracking the tasks progress
-let domTasks = document.getElementById("chart-container-totalTasks");
-let tasksChart = echarts.init(domTasks, null, {
-  renderer: "canvas",
-  useDirtyRect: false,
-});
-let tasksApp = {};
+function renderTasksChart() {
+  const dates = devidedData.map((d) => d.date);
+  const completedTasksData = devidedData.map((d) => d.tasksCompleted || 0);
+  const pendingTasksData = devidedData.map((d) => d.tasksPending || 0);
 
-function getTasksOptions(theme) {
+  // for tracking the tasks progress
+  let domTasks = document.getElementById("chart-container-totalTasks");
+  let tasksChart = echarts.init(domTasks, null, {
+    renderer: "canvas",
+    useDirtyRect: false,
+  });
+  let tasksApp = {};
   const isDark = theme === "dark";
-  return {
+  const tasksOptions = {
     title: {
       text: translations[currentLang].tasksCTitle,
       left: "center",
@@ -609,7 +616,7 @@ function getTasksOptions(theme) {
     },
     yAxis: {
       type: "category",
-      data: translations[currentLang].calendarDays,
+      data: dates,
       axisTick: {
         alignWithLabel: true,
       },
@@ -627,7 +634,7 @@ function getTasksOptions(theme) {
         emphasis: {
           focus: "series",
         },
-        data: [320, 302, 301, 334, 390, 330, 320],
+        data: completedTasksData,
         color: isDark ? "#AC54FF" : "#7C3AED",
         fontFamily: "'Concert One', 'AA-ANIQ', cursive",
       },
@@ -638,116 +645,123 @@ function getTasksOptions(theme) {
         emphasis: {
           focus: "series",
         },
-        data: [120, 132, 101, 134, 90, 230, 210],
+        data: pendingTasksData,
         color: isDark ? "#7439AD" : "#996FE3",
         fontFamily: "'Concert One', 'AA-ANIQ', cursive",
       },
     ],
   };
+
+  window.addEventListener("resize", tasksChart.resize);
+  tasksChart.setOption(tasksOptions);
 }
 
-window.addEventListener("resize", tasksChart.resize);
+function renderTasksPriorityChart() {
 
-let completedTasksDom = document.getElementById(
-  "chart-container-completedTasks",
-);
-let completedTasksChart = echarts.init(completedTasksDom, null, {
-  renderer: "canvas",
-  useDirtyRect: false,
-});
-let completedTasksApp = {};
+  const dates = devidedData.map((d) => d.date);
+  const highPriorityData = devidedData.map((d) => d.tasksCompleted_high || 0);
+  const mediumPriorityData = devidedData.map((d) => d.tasksCompleted_medium || 0);
+  const lowPriorityData = devidedData.map((d) => d.tasksCompleted_low || 0);
 
-const tasksposList = [
-  "left",
-  "right",
-  "top",
-  "bottom",
-  "inside",
-  "insideTop",
-  "insideLeft",
-  "insideRight",
-  "insideBottom",
-  "insideTopLeft",
-  "insideTopRight",
-  "insideBottomLeft",
-  "insideBottomRight",
-];
-completedTasksApp.configParameters = {
-  rotate: {
-    min: -90,
-    max: 90,
-  },
-  align: {
-    options: {
-      left: "left",
-      center: "center",
-      right: "right",
+  let completedTasksDom = document.getElementById(
+    "chart-container-completedTasks",
+  );
+  let completedTasksChart = echarts.init(completedTasksDom, null, {
+    renderer: "canvas",
+    useDirtyRect: false,
+  });
+  let completedTasksApp = {};
+
+  const tasksposList = [
+    "left",
+    "right",
+    "top",
+    "bottom",
+    "inside",
+    "insideTop",
+    "insideLeft",
+    "insideRight",
+    "insideBottom",
+    "insideTopLeft",
+    "insideTopRight",
+    "insideBottomLeft",
+    "insideBottomRight",
+  ];
+  completedTasksApp.configParameters = {
+    rotate: {
+      min: -90,
+      max: 90,
     },
-  },
-  verticalAlign: {
-    options: {
-      top: "top",
-      middle: "middle",
-      bottom: "bottom",
+    align: {
+      options: {
+        left: "left",
+        center: "center",
+        right: "right",
+      },
     },
-  },
-  position: {
-    options: tasksposList.reduce(function (map, pos) {
-      map[pos] = pos;
-      return map;
-    }, {}),
-  },
-  distance: {
-    min: 0,
-    max: 100,
-  },
-};
-completedTasksApp.config = {
-  rotate: 90,
-  align: "left",
-  verticalAlign: "middle",
-  position: "insideBottom",
-  distance: 15,
-  onChange: function () {
-    const labelOption = {
-      rotate: completedTasksApp.config.rotate,
-      align: completedTasksApp.config.align,
-      verticalAlign: completedTasksApp.config.verticalAlign,
-      position: completedTasksApp.config.position,
-      distance: completedTasksApp.config.distance,
-    };
-    completedTasksChart.setOption({
-      series: [
-        {
-          label: taskslabelOption,
-        },
-        {
-          label: taskslabelOption,
-        },
-        {
-          label: taskslabelOption,
-        },
-        {
-          label: taskslabelOption,
-        },
-      ],
-    });
-  },
-};
-const taskslabelOption = {
-  show: true,
-  position: completedTasksApp.config.position,
-  distance: completedTasksApp.config.distance,
-  align: completedTasksApp.config.align,
-  verticalAlign: completedTasksApp.config.verticalAlign,
-  rotate: completedTasksApp.config.rotate,
-  formatter: "{c}  {name|{a}}",
-  fontSize: 16,
-  rich: {
-    name: {},
-  },
-};
-function getCompletedTasksOptions(theme) {
+    verticalAlign: {
+      options: {
+        top: "top",
+        middle: "middle",
+        bottom: "bottom",
+      },
+    },
+    position: {
+      options: tasksposList.reduce(function (map, pos) {
+        map[pos] = pos;
+        return map;
+      }, {}),
+    },
+    distance: {
+      min: 0,
+      max: 100,
+    },
+  };
+  completedTasksApp.config = {
+    rotate: 90,
+    align: "left",
+    verticalAlign: "middle",
+    position: "insideBottom",
+    distance: 15,
+    onChange: function () {
+      const labelOption = {
+        rotate: completedTasksApp.config.rotate,
+        align: completedTasksApp.config.align,
+        verticalAlign: completedTasksApp.config.verticalAlign,
+        position: completedTasksApp.config.position,
+        distance: completedTasksApp.config.distance,
+      };
+      completedTasksChart.setOption({
+        series: [
+          {
+            label: taskslabelOption,
+          },
+          {
+            label: taskslabelOption,
+          },
+          {
+            label: taskslabelOption,
+          },
+          {
+            label: taskslabelOption,
+          },
+        ],
+      });
+    },
+  };
+  const taskslabelOption = {
+    show: true,
+    position: completedTasksApp.config.position,
+    distance: completedTasksApp.config.distance,
+    align: completedTasksApp.config.align,
+    verticalAlign: completedTasksApp.config.verticalAlign,
+    rotate: completedTasksApp.config.rotate,
+    formatter: "{c}  {name|{a}}",
+    fontSize: 16,
+    rich: {
+      name: {},
+    },
+  };
   const isDark = theme === "dark";
   const barLabelOption = {
     show: false,
@@ -767,7 +781,7 @@ function getCompletedTasksOptions(theme) {
       },
     },
   };
-  return {
+  const tasksOptions = {
     title: {
       text: translations[currentLang].completedTasksTitle,
       left: "center",
@@ -819,7 +833,7 @@ function getCompletedTasksOptions(theme) {
           color: isDark ? "#f2f2f2" : "#161616",
           fontFamily: "'Concert One', 'AA-ANIQ', cursive",
         },
-        data: ["2012", "2013", "2014", "2015", "2016"],
+        data: dates,
         fontFamily: "'Concert One', 'AA-ANIQ', cursive",
       },
     ],
@@ -841,7 +855,7 @@ function getCompletedTasksOptions(theme) {
         emphasis: {
           focus: "series",
         },
-        data: [220, 182, 191, 234, 290],
+        data: highPriorityData,
         color: isDark ? "#AC54FF" : "#7C3AED",
       },
       {
@@ -851,7 +865,7 @@ function getCompletedTasksOptions(theme) {
         emphasis: {
           focus: "series",
         },
-        data: [150, 232, 201, 154, 190],
+        data: mediumPriorityData,
         color: isDark ? "#9148D9" : "#8750E5",
       },
       {
@@ -861,14 +875,15 @@ function getCompletedTasksOptions(theme) {
         emphasis: {
           focus: "series",
         },
-        data: [98, 77, 101, 99, 40],
+        data: lowPriorityData,
         color: isDark ? "#7439AD" : "#996FE3",
       },
     ],
   };
-}
 
-window.addEventListener("resize", completedTasksChart.resize);
+  window.addEventListener("resize", completedTasksChart.resize);
+  completedTasksChart.setOption(tasksOptions);
+}
 
 let blockedDom = document.getElementById("chart-container-blockedPages");
 let blockedPagesChart = echarts.init(blockedDom, null, {
@@ -941,8 +956,6 @@ function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
   renderAllCharts(globalData);
-  tasksChart.setOption(getTasksOptions(theme), true);
-  completedTasksChart.setOption(getCompletedTasksOptions(theme), true);
   blockedPagesChart.setOption(getBlockedPagesOptions(theme), true);
 }
 
