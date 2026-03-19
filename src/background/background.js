@@ -526,7 +526,7 @@ setInterval(() => {
   }
 
   if (isAmbientPlaying) {
-    updateStats("totalLinstenTime", 1);
+    updateStats("totalListenTime", 1);
   }
 }, 1000);
 
@@ -884,7 +884,7 @@ export async function updateStats(type, amount = 1) {
     totalBreakTime: 0,
     totalLongBreakTime: 0,
     totalSessions: 0,
-    totalLinstenTime: 0,
+    totalListenTime: 0,
     totalDeflectionsAttempted: 0,
     tasksCompleted: 0,
     tasksCreated: 0,

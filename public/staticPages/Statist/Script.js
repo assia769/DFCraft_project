@@ -163,18 +163,27 @@ function updateDividedData(index) {
 }
 
 function renderDependedCharts() {
-  if (!devidedData || devidedData.length === 0){
+  if (!devidedData || devidedData.length === 0) {
     console.warn("data may not be loaded yet, cannot render charts");
     return;
   }
+
   renderPomodoroChart();
+  renderSessionChart();
+  renderSoundChart();
 }
 
 function renderPomodoroChart() {
   const dates = devidedData.map((d) => d.date);
-  const workData = devidedData.map((d) => Math.floor((d.totalWorkTime || 0) / 60));
-  const breakData = devidedData.map((d) => Math.floor((d.totalBreakTime || 0) / 60));
-  const longBreakData = devidedData.map((d) => Math.floor((d.totalLongBreakTime || 0) / 60));
+  const workData = devidedData.map((d) =>
+    Math.floor((d.totalWorkTime || 0) / 60),
+  );
+  const breakData = devidedData.map((d) =>
+    Math.floor((d.totalBreakTime || 0) / 60),
+  );
+  const longBreakData = devidedData.map((d) =>
+    Math.floor((d.totalLongBreakTime || 0) / 60),
+  );
   let pomodoroDom = document.getElementById("chart-container-pomodoro");
   let pomodoroChart = echarts.init(pomodoroDom, null, {
     renderer: "canvas",
@@ -272,141 +281,142 @@ function renderPomodoroChart() {
       name: {},
     },
   };
-    const isDark = theme === "dark";
-    const barLabelOption = {
-      show: false,
-      position: pomodoroApp.config.position,
-      distance: pomodoroApp.config.distance,
-      align: pomodoroApp.config.align,
-      verticalAlign: pomodoroApp.config.verticalAlign,
-      rotate: pomodoroApp.config.rotate,
-      formatter: "{c} {name|{a}}",
-      fontSize: 16,
-      color: isDark ? "#f2f2f2" : "#161616",
-      fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-      rich: {
-        name: {
-          color: isDark ? "#f2f2f2" : "#161616",
-          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-        },
+  const isDark = theme === "dark";
+  const barLabelOption = {
+    show: false,
+    position: pomodoroApp.config.position,
+    distance: pomodoroApp.config.distance,
+    align: pomodoroApp.config.align,
+    verticalAlign: pomodoroApp.config.verticalAlign,
+    rotate: pomodoroApp.config.rotate,
+    formatter: "{c} {name|{a}}",
+    fontSize: 16,
+    color: isDark ? "#f2f2f2" : "#161616",
+    fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+    rich: {
+      name: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
       },
-    };
-    const pomodoroOptions = {
-      title: {
-        text: translations[currentLang].pomodorotitle,
-        left: "center",
-        top: 20,
-        textStyle: {
-          color: isDark ? "#f2f2f2" : "#161616",
-          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-        },
+    },
+  };
+  const pomodoroOptions = {
+    title: {
+      text: translations[currentLang].pomodorotitle,
+      left: "center",
+      top: 20,
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
       },
-      tooltip: {
-        trigger: "axis",
-        axisPointer: {
-          type: "shadow",
-        },
-        textStyle: {
-          color: isDark ? "#f2f2f2" : "#161616",
-          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-        },
-        backgroundColor: isDark ? "#161616" : "#f2f2f2",
+    },
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
       },
-      legend: {
-        data: [
-          translations[currentLang].work,
-          translations[currentLang].break,
-          translations[currentLang].longBreak,
-        ],
-        textStyle: {
-          color: isDark ? "#f2f2f2" : "#161616",
-          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-        },
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
       },
-      toolbox: {
-        show: true,
-        orient: "vertical",
-        left: "right",
-        top: "center",
-        feature: {
-          mark: { show: true },
-          magicType: { show: true, type: ["stack"] },
-          restore: { show: true },
-          saveAsImage: { show: true },
-        },
-      },
-      xAxis: [
-        {
-          type: "category",
-          axisTick: { show: false },
-          axisLabel: {
-            color: isDark ? "#f2f2f2" : "#161616",
-            fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-          },
-          data: dates,
-          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-        },
+      backgroundColor: isDark ? "#161616" : "#f2f2f2",
+    },
+    legend: {
+      data: [
+        translations[currentLang].work,
+        translations[currentLang].break,
+        translations[currentLang].longBreak,
       ],
-      yAxis: [
-        {
-          type: "value",
-          axisLabel: {
-            color: isDark ? "#f2f2f2" : "#161616",
-            fontFamily: "'Concert One', 'AA-ANIQ', cursive",
-          },
+      textStyle: {
+        color: isDark ? "#f2f2f2" : "#161616",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    },
+    toolbox: {
+      show: true,
+      orient: "vertical",
+      left: "right",
+      top: "center",
+      feature: {
+        mark: { show: true },
+        magicType: { show: true, type: ["stack"] },
+        restore: { show: true },
+        saveAsImage: { show: true },
+      },
+    },
+    xAxis: [
+      {
+        type: "category",
+        axisTick: { show: false },
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
           fontFamily: "'Concert One', 'AA-ANIQ', cursive",
         },
-      ],
-      series: [
-        {
-          name: translations[currentLang].work,
-          type: "bar",
-          label: barLabelOption,
-          emphasis: {
-            focus: "series",
-          },
-          data: workData,
-          color: isDark ? "#AC54FF" : "#7C3AED",
+        data: dates,
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    yAxis: [
+      {
+        type: "value",
+        axisLabel: {
+          color: isDark ? "#f2f2f2" : "#161616",
+          fontFamily: "'Concert One', 'AA-ANIQ', cursive",
         },
-        {
-          name: translations[currentLang].break,
-          type: "bar",
-          label: barLabelOption,
-          emphasis: {
-            focus: "series",
-          },
-          data: breakData,
-          color: isDark ? "#9148D9" : "#8750E5",
+        fontFamily: "'Concert One', 'AA-ANIQ', cursive",
+      },
+    ],
+    series: [
+      {
+        name: translations[currentLang].work,
+        type: "bar",
+        label: barLabelOption,
+        emphasis: {
+          focus: "series",
         },
-        {
-          name: translations[currentLang].longBreak,
-          type: "bar",
-          label: barLabelOption,
-          emphasis: {
-            focus: "series",
-          },
-          data: longBreakData,
-          color: isDark ? "#7439AD" : "#996FE3",
+        data: workData,
+        color: isDark ? "#AC54FF" : "#7C3AED",
+      },
+      {
+        name: translations[currentLang].break,
+        type: "bar",
+        label: barLabelOption,
+        emphasis: {
+          focus: "series",
         },
-      ],
-    };
+        data: breakData,
+        color: isDark ? "#9148D9" : "#8750E5",
+      },
+      {
+        name: translations[currentLang].longBreak,
+        type: "bar",
+        label: barLabelOption,
+        emphasis: {
+          focus: "series",
+        },
+        data: longBreakData,
+        color: isDark ? "#7439AD" : "#996FE3",
+      },
+    ],
+  };
 
   window.addEventListener("resize", pomodoroChart.resize);
   pomodoroChart.setOption(pomodoroOptions);
 }
 
-// creating Bar Chart for Session track
+function renderSessionChart() {
+  const dates = devidedData.map((d) => d.date);
+  const sessionData = devidedData.map((d) => d.totalSessions || 0);
 
-let domSession = document.getElementById("chart-container-session");
-let sessionChart = echarts.init(domSession, null, {
-  renderer: "canvas",
-  useDirtyRect: false,
-});
-let sessionApp = {};
+  let domSession = document.getElementById("chart-container-session");
+  let sessionChart = echarts.init(domSession, null, {
+    renderer: "canvas",
+    useDirtyRect: false,
+  });
+  let sessionApp = {};
 
-function getSessionOptions(theme) {
   const isDark = theme === "dark";
-  return {
+  const sessionOptions = {
     title: {
       text: translations[currentLang].title,
       left: "center",
@@ -436,7 +446,7 @@ function getSessionOptions(theme) {
     xAxis: [
       {
         type: "category",
-        data: translations[currentLang].days,
+        data: dates,
         axisTick: {
           alignWithLabel: true,
         },
@@ -462,27 +472,31 @@ function getSessionOptions(theme) {
         name: translations[currentLang].barname,
         type: "bar",
         barWidth: "60%",
-        data: [10, 52, 200, 334, 390, 330, 220],
+        data: sessionData,
         color: isDark ? "#AC54FF" : "#7C3AED",
       },
     ],
   };
+
+  window.addEventListener("resize", sessionChart.resize);
+  sessionChart.setOption(sessionOptions);
 }
 
-window.addEventListener("resize", sessionChart.resize);
+function renderSoundChart() {
+  const dates = devidedData.map((d) => d.date);
+  const soundData = devidedData.map((d) => Math.floor(d.totalListenTime || 0) / 60);
+  console.warn("Sound chart data:", soundData);
 
-// creating Bar Chart for sound track
+  // creating Bar Chart for sound track
 
-let domSound = document.getElementById("chart-container-sound");
-let soundChart = echarts.init(domSound, null, {
-  renderer: "canvas",
-  useDirtyRect: false,
-});
-let soundApp = {};
-
-function getSoundOptions(theme) {
+  let domSound = document.getElementById("chart-container-sound");
+  let soundChart = echarts.init(domSound, null, {
+    renderer: "canvas",
+    useDirtyRect: false,
+  });
+  let soundApp = {};
   const isDark = theme === "dark";
-  return {
+  const soundOptions = {
     title: {
       text: translations[currentLang].soundCTitle,
       left: "center",
@@ -512,7 +526,7 @@ function getSoundOptions(theme) {
     xAxis: [
       {
         type: "category",
-        data: translations[currentLang].days,
+        data: dates,
         axisTick: {
           alignWithLabel: true,
         },
@@ -538,14 +552,15 @@ function getSoundOptions(theme) {
         name: translations[currentLang].sbarname,
         type: "bar",
         barWidth: "60%",
-        data: [10, 52, 200, 334, 390, 330, 220],
+        data: soundData,
         color: isDark ? "#AC54FF" : "#7C3AED",
       },
     ],
   };
-}
 
-window.addEventListener("resize", soundChart.resize);
+  window.addEventListener("resize", soundChart.resize);
+  soundChart.setOption(soundOptions);
+}
 
 // for tracking the tasks progress
 let domTasks = document.getElementById("chart-container-totalTasks");
@@ -926,8 +941,6 @@ function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
   renderAllCharts(globalData);
-  sessionChart.setOption(getSessionOptions(theme), true);
-  soundChart.setOption(getSoundOptions(theme), true);
   tasksChart.setOption(getTasksOptions(theme), true);
   completedTasksChart.setOption(getCompletedTasksOptions(theme), true);
   blockedPagesChart.setOption(getBlockedPagesOptions(theme), true);
