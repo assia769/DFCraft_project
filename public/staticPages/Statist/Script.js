@@ -157,7 +157,7 @@ function updateDividedData(index) {
     const sortedDays = [...globalData.days].sort(
       (a, b) => new Date(b.date) - new Date(a.date),
     );
-    devidedData = sortedDays.slice(0, numDays);
+    devidedData = sortedDays.slice(0, numDays).reverse();
     renderDependedCharts();
   }
 }
@@ -173,6 +173,7 @@ function renderDependedCharts() {
   renderSoundChart();
   renderTasksChart();
   renderTasksPriorityChart();
+  renderBlockedPagesChart();
 }
 
 function renderPomodoroChart() {
@@ -657,10 +658,11 @@ function renderTasksChart() {
 }
 
 function renderTasksPriorityChart() {
-
   const dates = devidedData.map((d) => d.date);
   const highPriorityData = devidedData.map((d) => d.tasksCompleted_high || 0);
-  const mediumPriorityData = devidedData.map((d) => d.tasksCompleted_medium || 0);
+  const mediumPriorityData = devidedData.map(
+    (d) => d.tasksCompleted_medium || 0,
+  );
   const lowPriorityData = devidedData.map((d) => d.tasksCompleted_low || 0);
 
   let completedTasksDom = document.getElementById(
@@ -885,16 +887,21 @@ function renderTasksPriorityChart() {
   completedTasksChart.setOption(tasksOptions);
 }
 
-let blockedDom = document.getElementById("chart-container-blockedPages");
-let blockedPagesChart = echarts.init(blockedDom, null, {
-  renderer: "canvas",
-  useDirtyRect: false,
-});
-let blockedPagesApp = {};
+function renderBlockedPagesChart() {
+  const dates = devidedData.map((d) => d.date);
+  const blockedPagesData = devidedData.map(
+    (d) => d.totalDeflectionsAttempted || 0,
+  );
 
-function getBlockedPagesOptions(theme) {
+  let blockedDom = document.getElementById("chart-container-blockedPages");
+  let blockedPagesChart = echarts.init(blockedDom, null, {
+    renderer: "canvas",
+    useDirtyRect: false,
+  });
+  let blockedPagesApp = {};
+
   const isDark = theme === "dark";
-  return {
+  const blockedPagesOptions = {
     title: {
       text: translations[currentLang].blockedPagesTitle,
       left: "center",
@@ -914,7 +921,7 @@ function getBlockedPagesOptions(theme) {
     },
     xAxis: {
       type: "category",
-      data: translations[currentLang].days,
+      data: dates,
       axisLabel: {
         color: isDark ? "#f2f2f2" : "#161616",
         fontFamily: "'Concert One', 'AA-ANIQ', cursive",
@@ -929,16 +936,17 @@ function getBlockedPagesOptions(theme) {
     },
     series: [
       {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        data: blockedPagesData,
         type: "line",
         smooth: true,
         color: isDark ? "#AC54FF" : "#7C3AED",
       },
     ],
   };
-}
 
-window.addEventListener("resize", blockedPagesChart.resize);
+  window.addEventListener("resize", blockedPagesChart.resize);
+  blockedPagesChart.setOption(blockedPagesOptions, true);
+}
 
 let modeIcon = document.getElementById("modeIcon");
 
@@ -956,7 +964,6 @@ function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
   renderAllCharts(globalData);
-  blockedPagesChart.setOption(getBlockedPagesOptions(theme), true);
 }
 
 // for language changes selection
