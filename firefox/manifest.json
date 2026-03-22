@@ -37,7 +37,8 @@
     "sounds/*.wav",
     "sounds/*.mp3",
     "offscreen.html",
-    "offscreen.js"
+    "offscreen.js",
+    "fonts/*.ttf"
   ],
   
   "options_ui": {
@@ -47,7 +48,7 @@
   
   "browser_specific_settings": {
     "gecko": {
-      "id": "dfcraft@yourname.com",
+      "id": "notyet@fackmail.com",
       "strict_min_version": "109.0"
     }
   }

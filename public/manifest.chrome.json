@@ -23,13 +23,8 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "js": [
-        "content.js"
-      ]
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"]
     }
   ],
   "permissions": [
@@ -40,20 +35,17 @@
     "activeTab",
     "tabs"
   ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {
       "resources": [
-        "staticPages/blocked.html" ,
-        "sounds/*.wav", 
-        "offscreen.html", 
-        "offscreen.js"
+        "staticPages/blocked.html",
+        "sounds/*.wav",
+        "offscreen.html",
+        "offscreen.js",
+        "fonts/*.ttf"
       ],
-      "matches": [
-        "<all_urls>"
-      ]
+      "matches": ["<all_urls>"]
     }
   ],
   "options_page": "src/options/options.html"

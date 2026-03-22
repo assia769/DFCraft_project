@@ -1,6 +1,4 @@
-
 import { browserAPI } from "../shared/utils/browserAPI";
-
 
 export let timerData = {
   time: 60,

@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useTranslation } from "../../shared/i18n/translations";
 
 export default function EasyTasks() {
   const [tasks, setTasks] = useState([]);
   const [showListTasks, setShowListTasks] = useState(false);
   const [completedTasks, setCompletedTasks] = useState(0);
+  const { t } = useTranslation("home")
 
   useEffect(() => {
     const Tasks = JSON.parse(localStorage.getItem("dfcraft_todos") || "[]");
@@ -25,7 +27,7 @@ export default function EasyTasks() {
           setShowListTasks(!showListTasks);
         }}
       >
-        <p className="text-light dark:text-dark">Total completed tasks:</p>
+        <p className="text-light dark:text-dark">{t("completedTasks")}</p>
         <div>
           <p className="text-light dark:text-dark">
             {completedTasks}/{tasks.length}

@@ -32,7 +32,7 @@ try {
     "popup.css",
     "offscreen.html", // Add this
     "offscreen.js",
-    "src", // This folder contains popup.html and options.html
+    "src",
   ];
 
   const neededItems = allItems.filter((item) => neededFiles.includes(item));
@@ -41,7 +41,7 @@ try {
   console.log("✅ Copying needed files:", neededItems);
   console.log(
     "🗑️ Skipping unnecessary files:",
-    allItems.filter((item) => !neededFiles.includes(item))
+    allItems.filter((item) => !neededFiles.includes(item)),
   );
 
   // Copy built files (but avoid copying browser-specific folders)
@@ -65,20 +65,44 @@ try {
     __dirname,
     "..",
     "public",
-    "manifest.chrome.json"
+    "manifest.chrome.json",
   );
   if (!fs.existsSync(chromeManifestPath)) {
     throw new Error(
-      "Chrome manifest not found! Please create public/manifest.chrome.json"
+      "Chrome manifest not found! Please create public/manifest.chrome.json",
     );
   }
 
   fs.copyFileSync(chromeManifestPath, path.join(chromeDir, "manifest.json"));
 
+  fs.copySync(
+    path.join(__dirname, "..", "public", "staticPages", "blocked.html"),
+    path.join(chromeDir, "staticPages", "blocked.html"),
+  );
 
   fs.copySync(
-      path.join(__dirname, '..', 'public', 'staticPages', 'blocked.html'),
-      path.join(chromeDir, 'staticPages', 'blocked.html')
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "statist.html"),
+      path.join(chromeDir, "staticPages", "statist.html"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "Script.js"),
+      path.join(chromeDir, "staticPages", "Script.js"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "Style.css"),
+      path.join(chromeDir, "staticPages", "Style.css"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "translation.js"),
+      path.join(chromeDir, "staticPages", "translation.js"),
+    );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "vendor", "echarts.min.js"),
+      path.join(chromeDir, "vendor", "echarts.min.js"),
   );
 
   // Copy icons and sounds to both
@@ -93,6 +117,12 @@ try {
   const soundsDir = path.join(__dirname, "..", "public", "sounds");
   if (fs.existsSync(soundsDir)) {
     fs.copySync(soundsDir, path.join(chromeDir, "sounds"));
+  }
+
+  const fontsDir = path.join(__dirname, "..", "public", "fonts");
+  if (fs.existsSync(fontsDir)) {
+    fs.copySync(fontsDir, path.join(chromeDir, "fonts"));
+    fs.copySync(fontsDir, path.join(firefoxDir, "fonts"));
   }
 
   // Clean up root dist files (keep only browser folders)

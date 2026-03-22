@@ -1,22 +1,23 @@
 export default function SettingItem({ icon: Icon, title, description, children }) {
   return (
-    <div className="p-4 bg-light dark:bg-dark rounded-xl hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3 flex-1">
+    <div className="p-4 bg-lightElements dark:bg-darkElements text-light dark:text-dark border-2 border-light dark:border-dark rounded-xl hover:shadow-md transition-shadow">
+      <div className="flex flex-row items-center justify-between gap-4">
+        <div className="flex flex-row items-center gap-3 flex-1">
           {Icon && (
-            <div className="mt-1">
-              <Icon className="w-5 h-5 text-lightElements dark:text-darkElements" />
+            <div>
+              <Icon className="w-5 h-5 " />
             </div>
           )}
-          <div className="flex-1">
-            <h3 className="font-semibold text-lightElements dark:text-darkElements mb-1">
+          <div>
+            <h3 className="font-semibold">
               {title}
             </h3>
-            {description && (
-              <p className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder">
+            {/*10 March 2026: commenting it because i just ruin the style and i need to think of how i can get more space, making the title without the desc is simpler, the user dosen't need any description */}
+            {/* {description && (
+              <p className="text-sm">
                 {description}
               </p>
-            )}
+            )} */}
           </div>
         </div>
         <div className="flex-shrink-0">

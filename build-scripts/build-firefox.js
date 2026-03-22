@@ -48,7 +48,7 @@ try {
   console.log("✅ Copying needed files:", neededItems);
   console.log(
     "🗑️ Skipping unnecessary files:",
-    allItems.filter((item) => !neededFiles.includes(item))
+    allItems.filter((item) => !neededFiles.includes(item)),
   );
 
   // Copy built files (but avoid copying browser-specific folders)
@@ -72,19 +72,44 @@ try {
     __dirname,
     "..",
     "firefox",
-    "manifest.firefox.json"
+    "manifest.firefox.json",
   );
   if (!fs.existsSync(firefoxManifestPath)) {
     throw new Error(
-      "Firefox manifest not found! Please create firefox/manifest.firefox.json"
+      "Firefox manifest not found! Please create firefox/manifest.firefox.json",
     );
   }
 
   fs.copyFileSync(firefoxManifestPath, path.join(firefoxDir, "manifest.json"));
 
   fs.copySync(
-      path.join(__dirname, '..', 'public', 'staticPages', 'blocked.html'),
-      path.join(firefoxDir, 'staticPages', 'blocked.html')
+    path.join(__dirname, "..", "public", "staticPages", "blocked.html"),
+    path.join(firefoxDir, "staticPages", "blocked.html"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "statist.html"),
+      path.join(firefoxDir, "staticPages", "statist.html"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "Script.js"),
+      path.join(firefoxDir, "staticPages", "Script.js"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "Style.css"),
+      path.join(firefoxDir, "staticPages", "Style.css"),
+  );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "staticPages", "Statist", "translation.js"),
+      path.join(firefoxDir, "staticPages", "translation.js"),
+    );
+
+  fs.copySync(
+      path.join(__dirname, "..", "public", "vendor", "echarts.min.js"),
+      path.join(firefoxDir, "vendor", "echarts.min.js"),
   );
 
   // Copy icons and sounds
@@ -100,6 +125,12 @@ try {
   const soundsDir = path.join(__dirname, "..", "public", "sounds");
   if (fs.existsSync(soundsDir)) {
     fs.copySync(soundsDir, path.join(firefoxDir, "sounds"));
+  }
+
+  const fontsDir = path.join(__dirname, "..", "public", "fonts");
+  if (fs.existsSync(fontsDir)) {
+    fs.copySync(fontsDir, path.join(chromeDir, "fonts"));
+    fs.copySync(fontsDir, path.join(firefoxDir, "fonts"));
   }
 
   // Clean up root dist files (keep only browser folders)

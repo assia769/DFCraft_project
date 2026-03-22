@@ -3,10 +3,12 @@ import axios from 'axios';
 import { Skeleton } from "@mui/material";
 import config from "../../shared/constants/config";
 import "./DisplaySound.css";
+import { useTranslation } from '../../shared/i18n/translations';
 
 export default function DisplayCatigories({ category, categories, setCategory ,setCategories, setShowCats}) {
   
   const catURL = config.SoundLibraryApi;
+  const { t } = useTranslation("sound")
   
   useEffect(() => {
     const featchCategories = async () => {
@@ -43,6 +45,11 @@ export default function DisplayCatigories({ category, categories, setCategory ,s
       <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
       <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
       <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
+      <Skeleton variant="rounded" width={80} height={40} className="mr-2"/>
     </div>
   );
   
@@ -52,7 +59,7 @@ export default function DisplayCatigories({ category, categories, setCategory ,s
       onClick={() => setShowCats(false)}
     />
     <div className='fixed bottom-0 rounded-t-3xl w-full bg-lightElements dark:bg-darkElements p-6 BtoT'>
-      <h1 className='text-3xl mb-4 text-light dark:text-dark'>Categories:</h1>
+      <h1 className='text-3xl mb-4 text-light dark:text-dark'>{t("categories")}</h1>
       <div className='flex flex-wrap gap-2'>
         {listCat}
       </div>

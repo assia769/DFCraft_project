@@ -1,44 +1,52 @@
-import {  use, useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { useTranslation } from "../../shared/i18n/translations";
 
-const InputAddUrl = ({ elements, setElement , setShowAddInput , showAddInput }) => {
-    const [value, setValue] = useState("");
-    function addElement(value) {
-        const existe = elements.some((el) => el.url === value);
-        if (!existe) {
-            setElement((prv) => [
-                ...prv,
-                {
-                    url: value,
-                    sowndBlocked: false,
-                    urlBlocked: false
-                }
-            ]);
-            setValue("");
-        }
+const InputAddUrl = ({ elements, setElement, setShowAddSection }) => {
+  const [value, setValue] = useState("");
+  const { t } = useTranslation("blockPages");
+
+  function addElement(value) {
+    const existe = elements.some((el) => el.url === value);
+    if (!existe) {
+      setElement((prv) => [
+        ...prv,
+        {
+          url: value,
+          sowndBlocked: false,
+          urlBlocked: false,
+        },
+      ]);
+      setValue("");
+      setShowAddSection(false);
     }
+  }
 
-    function handleBlur() {
-        setShowAddInput(false);
-    }
-
-    return (
-        <div className="my-4 w-[100%] mb-[11px] ">
-            <input
-                value={value}
-                onClick={(e)=> e.stopPropagation()}
-                onChange={(e) => setValue(e.target.value)}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                        console.log("Le key est Enter est presse");
-                        addElement(value);
-                    }
-                }}
-                onBlur={handleBlur}
-                placeholder="Add url"
-                className=" p-2 rounded-xl  text-black text-[11px] w-[100%] focus:outline-none border-[3px]  border-blue-300 dark:border-none h-[30px]  "
-            />
-        </div>
-    );
+  return (
+    <div className="text-light dark:text-dark">
+      <div
+        className="fixed inset-0 bg-light dark:bg-dark opacity-30 backdrop-blur-sm"
+        onClick={() => setShowAddSection(false)}
+      />
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-lightElements dark:bg-darkElements rounded-lg p-4 w-[90%] flex flex-col items-center justify-center">
+        <span className="text-light dark:text-dark text-sm mb-1 block">
+          {t("add")}
+        </span>
+        <input
+          value={value}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              console.log("Le key est Enter est presse");
+              addElement(value);
+            }
+          }}
+          placeholder={t("Atitle")}
+          className={`m-2 p-3 w-full rounded-lg bg-lightList dark:bg-darkList ${value ? "text-light dark:text-dark" : "placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder"} focus:outline-none`}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default InputAddUrl;

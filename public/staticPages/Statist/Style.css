@@ -1,0 +1,301 @@
+@import url("https://fonts.googleapis.com/css2?family=Concert+One&display=swap");
+
+@font-face {
+  font-family: "AA-ANIQ";
+  src: url("../../fonts/arFont.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  --light: #f2f2f2;
+  --lightElements: #7c3aed;
+  --lightPoints: #c282ff;
+  --lightList: #5b1fc0;
+  --lightBar: #5b1fc0;
+  --lightProgressBar: #6d00d8;
+  --lightSelectedBar: #b46cfa;
+  --lightPlaceHolder: #9d72c7;
+  --lightFontText: #000000;
+  --dark: #161616;
+  --darkElements: #a855f7;
+  --darkPoints: #5a00b0;
+  --darkList: #c8a0ef;
+  --darkBar: #c8a0ef;
+  --darkProgressBar: #b46cfa;
+  --darkSelectedBar: #5a00b0;
+  --darkPlaceHolder: #9d72c7;
+  --darkFontText: #ffffff;
+}
+
+[data-theme="light"] {
+  --bg: var(--light);
+  --text: var(--lightFontText);
+  --surface: #ffffff;
+  --accent: var(--lightElements);
+  --card-bg: var(--lightElements);
+  --card-text: #ffffff;
+  --hover-shadow: var(--lightBar);
+  --icon-fg: var(--lightElements);
+  --icon-hover-bg: var(--lightElements);
+  --icon-hover-fg: var(--light);
+  --list: var(--lightList);
+}
+
+[data-theme="dark"] {
+  --bg: var(--dark);
+  --text: var(--darkFontText);
+  --surface: #1b1b1b;
+  --accent: var(--darkElements);
+  --card-bg: var(--darkElements);
+  --card-text: var(--dark);
+  --hover-shadow: var(--darkBar);
+  --icon-fg: var(--darkElements);
+  --icon-hover-bg: var(--darkElements);
+  --icon-hover-fg: var(--dark);
+  --list: var(--darkList);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--accent);
+  font-family: "Concert One", "AA-ANIQ", cursive;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.Logo {
+  width: 15%;
+  height: auto;
+}
+
+/* make the icon + select act as one control */
+.custom_page {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.custom_page .bi-translate {
+  position: relative;
+  z-index: 1;
+}
+
+#langIcon {
+  color: var(--accent);
+  width: 25px;
+  height: 25px;
+  border-radius: 8px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+#langIcon:hover {
+  background-color: var(--accent);
+  color: var(--bg);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* invisible select over the icon */
+#language-select {
+  position: absolute;
+  left: 0; /* align with svg */
+  top: 0;
+  width: 35px;
+  height: 35px;
+  color: transparent;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  z-index: 2;
+  cursor: pointer;
+  font-family: "Concert One", "AA-ANIQ", cursive !important;
+  scrollbar-width: none;
+  border-radius: 5px;
+  z-index: 1;
+  border: none;
+}
+
+#language-select::-webkit-scrollbar {
+  display: none;
+}
+
+#language-select option {
+  color: var(--bg);
+  background-color: var(--accent);
+  font-family: "Concert One", "AA-ANIQ", cursive !important;
+  width: 35px;
+}
+
+#language-select:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.Cards {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.Card_info {
+  background-color: var(--accent);
+  color: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 10px;
+  width: fit-content;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.Card_info:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 10px 20px var(--hover-shadow);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.title {
+  font-size: larger;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.data {
+  font-size: small;
+  margin: 0;
+}
+
+.Chart {
+  color: var(--accent) !important;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+#chart-container-calendar {
+  position: relative;
+  height: 50vh;
+  width: 90%;
+  overflow: hidden;
+}
+
+.Timeframe {
+  background-color: var(--accent);
+  color: var(--bg);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  margin-left: 70px;
+  margin-right: 70px;
+  height: fit-content;
+  width: fit-content;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.timeLable {
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.timeLable:hover {
+  background-color: var(--list);
+  color: var(--bg);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.activeI {
+  background-color: var(--list);
+  color: var(--bg);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* for all the graphs */
+
+.chart{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* for pomodoro graph */
+
+#chart-container-pomodoro {
+  position: relative;
+  height: 70vh;
+  width: 90%;
+  overflow: hidden;
+}
+
+#chart-container-session {
+  position: relative;
+  height: 70vh;
+  width: 80%;
+  overflow: hidden;
+}
+
+#chart-container-sound {
+  position: relative;
+  height: 70vh;
+  width: 80%;
+  overflow: hidden;
+}
+
+#chart-container-totalTasks {
+  position: relative;
+  height: 70vh;
+  width: 95%;
+  overflow: hidden;
+}
+
+#chart-container-completedTasks {
+  position: relative;
+  height: 70vh;
+  width: 90%;
+  overflow: hidden;
+}
+
+#chart-container-blockedPages {
+  position: relative;
+  height: 70vh;
+  width: 90%;
+  overflow: hidden;
+}

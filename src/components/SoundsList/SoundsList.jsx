@@ -4,6 +4,8 @@ import config from "../../shared/constants/config";
 import DisplaySound from "./DisplaySound";
 import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 import { Skeleton } from "@mui/material";
+import { useTranslation } from "../../shared/i18n/translations";
+import { useSettings } from "../../shared/context/SettingsContext";
 
 
 export default function SoundsList({ category, searchSound }) {
@@ -11,6 +13,8 @@ export default function SoundsList({ category, searchSound }) {
   const [soundsByCat, setSoundsByCat] = useState(null);
   const [listenPage, setListenPage] = useState(false);
   const [listenSound, setListenSound] = useState(null);
+  const { settings } = useSettings();
+  const { t } = useTranslation("sound");
 
   const { play, isPlaying, currentSound } = useBackgroundAudio();
   
@@ -99,7 +103,7 @@ export default function SoundsList({ category, searchSound }) {
   }
 
   if (!soundsByCat.sounds) {
-    return <div className="p-4">No sounds data</div>;
+    return <div className="p-4">{t("pureExistance")}</div>;
   }
 
   const { sounds } = soundsByCat;
@@ -107,7 +111,7 @@ export default function SoundsList({ category, searchSound }) {
   const filteredSoundsByCat = category === "all" ? sounds : sounds.filter((s) => ((s.category === category)));
   
   if (filteredSoundsByCat.length === 0) {
-    return <div className="p-4">No sounds in "{category}"</div>;
+    return <div className="p-4">{t("catSoundExistace")} "{category}"</div>;
   }
 
   const filteredSounds = filteredSoundsByCat.filter((s) => (s.title.toLowerCase().includes(searchSound.toLowerCase())) || (s.author.toLowerCase().includes(searchSound.toLowerCase())));
@@ -127,12 +131,12 @@ export default function SoundsList({ category, searchSound }) {
         >
           <div className="flex flex-row">
             <img src={s.coverImage} alt={s.title} className="w-10 h-10 rounded-md flex flex-row justify-between items-center"></img>
-            <div className="ml-1">
+            <div className={settings.language === "ar" ? "mr-1" : "ml-1"}>
               <div className="text-md font-medium text-lightList dark:text-darkElements group-hover:text-light dark:group-hover:text-dark">{s.title}</div>
               <div className="text-xs text-lightElements dark:text-darkList group-hover:text-light dark:group-hover:text-dark">{s.author}</div>
             </div>
           </div>
-          <div className="ml-2">
+          <div className={settings.language === "ar" ? "mr-2" : "ml-2"}>
             <div className="text-xs font-medium text-lightElements dark:text-darkList group-hover:text-light dark:group-hover:text-dark">{formatTime(s.duration)}</div>
           </div>
         </div>
@@ -145,7 +149,7 @@ export default function SoundsList({ category, searchSound }) {
         soundslist.length > 0
         ? soundslist
         : <div className="text-lightElements dark:text-darkElements text-4xl m-6">
-            No such sound with {searchSound ? searchSound : "this"} or from {searchSound ? searchSound : "this"}.
+            {t("existance")} {searchSound ? searchSound : "this"}.
           </div>
       }
       <div className="flex justify-center">{(listenPage || isPlaying) && <DisplaySound sound={listenSound} />}</div>

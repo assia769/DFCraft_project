@@ -7,8 +7,8 @@ import AdvancedSettings from '../../components/Settings/AdvancedSettings';
 import { Settings, Palette, Sliders } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { settings, resetSettings } = useSettings();
-  const { t } = useTranslation(settings.language);
+  const { resetSettings } = useSettings();
+  const { t } = useTranslation('settings');
   const [activeTab, setActiveTab] = useState('general');
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
@@ -32,24 +32,24 @@ export default function SettingsPage() {
             {t('settingsTitle')}
           </h1>
           <p className="text-lightPlaceHolder dark:text-darkPlaceHolder">
-            Personnalisez votre expérience DFCraft
+            {t('personaliser')}
           </p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar - Tabs */}
           <div className="lg:w-64 flex-shrink-0">
-            <div className="bg-lightList dark:bg-darkList rounded-2xl p-2 space-y-1">
+            <div className="bg-lightElements dark:bg-darkElements rounded-2xl p-2 space-y-1">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-light dark:text-dark ${
                       activeTab === tab.id
-                        ? 'bg-lightElements dark:bg-darkElements text-white shadow-lg'
-                        : 'text-lightElements dark:text-darkElements hover:bg-light dark:hover:bg-dark'
+                        ? 'bg-lightList dark:bg-darkList shadow-lg'
+                        : 'hover:bg-lightList dark:hover:bg-darkList'
                     }`}
                   >
                     <Icon className="w-5 h-5" />
@@ -70,7 +70,7 @@ export default function SettingsPage() {
 
           {/* Content Area */}
           <div className="flex-1">
-            <div className="bg-lightList dark:bg-darkList rounded-2xl p-6 shadow-lg">
+            <div className="bg-lightElements dark:bg-darkElements rounded-2xl p-6 shadow-lg">
               {activeTab === 'general' && <GeneralSettings />}
               {activeTab === 'appearance' && <AppearanceSettings />}
               {activeTab === 'advanced' && <AdvancedSettings />}

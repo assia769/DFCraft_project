@@ -4,17 +4,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'AA-ANIQ';
+  src: url('/fonts/arFont.ttf') format('truetype');
+  font-display: swap;
+}
+
 body * {
-  font-family: 'Concert One', cursive;
+  font-family: 'Concert One','AA-ANIQ', cursive;
 }
 
 @layer base {
   html,
   body,
   #root {
-    font-family: 'Concert One', cursive;
+    font-family: 'Concert One', 'AA-ANIQ' , cursive;
     background-color: #F2F2F2; /* light background */
     min-height: 100vh;
+    font-size: medium;
   }
   
   /* Dark mode */
@@ -47,6 +54,14 @@ body * {
 
 .dark .bg-dark {
   background-color: var(--color-dark, #161616);
+}
+
+.text-light{
+  color: var(--tw-color-light, #F2F2F2);
+}
+
+.dark .text-dark {
+  color: var(--tw-color-dark, #161616);
 }
 
 .text-lightElements {

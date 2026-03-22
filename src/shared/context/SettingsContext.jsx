@@ -249,7 +249,7 @@ export function SettingsProvider({ children }) {
       styleEl.id = 'dynamic-font-style';
       document.head.appendChild(styleEl);
     }
-    styleEl.textContent = `* { font-family: ${family} !important; }`;
+    styleEl.textContent = `*:not(:lang(ar)) { font-family: ${family} !important; }`;
   }, [settings.font]);
 
   useEffect(() => {

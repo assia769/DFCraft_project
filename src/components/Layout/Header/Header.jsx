@@ -7,10 +7,8 @@ export default function Header({ setChoosenPage }) {
   const [showMenu, setShowMenu] = useState(false);
   const [urlLogo, setUrlLogo] = useState("");
   const [activeRoute, setActiveRoute] = useState("home");
-  
-  // Utiliser les paramètres globaux
+  const { t } = useTranslation('common');
   const { settings } = useSettings();
-  const { t } = useTranslation(settings.language);
 
   useEffect(() => {
     try {
@@ -70,7 +68,7 @@ export default function Header({ setChoosenPage }) {
               onClick={() => setShowMenu(false)}
             />
             
-            <div className="absolute right-4 top-16 w-44 bg-lightElements dark:bg-darkElements rounded-2xl shadow-2xl overflow-hidden animate-slideIn">
+            <div className={`absolute ${settings.language === 'ar' ? 'left-4' : 'right-4'} top-16 w-48 bg-lightElements dark:bg-darkElements rounded-2xl shadow-2xl overflow-hidden animate-slideIn`}>
               <div className="p-2">
                 {menuItems.map((item) => {
                   const Icon = item.icon;

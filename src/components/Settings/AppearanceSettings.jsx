@@ -1,14 +1,12 @@
-import { Moon, Type, Palette, Maximize2, Sparkles } from 'lucide-react';
+import { Moon } from 'lucide-react';
 import { useSettings } from '../../shared/context/SettingsContext';
-import { useSettingsTranslation } from '../../shared/i18n/settingsTranslations';
 import SettingItem from './SettingItem';
 import ToggleSwitch from './ToggleSwitch';
-import SelectInput from './SelectInput';
-import ColorPicker from './ColorPicker';
+import { useTranslation } from '../../shared/i18n/translations';
 
 export default function AppearanceSettings() {
   const { settings, updateSetting } = useSettings();
-  const { t } = useSettingsTranslation(settings.settingsLanguage);
+  const { t } = useTranslation("settings");
 
   const fontOptions = [
     { value: 'concert', label: t('fontConcert') },
@@ -34,7 +32,7 @@ export default function AppearanceSettings() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-lightElements dark:text-darkElements mb-6">
+      <h2 className="text-2xl font-bold text-light dark:text-dark mb-6">
         {t('appearanceSettings')}
       </h2>
 
@@ -50,8 +48,10 @@ export default function AppearanceSettings() {
         />
       </SettingItem>
 
+      {/* 10 March 2026: we don't need this for now */}
+
       {/* Primary Color */}
-      <SettingItem
+      {/* <SettingItem
         icon={Palette}
         title={t('primaryColor')}
         description={t('colorDesc')}
@@ -61,10 +61,10 @@ export default function AppearanceSettings() {
           onChange={(value) => updateSetting('primaryColor', value)}
           options={colorOptions}
         />
-      </SettingItem>
+      </SettingItem> */}
 
       {/* Font Family */}
-      <SettingItem
+      {/* <SettingItem
         icon={Type}
         title={t('font')}
         description={t('fontDesc')}
@@ -74,10 +74,10 @@ export default function AppearanceSettings() {
           onChange={(value) => updateSetting('font', value)}
           options={fontOptions}
         />
-      </SettingItem>
+      </SettingItem> */}
 
       {/* Font Size */}
-      <SettingItem
+      {/* <SettingItem
         icon={Maximize2}
         title={t('fontSize')}
         description={t('fontSizeDesc')}
@@ -87,10 +87,10 @@ export default function AppearanceSettings() {
           onChange={(value) => updateSetting('fontSize', value)}
           options={fontSizeOptions}
         />
-      </SettingItem>
+      </SettingItem> */}
 
       {/* Animations */}
-      <SettingItem
+      {/* <SettingItem
         icon={Sparkles}
         title={t('animations')}
         description={t('animationsDesc')}
@@ -99,10 +99,10 @@ export default function AppearanceSettings() {
           checked={settings.animations}
           onChange={(checked) => updateSetting('animations', checked)}
         />
-      </SettingItem>
+      </SettingItem> */}
 
       {/* Preview Section */}
-      <div className="mt-6 p-6 bg-light dark:bg-dark rounded-xl border border-lightPlaceHolder/30 dark:border-darkPlaceHolder/30">
+      {/* <div className="mt-6 p-6 bg-light dark:bg-dark rounded-xl border border-lightPlaceHolder/30 dark:border-darkPlaceHolder/30">
         <h3 className="text-lg font-semibold text-lightElements dark:text-darkElements mb-3">
           Aperçu des paramètres
         </h3>
@@ -112,7 +112,7 @@ export default function AppearanceSettings() {
           <p>• Thème: <span className="font-semibold text-lightElements dark:text-darkElements">{settings.primaryColor}</span></p>
           <p>• Mode: <span className="font-semibold text-lightElements dark:text-darkElements">{settings.darkMode ? 'Sombre' : 'Clair'}</span></p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
