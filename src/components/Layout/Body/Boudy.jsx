@@ -18,9 +18,15 @@ export default function Body({ choosenPage }) {
       //   browserAPI.tabs.create({ url: browserAPI.runtime.getURL("staticPages/statist.html") });
       //   window.close();
       case "tracking":
-  browserAPI.tabs.create({ url: "https://dfcraft.vercel.app/track" });
-  window.close();
-  return null;
+          chrome.storage.local.get(["statistics"], (result) => {
+            const encoded = encodeURIComponent(JSON.stringify(result.statistics || {}));
+            browserAPI.tabs.create({
+              url: `https://dfcraft.vercel.app/track?data=${encoded}`
+            });
+          });
+          window.close();
+          return null;
+          
       case "sounds":
         return <SoundPlayerPage/>;
       case "distractionBlocking":
