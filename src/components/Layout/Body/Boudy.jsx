@@ -14,9 +14,13 @@ export default function Body({ choosenPage }) {
         return <HomePage />;
       case "todo":
         return <TodoPage />;
+      // case "tracking":
+      //   browserAPI.tabs.create({ url: browserAPI.runtime.getURL("staticPages/statist.html") });
+      //   window.close();
       case "tracking":
-        browserAPI.tabs.create({ url: browserAPI.runtime.getURL("staticPages/statist.html") });
-        window.close();
+  browserAPI.tabs.create({ url: "https://dfcraft.vercel.app/track" });
+  window.close();
+  return null;
       case "sounds":
         return <SoundPlayerPage/>;
       case "distractionBlocking":
